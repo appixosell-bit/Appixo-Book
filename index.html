@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📖 Livre Numérique Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="book" id="bookApp">
+    <!-- Barre supérieure -->
+    <div class="toolbar-top">
+        <div class="nav-group">
+            <button id="prevPage"><i class="fas fa-chevron-left"></i> <span data-i18n="prev">Précédent</span></button>
+            <button id="nextPage"><span data-i18n="next">Suivant</span> <i class="fas fa-chevron-right"></i></button>
+            <button id="printPage"><i class="fas fa-print"></i> <span data-i18n="print">Imprimer</span></button>
+            <button id="downloadPng"><i class="fas fa-image"></i> <span data-i18n="download">PNG</span></button>
+        </div>
+        <div class="right-tools">
+            <select class="lang-selector" id="langSelector">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="ar">🇸🇦 العربية</option>
+                <option value="en">🇬🇧 English</option>
+            </select>
+            <div class="settings-icon" id="settingsToggle"><i class="fas fa-cog"></i></div>
+        </div>
+    </div>
+
+    <!-- Panneau Admin -->
+    <div class="admin-panel" id="adminPanel">
+        <button id="addPageBtn"><i class="fas fa-plus-circle"></i> <span data-i18n="addPage">Ajouter page</span></button>
+        <button id="deletePageBtn" class="danger"><i class="fas fa-trash-alt"></i> <span data-i18n="deletePage">Supprimer page</span></button>
+        <button id="addImageBtn"><i class="fas fa-image"></i> <span data-i18n="addImage">Ajouter image</span></button>
+        <button id="deleteImageBtn" class="danger"><i class="fas fa-image"></i> <span data-i18n="deleteImage">Supprimer image</span></button>
+        <button id="clearHtmlBtn" class="danger"><i class="fas fa-eraser"></i> <span data-i18n="clearHtml">Vider HTML</span></button>
+    </div>
+
+    <!-- Conteneur page -->
+    <div class="page-container" id="pageContainer">
+        <div class="page-content" id="pageContent">
+            <div class="page-image-area" id="imageArea"></div>
+            <div class="page-text" contenteditable="true" id="pageText" data-i18n-placeholder="editText">Contenu de la page 1</div>
+        </div>
+        <div class="page-indicator" id="pageIndicator">Page 1 / 1</div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
