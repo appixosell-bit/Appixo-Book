@@ -1,0 +1,3646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Appixo Book · Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE 8K ===== */
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        html, body {
+            width:100%; height:100%;
+            background: #ffffff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            overflow:hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== BOOK CONTAINER ===== */
+        .book-container {
+            width:100vw; height:100vh;
+            max-width:100%; max-height:100%;
+            background: #ffffff;
+            display:flex; flex-direction:column;
+            position:relative; overflow:hidden;
+            box-shadow: 0 0 60px rgba(0,0,0,0.02);
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:10px 28px;
+            flex-shrink:0;
+            background:rgba(255,255,255,0.85);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            border-bottom:0.5px solid rgba(0,0,0,0.04);
+            z-index:10;
+            flex-wrap:wrap;
+            gap:8px;
+            min-height:64px;
+            position:relative;
+        }
+        .top-bar-left {
+            display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+        }
+        .top-bar-right {
+            display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+            flex:1;
+            justify-content:flex-end;
+        }
+
+        /* ===== LOGO ===== */
+        .logo {
+            display:flex; align-items:center; gap:10px;
+            color:#1a1a1a;
+            font-weight:700; font-size:1.15rem;
+            letter-spacing:-0.02em;
+            text-decoration:none;
+        }
+        .logo .icon { font-size:1.3rem; }
+        .logo span { 
+            background:linear-gradient(135deg,#c0392b,#e74c3c); 
+            -webkit-background-clip:text; 
+            -webkit-text-fill-color:transparent; 
+            background-clip:text; 
+        }
+
+        /* ===== PAGE INDICATOR (top) ===== */
+        .page-indicator-top {
+            display:flex; align-items:center; gap:8px;
+            color:#555; font-weight:500; font-size:0.7rem;
+            background:rgba(255,255,255,0.6);
+            padding:4px 14px 4px 12px;
+            border-radius:60px;
+            border:0.5px solid rgba(0,0,0,0.04);
+        }
+        .page-indicator-top .num {
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            color:white;
+            padding:2px 12px;
+            border-radius:60px;
+            font-size:0.8rem; font-weight:700;
+            min-width:28px; text-align:center;
+            box-shadow:0 4px 16px rgba(192,57,43,0.15);
+        }
+        .page-indicator-top .total { color:rgba(0,0,0,0.2); font-weight:400; }
+        .page-indicator-top .label { color:rgba(0,0,0,0.25); font-weight:400; }
+        .page-indicator-top .page-counter { font-size:0.6rem; color:rgba(0,0,0,0.2); }
+
+        /* ===== SEARCH BAR ===== */
+        .search-bar {
+            display:flex;
+            align-items:center;
+            background:rgba(255,255,255,0.9);
+            border-radius:60px;
+            padding:4px 16px 4px 16px;
+            border:1.5px solid #d35400;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            min-width:180px;
+            flex:0 1 280px;
+            box-shadow: 0 2px 20px rgba(211,84,0,0.04);
+        }
+        .search-bar:focus-within {
+            border-color:#a04000;
+            box-shadow:0 0 0 4px rgba(211,84,0,0.06), 0 8px 30px rgba(211,84,0,0.04);
+            background:#ffffff;
+        }
+        .search-bar .search-icon {
+            color:rgba(0,0,0,0.2);
+            font-size:0.9rem;
+            margin-right:8px;
+        }
+        .search-bar input {
+            border:none;
+            background:transparent;
+            padding:6px 0;
+            font-size:0.8rem;
+            font-family:inherit;
+            color:#1a1a1a;
+            outline:none;
+            width:100%;
+            font-weight: 450;
+        }
+        .search-bar input::placeholder {
+            color:rgba(0,0,0,0.2);
+            font-weight:400;
+        }
+        .search-bar .clear-search {
+            border:none;
+            background:transparent;
+            color:rgba(0,0,0,0.2);
+            cursor:pointer;
+            font-size:0.9rem;
+            padding:0 4px;
+            display:none;
+            transition:color 0.3s ease;
+        }
+        .search-bar .clear-search:hover { color:#c0392b; }
+        .search-bar .clear-search.show { display:block; }
+
+        /* ===== SOLUTION CONTROLS (bottom line) ===== */
+        .solution-bottom-controls {
+            display:inline-flex;
+            gap:6px;
+            align-items:center;
+        }
+        .solution-bottom-controls button {
+            border:none; border-radius:60px;
+            padding:0 20px;
+            height:40px;
+            font-size:0.75rem; font-weight:600;
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            display:inline-flex; align-items:center; gap:6px;
+            white-space:nowrap;
+            font-family:inherit;
+            background:rgba(255,255,255,0.8);
+            color:#333;
+            border:0.5px solid rgba(0,0,0,0.04);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+        }
+        .solution-bottom-controls button:hover {
+            background:rgba(255,255,255,0.95);
+            transform:translateY(-1px);
+            box-shadow:0 8px 24px rgba(0,0,0,0.04);
+        }
+        .solution-bottom-controls .btn-show-solution {
+            background:linear-gradient(135deg,#27ae60,#2ecc71);
+            color:white;
+            box-shadow:0 4px 16px rgba(39,174,96,0.15);
+            border:none;
+        }
+        .solution-bottom-controls .btn-hide-solution {
+            background:linear-gradient(135deg,#f39c12,#e67e22);
+            color:white;
+            box-shadow:0 4px 16px rgba(243,156,18,0.15);
+            border:none;
+        }
+
+        /* ===== ADMIN BUTTON (top-right corner) ===== */
+        .btn-admin-toggle {
+            border:none;
+            border-radius:60px;
+            padding:6px 24px;
+            height:40px;
+            font-size:0.8rem;
+            font-weight:600;
+            font-family:inherit;
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            color:white;
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            border:0.5px solid rgba(192,57,43,0.2);
+            box-shadow:0 4px 24px rgba(192,57,43,0.12);
+            position:absolute;
+            top:12px;
+            right:16px;
+            z-index:20;
+            letter-spacing:-0.01em;
+        }
+        .btn-admin-toggle:hover {
+            transform:translateY(-2px);
+            box-shadow:0 8px 40px rgba(192,57,43,0.2);
+        }
+        .btn-admin-toggle:active { transform:scale(0.94); }
+        .btn-admin-toggle.active {
+            background:linear-gradient(135deg,#2d3436,#636e72);
+            border-color:rgba(45,52,54,0.2);
+            box-shadow:0 4px 24px rgba(45,52,54,0.12);
+        }
+        .btn-admin-toggle.active:hover {
+            box-shadow:0 8px 40px rgba(45,52,54,0.2);
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-panel-overlay {
+            position:fixed; inset:0; z-index:100;
+            display:none;
+            background:rgba(0,0,0,0.15);
+            backdrop-filter:blur(8px);
+            -webkit-backdrop-filter:blur(8px);
+            transition:opacity 0.3s ease;
+        }
+        .admin-panel-overlay.open { display:block; }
+
+        .admin-panel {
+            position:fixed; top:0; right:0; z-index:101;
+            width:400px; height:100%;
+            background:rgba(255,255,255,0.98);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            border-left:0.5px solid rgba(0,0,0,0.04);
+            transform:translateX(100%);
+            transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            padding:28px 24px;
+            overflow-y:auto;
+            display:flex; flex-direction:column;
+            gap:16px;
+            box-shadow:-8px 0 60px rgba(0,0,0,0.04);
+        }
+        .admin-panel.open { transform:translateX(0); }
+
+        .admin-panel-header {
+            display:flex; justify-content:space-between; align-items:center;
+            padding-bottom:16px;
+            border-bottom:0.5px solid rgba(192,57,43,0.06);
+            flex-shrink:0;
+        }
+        .admin-panel-header h2 {
+            color:#1a1a1a; font-size:1.1rem; font-weight:700;
+            display:flex; align-items:center; gap:8px;
+            letter-spacing:-0.02em;
+        }
+        .admin-panel-header h2 span { font-size:1.2rem; }
+
+        .btn-close-admin {
+            border:none; border-radius:50%;
+            width:38px; height:38px;
+            background:rgba(0,0,0,0.02);
+            color:rgba(0,0,0,0.3);
+            font-size:1.2rem;
+            cursor:pointer;
+            transition:all 0.3s ease;
+            display:flex; align-items:center; justify-content:center;
+            border:0.5px solid rgba(0,0,0,0.02);
+        }
+        .btn-close-admin:hover {
+            background:rgba(192,57,43,0.04);
+            color:#c0392b;
+            transform:rotate(90deg);
+        }
+
+        .admin-panel .panel-section {
+            display:flex; flex-direction:column; gap:8px;
+        }
+        .admin-panel .panel-section .section-title {
+            color:rgba(0,0,0,0.3);
+            font-size:0.6rem; font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:1.2px;
+            padding:4px 0;
+            border-bottom:0.5px solid rgba(0,0,0,0.04);
+        }
+        .admin-panel .panel-btn-group {
+            display:flex; flex-wrap:wrap; gap:8px;
+        }
+
+        .admin-panel .panel-btn {
+            border:none; border-radius:60px;
+            padding:0 20px; height:40px;
+            font-size:0.75rem; font-weight:600;
+            font-family:inherit;
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            display:inline-flex; align-items:center; justify-content:center;
+            gap:8px; color:white;
+            min-width:48px;
+            box-shadow:0 2px 16px rgba(0,0,0,0.02);
+            flex:1 0 auto;
+            border:0.5px solid rgba(255,255,255,0.1);
+        }
+        .admin-panel .panel-btn .icon { font-size:1rem; line-height:1; }
+        .admin-panel .panel-btn .label { font-size:0.65rem; font-weight:600; }
+        .admin-panel .panel-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 8px 32px rgba(0,0,0,0.06);
+        }
+        .admin-panel .panel-btn:active { transform:scale(0.94); }
+        .admin-panel .panel-btn.full { flex:1 1 100%; }
+
+        .panel-btn-upload {
+            background:linear-gradient(135deg,#2980b9,#3498db) !important;
+        }
+        .panel-btn-upload:hover { box-shadow:0 8px 24px rgba(41,128,185,0.2) !important; }
+        .panel-btn-upload input { display:none; }
+
+        .panel-btn-add {
+            background:linear-gradient(135deg,#27ae60,#2ecc71) !important;
+        }
+        .panel-btn-add:hover { box-shadow:0 8px 24px rgba(39,174,96,0.2) !important; }
+        .panel-btn-delete {
+            background:linear-gradient(135deg,#e74c3c,#c0392b) !important;
+        }
+        .panel-btn-delete:hover { box-shadow:0 8px 24px rgba(231,76,60,0.2) !important; }
+        .panel-btn-clear {
+            background:linear-gradient(135deg,#e67e22,#d35400) !important;
+        }
+        .panel-btn-clear:hover { box-shadow:0 8px 24px rgba(230,126,34,0.2) !important; }
+        .panel-btn-save {
+            background:linear-gradient(135deg,#8e44ad,#9b59b6) !important;
+        }
+        .panel-btn-save:hover { box-shadow:0 8px 24px rgba(142,68,173,0.2) !important; }
+        .panel-btn-lock {
+            background:linear-gradient(135deg,#2c3e50,#34495e) !important;
+        }
+        .panel-btn-lock:hover { box-shadow:0 8px 24px rgba(44,62,80,0.2) !important; }
+        .panel-btn-lock.locked {
+            background:linear-gradient(135deg,#27ae60,#2ecc71) !important;
+        }
+        .panel-btn-lock.locked:hover { box-shadow:0 8px 24px rgba(39,174,96,0.2) !important; }
+
+        .panel-btn-link {
+            background:linear-gradient(135deg,#e67e22,#f39c12) !important;
+        }
+        .panel-btn-link:hover { box-shadow:0 8px 24px rgba(230,126,34,0.2) !important; }
+        .panel-btn-link input {
+            background:transparent;
+            border:none;
+            color:white;
+            font-weight:600;
+            font-size:0.75rem;
+            font-family:inherit;
+            outline:none;
+            width:100%;
+            min-width:80px;
+            padding:0;
+        }
+        .panel-btn-link input::placeholder { color:rgba(255,255,255,0.5); }
+
+        .panel-btn-html {
+            background:linear-gradient(135deg,#e67e22,#d35400) !important;
+        }
+        .panel-btn-html:hover { box-shadow:0 8px 24px rgba(230,126,34,0.2) !important; }
+        .panel-btn-html input { display:none; }
+
+        .panel-btn-title {
+            background:linear-gradient(135deg,#c0392b,#e74c3c) !important;
+        }
+        .panel-btn-title:hover { box-shadow:0 8px 24px rgba(192,57,43,0.2) !important; }
+        .panel-btn-title input {
+            background:transparent;
+            border:none;
+            color:white;
+            font-weight:600;
+            font-size:0.75rem;
+            font-family:inherit;
+            outline:none;
+            width:100%;
+            min-width:80px;
+            padding:0;
+        }
+        .panel-btn-title input::placeholder { color:rgba(255,255,255,0.5); }
+
+        .panel-btn-audio {
+            background:linear-gradient(135deg,#e67e22,#f39c12) !important;
+        }
+        .panel-btn-audio:hover { box-shadow:0 8px 24px rgba(230,126,34,0.2) !important; }
+        .panel-btn-audio input { display:none; }
+
+        .panel-btn-video {
+            background:linear-gradient(135deg,#8e44ad,#9b59b6) !important;
+        }
+        .panel-btn-video:hover { box-shadow:0 8px 24px rgba(142,68,173,0.2) !important; }
+        .panel-btn-video input { display:none; }
+
+        .panel-btn-change-password {
+            background:linear-gradient(135deg,#e67e22,#d35400) !important;
+        }
+        .panel-btn-change-password:hover { box-shadow:0 8px 24px rgba(230,126,34,0.2) !important; }
+
+        .admin-panel .panel-separator {
+            width:100%; height:0.5px;
+            background:rgba(0,0,0,0.04);
+            margin:4px 0;
+        }
+
+        /* ===== LANGUE SECTION ===== */
+        .lang-btn-group {
+            display:flex; flex-wrap:wrap; gap:6px;
+        }
+        .lang-btn-group .lang-btn {
+            border:none; border-radius:60px;
+            padding:4px 16px;
+            font-size:0.7rem;
+            font-weight:600;
+            font-family:inherit;
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            color:white;
+            background:linear-gradient(135deg,#6c5ce7,#a29bfe);
+            box-shadow:0 2px 12px rgba(108,92,231,0.08);
+            border:0.5px solid rgba(108,92,231,0.1);
+        }
+        .lang-btn-group .lang-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 8px 24px rgba(108,92,231,0.15);
+        }
+        .lang-btn-group .lang-btn:active { transform:scale(0.94); }
+        .lang-btn-group .lang-btn.active {
+            background:linear-gradient(135deg,#e74c3c,#c0392b);
+            border-color:rgba(192,57,43,0.15);
+            box-shadow:0 4px 16px rgba(192,57,43,0.15);
+        }
+
+        /* ===== BOOK VIEW ===== */
+        .book-view {
+            flex:1; position:relative; width:100%;
+            overflow:hidden;
+            display:flex; justify-content:center; align-items:center;
+            min-height:0;
+            background: #ffffff;
+            padding:0; margin:0;
+        }
+        .page-content {
+            width:100%; height:100%;
+            display:flex; flex-direction:column;
+            position:relative;
+            overflow:hidden;
+            background: #ffffff;
+            padding:0; margin:0;
+        }
+        .page-cover {
+            width:100%; height:100%;
+            display:flex; justify-content:center; align-items:center;
+            background: #ffffff;
+            cursor:pointer;
+            position:relative;
+            padding:0; margin:0;
+        }
+        .page-cover img.cover-main {
+            width:100%; height:100%;
+            object-fit:cover; /* SUPPRIME LES BORDURES VIDES */
+            display:block; border:none;
+            background: #ffffff;
+        }
+        .page-cover .page-title-overlay {
+            position:absolute; bottom:40px; left:50%;
+            transform:translateX(-50%);
+            color:rgba(0,0,0,0.3);
+            font-size:0.8rem;
+            font-weight:500;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            padding:6px 24px;
+            border-radius:60px;
+            border:0.5px solid rgba(0,0,0,0.04);
+            pointer-events:none;
+            letter-spacing:-0.01em;
+        }
+
+        /* ===== IMAGE LINK BUTTON ===== */
+        .image-link-overlay {
+            position:absolute;
+            bottom:40px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:15;
+            display:none;
+        }
+        .image-link-overlay .btn-regarder {
+            border:none;
+            border-radius:60px;
+            padding:12px 32px;
+            font-size:0.9rem;
+            font-weight:700;
+            font-family:inherit;
+            cursor:pointer;
+            background:linear-gradient(135deg,#e74c3c,#c0392b);
+            color:white;
+            box-shadow:0 8px 40px rgba(192,57,43,0.25);
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            text-decoration:none;
+            display:inline-block;
+            letter-spacing:-0.01em;
+        }
+        .image-link-overlay .btn-regarder:hover {
+            transform:translateY(-2px) scale(1.02);
+            box-shadow:0 12px 60px rgba(192,57,43,0.35);
+        }
+        .image-link-overlay .btn-regarder:active {
+            transform:scale(0.94);
+        }
+        .image-link-overlay.show {
+            display:block;
+            animation:fadeInUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes fadeInUp {
+            0% { opacity:0; transform:translateX(-50%) translateY(20px); }
+            100% { opacity:1; transform:translateX(-50%) translateY(0); }
+        }
+
+        .exercise-zone {
+            width:100%; flex:1;
+            display:flex; align-items:center; justify-content:center;
+            background:#ffffff;
+            position:relative; overflow:hidden;
+            min-height:0; cursor:pointer;
+            flex-direction:column;
+            padding:0; margin:0;
+        }
+        .exercise-zone .full-page-image,
+        .exercise-zone .full-page-video {
+            width:100%; 
+            height:100%;
+            object-fit:cover; /* SUPPRIME LES BORDURES VIDES */
+            display:block; 
+            background:#ffffff;
+            image-rendering: auto;
+        }
+        .exercise-zone .full-page-video {
+            background:#000;
+        }
+        .exercise-zone .image-placeholder {
+            width:100%; height:100%;
+            display:flex; flex-direction:column;
+            justify-content:center; align-items:center;
+            color:rgba(0,0,0,0.08);
+            font-size:1rem; font-weight:400;
+            background:#ffffff;
+            gap:12px; padding:16px; text-align:center;
+        }
+        .exercise-zone .image-placeholder span { font-size:2.8rem; opacity:0.2; }
+        .exercise-zone .image-placeholder .hint { font-size:0.8rem; color:rgba(0,0,0,0.05); }
+
+        /* ===== HTML PAGE STYLES ===== */
+        .exercise-zone .html-content {
+            width:100%; height:100%;
+            overflow-y:auto;
+            padding:0;
+            background:#ffffff;
+            box-sizing:border-box;
+        }
+        .exercise-zone .html-content iframe {
+            width:100%; height:100%;
+            border:none;
+            background:white;
+        }
+
+        /* ===== AUDIO ICON ===== */
+        .audio-icon {
+            position:absolute;
+            top:24px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:20;
+            font-size:1.6rem;
+            cursor:pointer;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            padding:8px 18px;
+            border-radius:60px;
+            border:0.5px solid rgba(0,0,0,0.04);
+            box-shadow:0 4px 24px rgba(0,0,0,0.02);
+            transition:all 0.3s ease;
+            user-select:none;
+            line-height:1;
+            display:none;
+        }
+        .audio-icon:hover {
+            background:rgba(255,255,255,0.95);
+            transform:translateX(-50%) scale(1.05);
+            box-shadow:0 8px 40px rgba(0,0,0,0.04);
+        }
+        .audio-icon.playing {
+            animation:pulseAudio 1.2s ease-in-out infinite;
+        }
+        @keyframes pulseAudio {
+            0%,100% { opacity:1; transform:translateX(-50%) scale(1); }
+            50% { opacity:0.6; transform:translateX(-50%) scale(1.06); }
+        }
+
+        .click-hint {
+            position:absolute; bottom:20px; right:20px;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            color:rgba(0,0,0,0.2);
+            padding:4px 16px; border-radius:60px;
+            font-size:0.5rem; font-weight:600;
+            letter-spacing:0.5px;
+            pointer-events:none;
+            opacity:0; transition:opacity 0.4s ease;
+            border:0.5px solid rgba(0,0,0,0.04);
+        }
+        .exercise-zone:hover .click-hint,
+        .page-cover:hover .click-hint { opacity:1; }
+
+        /* ===== SOLUTION ZONE ===== */
+        .solution-zone-wrapper {
+            width:100%; padding:12px 28px 16px;
+            background:rgba(255,255,255,0.5);
+            border-top:0.5px solid rgba(0,0,0,0.04);
+            transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            flex-shrink:0; overflow:hidden;
+            max-height:400px; opacity:1; transform:scaleY(1);
+            transform-origin:top;
+        }
+        .solution-zone-wrapper.hidden {
+            max-height:0; opacity:0; transform:scaleY(0);
+            padding:0; border-top:none; pointer-events:none;
+        }
+        .page-cover + .solution-zone-wrapper,
+        .page-cover ~ .solution-zone-wrapper {
+            display:none !important;
+        }
+        .solution-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .solution-header h4 {
+            color:#c0392b; font-size:0.85rem;
+            display:flex; align-items:center; gap:8px;
+            font-weight:700;
+        }
+        .solution-image-container {
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            background:rgba(255,255,255,0.5);
+            border-radius:16px; padding:8px;
+            min-height:50px;
+            border:0.5px solid rgba(0,0,0,0.04);
+            cursor:pointer;
+        }
+        .solution-image-container .solution-image {
+            max-width:100%; max-height:180px;
+            object-fit:contain; border-radius:12px;
+            border:0.5px solid rgba(0,0,0,0.04);
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            background: #ffffff;
+        }
+        .solution-image-container .solution-image:hover {
+            transform:scale(1.02);
+            box-shadow:0 8px 32px rgba(0,0,0,0.04);
+        }
+        .solution-image-container .placeholder {
+            color:rgba(0,0,0,0.15);
+            font-style:italic; font-weight:400; font-size:0.75rem;
+            text-align:center; padding:6px 0;
+        }
+        .solution-image-container .upload-btn {
+            margin-top:6px; border:none; border-radius:60px;
+            padding:4px 20px; font-size:0.65rem; font-weight:600;
+            background:linear-gradient(135deg,#2980b9,#3498db);
+            color:white; cursor:pointer; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow:0 4px 16px rgba(41,128,185,0.08);
+            display:inline-flex; align-items:center; gap:4px;
+            font-family:inherit;
+        }
+        .solution-image-container .upload-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 8px 24px rgba(41,128,185,0.15);
+        }
+        .solution-image-container .upload-btn input { display:none; }
+
+        /* ===== BOTTOM ACTIONS ===== */
+        .bottom-actions {
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            align-items:center;
+            gap:8px 14px;
+            padding:12px 28px;
+            flex-shrink:0;
+            background:rgba(255,255,255,0.8);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            border-top:0.5px solid rgba(0,0,0,0.04);
+            box-shadow:0 -4px 40px rgba(0,0,0,0.02);
+            position:relative;
+        }
+        .bottom-actions button {
+            border:none; border-radius:60px;
+            padding:0 22px; height:40px;
+            font-size:0.8rem; font-weight:600;
+            font-family:inherit;
+            cursor:pointer; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            display:inline-flex; align-items:center; justify-content:center;
+            gap:8px; color:white;
+            min-width:48px;
+            background:rgba(0,0,0,0.02);
+            border:0.5px solid rgba(0,0,0,0.04);
+            box-shadow:0 2px 12px rgba(0,0,0,0.02);
+        }
+        .bottom-actions button .icon { font-size:1rem; line-height:1; }
+        .bottom-actions button .label { font-size:0.75rem; font-weight:600; letter-spacing:-0.01em; }
+        .bottom-actions button:hover {
+            transform:translateY(-2px);
+            box-shadow:0 8px 32px rgba(0,0,0,0.04);
+        }
+        .bottom-actions button:active { transform:scale(0.94); }
+
+        .btn-prev, .btn-next {
+            background:linear-gradient(135deg,#f39c12,#e67e22) !important;
+            border-color:rgba(243,156,18,0.15) !important;
+            box-shadow:0 4px 20px rgba(243,156,18,0.1) !important;
+        }
+        .btn-prev:hover, .btn-next:hover {
+            box-shadow:0 8px 36px rgba(243,156,18,0.18) !important;
+        }
+        .btn-print {
+            background:linear-gradient(135deg,#8e44ad,#9b59b6) !important;
+            border-color:rgba(142,68,173,0.15) !important;
+            box-shadow:0 4px 20px rgba(142,68,173,0.1) !important;
+        }
+        .btn-print:hover {
+            box-shadow:0 8px 36px rgba(142,68,173,0.18) !important;
+        }
+        .bottom-actions .separator {
+            width:0.5px; height:26px;
+            background:rgba(0,0,0,0.06);
+            margin:0 4px;
+            flex-shrink:0;
+        }
+
+        /* ===== PAGE INDICATOR (bottom-right) ===== */
+        .page-indicator-bottom {
+            position:absolute;
+            bottom:20px;
+            right:28px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:rgba(0,0,0,0.25);
+            font-weight:500;
+            font-size:0.7rem;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            padding:4px 16px 4px 12px;
+            border-radius:60px;
+            border:0.5px solid rgba(0,0,0,0.04);
+            pointer-events:none;
+            z-index:5;
+        }
+        .page-indicator-bottom .num {
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            color:white;
+            padding:1px 12px;
+            border-radius:60px;
+            font-size:0.8rem; font-weight:700;
+            min-width:24px; text-align:center;
+            box-shadow:0 2px 16px rgba(192,57,43,0.1);
+        }
+        .page-indicator-bottom .total {
+            color:rgba(0,0,0,0.2);
+            font-weight:400;
+        }
+        .page-indicator-bottom .label {
+            color:rgba(0,0,0,0.2);
+            font-weight:400;
+        }
+
+        /* ===== LIGHTBOX ===== */
+        .lightbox-overlay {
+            position:fixed; inset:0; z-index:2000;
+            display:none;
+            justify-content:center; align-items:center;
+            background:rgba(0,0,0,0.92);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            padding:20px;
+            opacity:0; transition:opacity 0.4s ease;
+            cursor:pointer;
+        }
+        .lightbox-overlay.open { display:flex; opacity:1; }
+        .lightbox-overlay img,
+        .lightbox-overlay video {
+            max-width:96vw; max-height:96vh;
+            width:auto; height:auto;
+            object-fit:contain;
+            border-radius:16px;
+            box-shadow:0 40px 120px rgba(0,0,0,0.5);
+            border:0.5px solid rgba(255,255,255,0.04);
+            background:#ffffff;
+            padding:6px;
+            transform:scale(0.95);
+            transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            user-select:none; -webkit-user-drag:none;
+        }
+        .lightbox-overlay.open img,
+        .lightbox-overlay.open video { transform:scale(1); }
+        .lightbox-overlay .close-btn {
+            position:absolute; top:24px; right:32px;
+            background:rgba(255,255,255,0.04);
+            border:none; color:white; font-size:1.8rem;
+            cursor:pointer; transition:all 0.3s ease;
+            width:48px; height:48px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            border:0.5px solid rgba(255,255,255,0.04);
+        }
+        .lightbox-overlay .close-btn:hover {
+            background:rgba(255,255,255,0.08);
+            transform:scale(1.06) rotate(90deg);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position:fixed; bottom:100px; left:50%;
+            transform:translateX(-50%) translateY(100px);
+            background:rgba(20,20,20,0.92);
+            backdrop-filter:blur(24px);
+            -webkit-backdrop-filter:blur(24px);
+            color:white;
+            padding:12px 32px;
+            border-radius:60px;
+            font-weight:600; font-size:0.85rem;
+            box-shadow:0 20px 60px rgba(0,0,0,0.1);
+            z-index:1000;
+            opacity:0; transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            border:0.5px solid rgba(255,255,255,0.04);
+            pointer-events:none; max-width:90%;
+            font-family:inherit;
+            letter-spacing:-0.01em;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .toast.success { background:rgba(39,174,96,0.92); }
+        .toast.error { background:rgba(231,76,60,0.92); }
+        .toast.info { background:rgba(41,128,185,0.92); }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            position:fixed; top:0; left:0; width:100%; height:2px;
+            background:rgba(192,57,43,0.02);
+            z-index:1001; display:none;
+        }
+        .progress-bar .fill {
+            height:100%;
+            background:linear-gradient(90deg,#c0392b,#e74c3c);
+            width:0%;
+            transition:width 0.4s ease;
+            border-radius:0 2px 2px 0;
+            box-shadow:0 0 20px rgba(192,57,43,0.15);
+        }
+        .progress-bar.active { display:block; }
+
+        .translate-badge {
+            position:absolute; top:20px; right:20px;
+            background:rgba(192,57,43,0.02);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            padding:4px 16px; border-radius:60px;
+            font-size:0.55rem; color:#c0392b;
+            border:0.5px solid rgba(192,57,43,0.04);
+            pointer-events:none; z-index:5;
+            display:flex; align-items:center; gap:4px;
+            opacity:0; transition:opacity 0.4s ease;
+            font-weight:600;
+        }
+        .translate-badge.active { opacity:1; }
+
+        .empty-page-placeholder {
+            width:100%; height:100%;
+            display:flex; flex-direction:column;
+            justify-content:center; align-items:center;
+            color:rgba(0,0,0,0.06);
+            font-size:1.2rem; font-weight:400;
+            background:#ffffff;
+            gap:12px; padding:16px; text-align:center;
+        }
+        .empty-page-placeholder span { font-size:2.8rem; opacity:0.2; }
+
+        /* ===== LOCK OVERLAY ===== */
+        .lock-overlay {
+            position:fixed; inset:0; z-index:9999;
+            display:none;
+            justify-content:center; align-items:center;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            padding:20px;
+        }
+        .lock-overlay.active { display:flex; }
+        .lock-card {
+            max-width:400px; width:100%;
+            background:rgba(255,255,255,0.8);
+            backdrop-filter:blur(40px);
+            -webkit-backdrop-filter:blur(40px);
+            border:0.5px solid rgba(0,0,0,0.04);
+            border-radius:48px;
+            padding:36px 28px 32px;
+            text-align:center;
+            box-shadow:0 40px 120px rgba(0,0,0,0.04);
+        }
+        .lock-logo .logo-main {
+            font-size:2.6rem; font-weight:800;
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            background-clip:text;
+            display:inline-block;
+            line-height:1.1;
+            letter-spacing:-0.02em;
+        }
+        .lock-logo .logo-sub {
+            font-size:1.2rem; font-weight:400;
+            color:rgba(0,0,0,0.2);
+            letter-spacing:4px;
+            display:block;
+            margin-top:-4px;
+        }
+        .lock-logo .logo-tagline {
+            font-size:0.6rem; font-weight:600;
+            letter-spacing:3px;
+            color:rgba(0,0,0,0.06);
+            text-transform:uppercase;
+            margin-top:6px;
+        }
+        .lock-icon {
+            font-size:2.4rem; margin:12px 0 8px; display:block;
+            animation:pulseLock 2.4s ease-in-out infinite;
+        }
+        @keyframes pulseLock {
+            0%,100% { transform:scale(1); opacity:0.5; }
+            50% { transform:scale(1.06); opacity:1; }
+        }
+        .lock-title { font-size:1.1rem; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+        .lock-desc { font-size:0.8rem; color:rgba(0,0,0,0.4); margin-bottom:20px; }
+        .lock-input-group { display:flex; flex-direction:column; gap:12px; width:100%; }
+        .lock-input-group input {
+            width:100%; padding:14px 18px;
+            border-radius:60px;
+            border:0.5px solid rgba(0,0,0,0.06);
+            background:rgba(255,255,255,0.6);
+            color:#1a1a1a; font-size:0.95rem; font-weight:500;
+            outline:none; transition:all 0.3s ease;
+            font-family:inherit;
+        }
+        .lock-input-group input:focus {
+            border-color:#c0392b;
+            box-shadow:0 0 0 4px rgba(192,57,43,0.02);
+            background:white;
+        }
+        .lock-input-group .lock-btn-unlock {
+            width:100%; padding:14px 18px;
+            border-radius:60px;
+            border:none;
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            color:white; font-size:0.95rem; font-weight:700;
+            cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow:0 8px 32px rgba(192,57,43,0.1);
+            font-family:inherit;
+        }
+        .lock-input-group .lock-btn-unlock:hover {
+            transform:translateY(-2px) scale(1.02);
+            box-shadow:0 12px 48px rgba(192,57,43,0.18);
+        }
+        .lock-error {
+            color:#e74c3c; font-size:0.8rem; font-weight:500;
+            min-height:24px; margin-top:8px;
+            opacity:0; transition:opacity 0.3s ease;
+        }
+        .lock-error.show { opacity:1; }
+        .lock-footer {
+            margin-top:16px; font-size:0.6rem;
+            color:rgba(0,0,0,0.06);
+            letter-spacing:1px;
+            font-weight:500;
+        }
+
+        /* ===== LOCKED STATE ===== */
+        .locked-state .admin-panel .panel-btn:not(.panel-btn-lock),
+        .locked-state .admin-panel .panel-btn-upload,
+        .locked-state .admin-panel .panel-btn-audio,
+        .locked-state .admin-panel .panel-btn-video,
+        .locked-state .admin-panel .panel-btn-html,
+        .locked-state .admin-panel .panel-btn-link,
+        .locked-state .admin-panel .panel-btn-change-password,
+        .locked-state .solution-image-container .upload-btn {
+            opacity:0.3; pointer-events:none; filter:grayscale(0.5);
+        }
+        .locked-state .exercise-zone .full-page-image,
+        .locked-state .exercise-zone .full-page-video { opacity:0.6; cursor:default; }
+        .locked-state .exercise-zone .click-hint { display:none; }
+
+        /* ===== SCROLLBAR ===== */
+        .admin-panel::-webkit-scrollbar { width:4px; }
+        .admin-panel::-webkit-scrollbar-track { background:transparent; }
+        .admin-panel::-webkit-scrollbar-thumb { background:rgba(192,57,43,0.08); border-radius:4px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media screen and (max-width:600px) {
+            .top-bar { padding:6px 12px; gap:4px; min-height:52px; flex-wrap:wrap; }
+            .top-bar-left { gap:6px; flex-wrap:wrap; }
+            .top-bar-right { gap:4px; flex-wrap:wrap; justify-content:center; }
+            .logo { font-size:0.85rem; }
+            .logo .icon { font-size:1rem; }
+            .page-indicator-top { font-size:0.6rem; padding:2px 8px 2px 6px; gap:3px; }
+            .page-indicator-top .num { font-size:0.7rem; padding:1px 8px; min-width:20px; }
+            .page-indicator-top .total { display:none; }
+            .page-indicator-top .label { display:none; }
+            .btn-admin-toggle { padding:4px 14px; height:32px; font-size:0.65rem; top:8px; right:8px; }
+            .search-bar { min-width:120px; max-width:180px; padding:2px 10px; flex:1; }
+            .search-bar input { font-size:0.7rem; }
+            .admin-panel { width:290px; padding:16px 14px; }
+            .admin-panel .panel-btn { padding:0 12px; height:34px; font-size:0.65rem; min-width:36px; }
+            .admin-panel .panel-btn .label { font-size:0.55rem; }
+            .bottom-actions { padding:6px 10px; gap:4px 6px; }
+            .bottom-actions button { padding:0 12px; height:34px; font-size:0.7rem; min-width:36px; }
+            .bottom-actions button .label { display:none; }
+            .solution-bottom-controls button { padding:0 12px; height:34px; font-size:0.65rem; }
+            .bottom-actions .separator { height:18px; margin:0 2px; }
+            .page-indicator-bottom { bottom:10px; right:12px; padding:3px 10px 3px 8px; font-size:0.55rem; }
+            .page-indicator-bottom .num { font-size:0.65rem; padding:1px 8px; min-width:18px; }
+            .solution-zone-wrapper { padding:6px 12px 10px; }
+            .solution-image-container { min-height:40px; padding:4px; }
+            .solution-image-container .solution-image { max-height:100px; }
+            .solution-image-container .upload-btn { padding:3px 12px; font-size:0.55rem; }
+            .audio-icon { font-size:1.2rem; padding:4px 10px; top:8px; }
+            .toast { font-size:0.7rem; padding:8px 16px; bottom:70px; }
+            .lightbox-overlay .close-btn { top:12px; right:12px; width:36px; height:36px; font-size:1.4rem; }
+            .click-hint { bottom:8px; right:8px; font-size:0.4rem; padding:2px 8px; }
+            .translate-badge { top:8px; right:8px; font-size:0.45rem; padding:2px 10px; }
+            .lock-card { padding:24px 16px 20px; border-radius:32px; }
+            .lock-logo .logo-main { font-size:2rem; }
+            .lock-logo .logo-sub { font-size:1rem; }
+            .lock-icon { font-size:1.8rem; }
+            .lock-title { font-size:1rem; }
+            .lock-desc { font-size:0.75rem; margin-bottom:16px; }
+            .lock-input-group input { padding:10px 14px; font-size:0.85rem; }
+            .lock-input-group .lock-btn-unlock { padding:10px 14px; font-size:0.85rem; }
+            .lang-btn-group .lang-btn { padding:3px 10px; font-size:0.6rem; }
+            .image-link-overlay .btn-regarder { padding:6px 16px; font-size:0.7rem; }
+        }
+
+        @media print {
+            .top-bar, .bottom-actions, .progress-bar, .translate-badge,
+            .lightbox-overlay, .lock-overlay, .admin-panel-overlay,
+            .admin-panel, .btn-admin-toggle, .search-bar,
+            .page-indicator-top, .page-indicator-bottom, .audio-icon,
+            .image-link-overlay { display:none !important; }
+            .book-container { background:white !important; }
+            .book-container.locked-blur { filter:none !important; pointer-events:auto !important; opacity:1 !important; }
+            .page-content { background:white !important; }
+            .exercise-zone { background:white !important; }
+            .exercise-zone .full-page-image,
+            .exercise-zone .full-page-video { background:white !important; }
+            .solution-zone-wrapper { background:white !important; border-top:0.5px solid #ccc !important; }
+            .solution-image-container .solution-image { border:none !important; }
+            .solution-header h4 { -webkit-text-fill-color:#c0392b !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOCK OVERLAY (carnet) ===== -->
+    <div class="lock-overlay" id="lockOverlay">
+        <div class="lock-card">
+            <div class="lock-logo">
+                <span class="logo-main">Appixo</span>
+                <span class="logo-sub">Book</span>
+                <div class="logo-tagline">✦ Studio ✦</div>
+            </div>
+            <span class="lock-icon">🔒</span>
+            <h2 class="lock-title">Accès au carnet</h2>
+            <p class="lock-desc">Entrez le mot de passe pour déverrouiller</p>
+            <div class="lock-input-group">
+                <input type="password" id="lockPassword" placeholder="Mot de passe" autocomplete="current-password">
+                <button class="lock-btn-unlock" id="lockUnlockBtn">Déverrouiller</button>
+            </div>
+            <p class="lock-error" id="lockError">❌ Mot de passe incorrect</p>
+            <div class="lock-footer">Appixo Book &bull; v4.0</div>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN LOCK OVERLAY ===== -->
+    <div class="lock-overlay" id="adminLockOverlay" style="z-index:10002;">
+        <div class="lock-card">
+            <div class="lock-logo">
+                <span class="logo-main">Appixo</span>
+                <span class="logo-sub">Book</span>
+                <div class="logo-tagline">✦ Admin ✦</div>
+            </div>
+            <span class="lock-icon">🔐</span>
+            <h2 class="lock-title">Accès administrateur</h2>
+            <p class="lock-desc">Entrez le mot de passe administrateur</p>
+            <div class="lock-input-group">
+                <input type="password" id="adminLockPassword" placeholder="Mot de passe admin" autocomplete="current-password">
+                <button class="lock-btn-unlock" id="adminLockUnlockBtn">Accéder</button>
+            </div>
+            <p class="lock-error" id="adminLockError">❌ Mot de passe incorrect</p>
+            <div class="lock-footer">Appixo Book &bull; v4.0</div>
+        </div>
+    </div>
+
+    <!-- ===== PROGRESS BAR ===== -->
+    <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+    </div>
+
+    <!-- ===== BOOK CONTAINER ===== -->
+    <div class="book-container" id="bookContainer">
+
+        <!-- TOP BAR -->
+        <div class="top-bar" id="topBar">
+            <div class="top-bar-left">
+                <a href="#" class="logo" id="mainLogo">
+                    <span class="icon">📖</span>
+                    <span id="logoText"></span>
+                </a>
+                <!-- Page indicator (top) -->
+                <div class="page-indicator-top" id="pageIndicatorTop">
+                    <span class="num" id="pageNumTop">1</span>
+                    <span class="total" id="pageTotalTop">/ 1</span>
+                    <span class="label" id="pageLabelTop">Page</span>
+                    <span class="page-counter" id="pageCounterTop">(0/100)</span>
+                </div>
+            </div>
+
+            <div class="top-bar-right">
+                <!-- Search bar déplacée dans le bouton Admin -->
+            </div>
+
+            <!-- ADMIN BUTTON (top-right corner) -->
+            <button class="btn-admin-toggle" id="adminToggleBtn">
+                <span class="icon">🔍</span>
+                <span id="adminToggleLabel">Admin</span>
+            </button>
+        </div>
+
+        <!-- VIEW -->
+        <div class="book-view" id="bookView">
+            <div class="page-content" id="pageContent">
+                <div class="translate-badge" id="translateBadge">🌐 Traduit</div>
+                <!-- Page indicator (bottom-right) -->
+                <div class="page-indicator-bottom" id="pageIndicatorBottom">
+                    <span class="num" id="pageNumBottom">1</span>
+                    <span class="total" id="pageTotalBottom">/ 1</span>
+                    <span class="label" id="pageLabelBottom">Page</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM ACTIONS -->
+        <div class="bottom-actions" id="bottomActions">
+            <!-- Boutons de navigation -->
+            <button class="btn-prev" id="prevPageBtn">
+                <span class="icon">◀</span>
+                <span class="label" id="prevText">Précédent</span>
+            </button>
+            <button class="btn-next" id="nextPageBtn">
+                <span class="icon">▶</span>
+                <span class="label" id="nextText">Suivant</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <!-- Solution controls sur la même ligne -->
+            <div class="solution-bottom-controls" id="solutionBottomControls">
+                <button class="btn-show-solution" id="showSolutionBottomBtn">👁️ Afficher</button>
+                <button class="btn-hide-solution" id="hideSolutionBottomBtn" style="display:none;">🔽 Masquer</button>
+            </div>
+
+            <div class="separator"></div>
+
+            <!-- Bouton Impression uniquement -->
+            <button class="btn-print" id="printPageBtn">
+                <span class="icon">🖨️</span>
+                <span class="label" id="printText">Imprimer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <div class="admin-panel-overlay" id="adminPanelOverlay"></div>
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-panel-header">
+            <h2><span>⚙️</span> <span id="adminPanelTitle">Admin</span></h2>
+            <button class="btn-close-admin" id="closeAdminBtn">✕</button>
+        </div>
+
+        <!-- SECTION RECHERCHE -->
+        <div class="panel-section">
+            <div class="section-title">🔍 Recherche</div>
+            <div class="search-bar" id="searchBar" style="flex:1;min-width:100%;border:1.5px solid #d35400;">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Rechercher un titre..." autocomplete="off">
+                <button class="clear-search" id="clearSearchBtn">✕</button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION LANGUE -->
+        <div class="panel-section">
+            <div class="section-title">🌐 Langue</div>
+            <div class="lang-btn-group" id="langBtnGroup">
+                <button class="lang-btn active" data-lang="fr">Français</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ar">العربية</button>
+                <button class="lang-btn" data-lang="es">Español</button>
+                <button class="lang-btn" data-lang="de">Deutsch</button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION GESTION DES PAGES -->
+        <div class="panel-section">
+            <div class="section-title">📁 Gestion des pages</div>
+            <div class="panel-btn-group">
+                <label class="panel-btn panel-btn-upload">
+                    <span class="icon">🖼️</span>
+                    <span class="label" id="panelUploadLabel">Image</span>
+                    <input type="file" id="imageUpload" accept="image/*">
+                </label>
+                <button class="panel-btn panel-btn-add" id="addPageBtn">
+                    <span class="icon">➕</span>
+                    <span class="label" id="panelAddLabel">Ajouter</span>
+                </button>
+                <button class="panel-btn panel-btn-delete" id="deletePageBtn">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelDeleteLabel">Suppr.</span>
+                </button>
+                <button class="panel-btn panel-btn-clear" id="clearAllBtn">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelClearLabel">Vider</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION TITRE -->
+        <div class="panel-section">
+            <div class="section-title">📝 Titre de la page</div>
+            <div class="panel-btn-group">
+                <button class="panel-btn panel-btn-title full" id="titleEditBtn">
+                    <span class="icon">✏️</span>
+                    <input type="text" id="titleInput" placeholder="Entrez le titre de la page..." maxlength="60">
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION LIEN IMAGE -->
+        <div class="panel-section">
+            <div class="section-title">🔗 Lien de l'image</div>
+            <div class="panel-btn-group">
+                <button class="panel-btn panel-btn-link full" id="linkEditBtn">
+                    <span class="icon">🔗</span>
+                    <input type="text" id="linkInput" placeholder="Entrez l'URL du lien..." maxlength="500">
+                </button>
+                <button class="panel-btn panel-btn-delete" id="deleteLinkBtn" style="flex:0 0 auto;">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelDeleteLinkLabel">Supprimer le lien</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION HTML -->
+        <div class="panel-section">
+            <div class="section-title">📄 HTML</div>
+            <div class="panel-btn-group">
+                <label class="panel-btn panel-btn-html">
+                    <span class="icon">📄</span>
+                    <span class="label" id="panelHtmlLabel">Importer HTML</span>
+                    <input type="file" id="htmlUpload" accept=".html,.htm">
+                </label>
+                <button class="panel-btn panel-btn-delete" id="deleteHtmlBtn" style="flex:0 0 auto;">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelDeleteHtmlLabel">Supprimer HTML</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION AUDIO -->
+        <div class="panel-section">
+            <div class="section-title">🎵 Audio</div>
+            <div class="panel-btn-group">
+                <label class="panel-btn panel-btn-audio">
+                    <span class="icon">🎵</span>
+                    <span class="label" id="panelAudioLabel">Ajouter un fichier audio</span>
+                    <input type="file" id="audioUpload" accept="audio/*">
+                </label>
+                <button class="panel-btn panel-btn-delete" id="deleteAudioBtn" style="flex:0 0 auto;">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelDeleteAudioLabel">Supprimer l'audio</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION VIDEO -->
+        <div class="panel-section">
+            <div class="section-title">🎬 Vidéo</div>
+            <div class="panel-btn-group">
+                <label class="panel-btn panel-btn-video">
+                    <span class="icon">🎬</span>
+                    <span class="label" id="panelVideoLabel">Ajouter une vidéo</span>
+                    <input type="file" id="videoUpload" accept="video/*">
+                </label>
+                <button class="panel-btn panel-btn-delete" id="deleteVideoBtn" style="flex:0 0 auto;">
+                    <span class="icon">🗑️</span>
+                    <span class="label" id="panelDeleteVideoLabel">Supprimer la vidéo</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION MODIFIER LE MOT DE PASSE -->
+        <div class="panel-section">
+            <div class="section-title">🔑 <span id="panelPasswordTitle">Mot de passe</span></div>
+            <div class="panel-btn-group">
+                <button class="panel-btn panel-btn-change-password full" id="changePasswordBtn">
+                    <span class="icon">🔐</span>
+                    <span class="label" id="panelChangePasswordLabel">Modifier le mot de passe</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION SECURITE (LOCK) -->
+        <div class="panel-section">
+            <div class="section-title">🔒 Sécurité</div>
+            <div class="panel-btn-group">
+                <button class="panel-btn panel-btn-lock" id="lockBtn">
+                    <span class="icon">🔒</span>
+                    <span class="label" id="panelLockLabel">Verrouiller</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <!-- SECTION SAUVEGARDE (en dernier) -->
+        <div class="panel-section">
+            <div class="section-title">💾 Sauvegarde</div>
+            <div class="panel-btn-group">
+                <button class="panel-btn panel-btn-save full" id="saveExplicitBtn">
+                    <span class="icon">💾</span>
+                    <span class="label" id="panelSaveLabel">Sauvegarder maintenant</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-separator"></div>
+
+        <div class="panel-section" style="margin-top:auto;padding-top:12px;border-top:0.5px solid rgba(0,0,0,0.04);">
+            <div style="display:flex;justify-content:space-between;align-items:center;color:rgba(0,0,0,0.1);font-size:0.55rem;font-weight:500;">
+                <span>Appixo Book v4.0</span>
+                <span id="panelPageCount">0 pages</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="close-btn" id="lightboxCloseBtn">✕</button>
+        <div id="lightboxContent" style="display:flex;justify-content:center;align-items:center;width:100%;height:100%;"></div>
+    </div>
+
+    <!-- ===== MODAL CHANGER MOT DE PASSE ===== -->
+    <div class="lock-overlay" id="changePasswordOverlay" style="z-index:10000;">
+        <div class="lock-card" style="max-width:420px;">
+            <div class="lock-logo">
+                <span class="logo-main">Appixo</span>
+                <span class="logo-sub">Book</span>
+                <div class="logo-tagline">✦ Studio ✦</div>
+            </div>
+            <span class="lock-icon" style="font-size:1.8rem;">🔐</span>
+            <h2 class="lock-title" id="changePwdTitle">Modifier le mot de passe</h2>
+            <p class="lock-desc" id="changePwdDesc">Entrez votre mot de passe actuel, puis le nouveau</p>
+            <div class="lock-input-group">
+                <input type="password" id="currentPasswordInput" placeholder="Mot de passe actuel" autocomplete="current-password">
+                <input type="password" id="newPasswordInput" placeholder="Nouveau mot de passe" autocomplete="new-password">
+                <input type="password" id="confirmPasswordInput" placeholder="Confirmer le nouveau mot de passe" autocomplete="new-password">
+                <button class="lock-btn-unlock" id="changePwdConfirmBtn">Modifier</button>
+                <button class="lock-btn-unlock" id="changePwdCancelBtn" style="background:linear-gradient(135deg,#636e72,#2d3436);box-shadow:0 8px 32px rgba(45,52,54,0.1);">Annuler</button>
+            </div>
+            <p class="lock-error" id="changePwdError">❌ Erreur</p>
+            <div class="lock-footer">Appixo Book &bull; v4.0</div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // =====================================================
+            // STOCKAGE INDEXEDDB + LOCALSTORAGE (FALLBACK)
+            // =====================================================
+            class PersistentStorage {
+                constructor() {
+                    this.dbName = 'CarnetA4_100_v8';
+                    this.storeName = 'pages';
+                    this.version = 10;
+                    this.db = null;
+                    this.ready = false;
+                    this.initPromise = null;
+                    this.MAX_IMAGES = 100;
+                    this.fallbackKey = 'appixo_book_fallback';
+                }
+
+                init() {
+                    if (this.initPromise) return this.initPromise;
+                    this.initPromise = new Promise((resolve) => {
+                        const request = indexedDB.open(this.dbName, this.version);
+                        request.onerror = () => {
+                            console.warn('⚠️ IndexedDB indisponible, fallback localStorage');
+                            this.ready = false;
+                            resolve(false);
+                        };
+                        request.onsuccess = (e) => {
+                            this.db = e.target.result;
+                            this.ready = true;
+                            console.log('✅ IndexedDB prêt');
+                            resolve(true);
+                        };
+                        request.onupgradeneeded = (e) => {
+                            const db = e.target.result;
+                            if (!db.objectStoreNames.contains(this.storeName)) {
+                                const store = db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+                                store.createIndex('timestamp', 'timestamp', { unique: false });
+                                store.createIndex('pageIndex', 'pageIndex', { unique: false });
+                            } else {
+                                const store = e.target.transaction.objectStore(this.storeName);
+                                if (!store.indexNames.contains('timestamp')) {
+                                    store.createIndex('timestamp', 'timestamp', { unique: false });
+                                }
+                                if (!store.indexNames.contains('pageIndex')) {
+                                    store.createIndex('pageIndex', 'pageIndex', { unique: false });
+                                }
+                            }
+                        };
+                    });
+                    return this.initPromise;
+                }
+
+                async savePages(pages) {
+                    const isReady = await this.init();
+                    if (isReady) {
+                        try {
+                            await this._saveToIndexedDB(pages);
+                        } catch (e) {
+                            console.warn('⚠️ Sauvegarde IndexedDB échouée, fallback localStorage');
+                            this._saveToLocalStorage(pages);
+                        }
+                    } else {
+                        this._saveToLocalStorage(pages);
+                    }
+                    this._saveToLocalStorage(pages);
+                }
+
+                _saveToLocalStorage(pages) {
+                    try {
+                        localStorage.setItem(this.fallbackKey, JSON.stringify(pages));
+                        console.log('💾 Sauvegarde localStorage OK');
+                    } catch (e) {
+                        console.error('❌ Erreur sauvegarde localStorage:', e);
+                    }
+                }
+
+                _saveToIndexedDB(pages) {
+                    return new Promise((resolve, reject) => {
+                        const tx = this.db.transaction(this.storeName, 'readwrite');
+                        const store = tx.objectStore(this.storeName);
+                        const clearRequest = store.clear();
+                        clearRequest.onsuccess = () => {
+                            let saved = 0;
+                            const total = Math.min(pages.length, this.MAX_IMAGES);
+                            for (let i = 0; i < total; i++) {
+                                const page = pages[i];
+                                const data = {
+                                    content: page.content || '',
+                                    solution: page.solution || '',
+                                    imageData: page.imageData || null,
+                                    videoData: page.videoData || null,
+                                    htmlData: page.htmlData || null,
+                                    linkUrl: page.linkUrl || null,
+                                    isCover: page.isCover || false,
+                                    title: page.title || '',
+                                    audioData: page.audioData || null,
+                                    timestamp: Date.now() + i,
+                                    pageIndex: i
+                                };
+                                const addRequest = store.add(data);
+                                addRequest.onsuccess = () => {
+                                    saved++;
+                                    if (saved === total) resolve();
+                                };
+                                addRequest.onerror = (e) => reject(e.target.error);
+                            }
+                            if (total === 0) resolve();
+                        };
+                        clearRequest.onerror = (e) => reject(e.target.error);
+                    });
+                }
+
+                async loadPages() {
+                    const isReady = await this.init();
+                    if (isReady) {
+                        try {
+                            const pages = await this._loadFromIndexedDB();
+                            if (pages && pages.length > 0) {
+                                const hasData = pages.some(p => p.imageData || p.videoData || p.htmlData || p.audioData || p.linkUrl);
+                                if (hasData || pages.length > 1) {
+                                    return pages;
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Chargement IndexedDB échoué, fallback localStorage');
+                        }
+                    }
+                    return this._loadFromLocalStorage();
+                }
+
+                _loadFromIndexedDB() {
+                    return new Promise((resolve, reject) => {
+                        const tx = this.db.transaction(this.storeName, 'readonly');
+                        const store = tx.objectStore(this.storeName);
+                        const index = store.index('pageIndex');
+                        const request = index.getAll();
+                        request.onsuccess = () => {
+                            const results = request.result;
+                            results.sort((a, b) => a.pageIndex - b.pageIndex);
+                            const pages = results.map(item => ({
+                                content: item.content || '',
+                                solution: item.solution || '',
+                                imageData: item.imageData || null,
+                                videoData: item.videoData || null,
+                                htmlData: item.htmlData || null,
+                                linkUrl: item.linkUrl || null,
+                                isCover: item.isCover || false,
+                                title: item.title || '',
+                                audioData: item.audioData || null
+                            }));
+                            resolve(pages);
+                        };
+                        request.onerror = (e) => reject(e.target.error);
+                    });
+                }
+
+                _loadFromLocalStorage() {
+                    try {
+                        const raw = localStorage.getItem(this.fallbackKey);
+                        if (raw) {
+                            const pages = JSON.parse(raw);
+                            if (Array.isArray(pages) && pages.length > 0) {
+                                console.log('📂 Chargé depuis localStorage (' + pages.length + ' pages)');
+                                return pages;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Erreur lecture localStorage:', e);
+                    }
+                    return [];
+                }
+
+                async clear() {
+                    const isReady = await this.init();
+                    if (isReady) {
+                        try { await this._clearIndexedDB(); } catch (e) { /* ignore */ }
+                    }
+                    localStorage.removeItem(this.fallbackKey);
+                }
+
+                _clearIndexedDB() {
+                    return new Promise((resolve, reject) => {
+                        const tx = this.db.transaction(this.storeName, 'readwrite');
+                        const store = tx.objectStore(this.storeName);
+                        const request = store.clear();
+                        request.onsuccess = () => resolve();
+                        request.onerror = (e) => reject(e.target.error);
+                    });
+                }
+            }
+
+            // =====================================================
+            // APPLICATION
+            // =====================================================
+            const storage = new PersistentStorage();
+            const MAX_PAGES = 100;
+            let PASSWORD = 'MonCarnet2026!@#Secure';
+            const ADMIN_PASSWORD = 'appixo';
+            const DEFAULT_COVER = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23f8f4ef;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ece6dd;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="1000" fill="url(%23g)"/%3E%3Crect x="40" y="40" width="720" height="920" fill="none" stroke="%23c0392b" stroke-width="1.5" opacity="0.08" rx="8"/%3E%3Ccircle cx="400" cy="280" r="130" fill="%23c0392b" opacity="0.02"/%3E%3Ccircle cx="400" cy="280" r="90" fill="%23c0392b" opacity="0.04"/%3E%3Ctext x="400" y="470" font-family="Georgia,serif" font-size="72" fill="%233d2c1f" text-anchor="middle" font-weight="bold" letter-spacing="2"%3ECarnet%3C/text%3E%3Ctext x="400" y="530" font-family="Georgia,serif" font-size="26" fill="%23c0392b" text-anchor="middle" letter-spacing="6" opacity="0.3"%3EPREMIUM%3C/text%3E%3Cline x1="250" y1="570" x2="550" y2="570" stroke="%23c0392b" stroke-width="0.5" opacity="0.06"/%3E%3Ctext x="400" y="830" font-family="Georgia,serif" font-size="14" fill="%23c0392b" text-anchor="middle" letter-spacing="2" opacity="0.1"%3E✦ ✦ ✦%3C/text%3E%3Ctext x="400" y="870" font-family="Georgia,serif" font-size="11" fill="%23c0392b" text-anchor="middle" letter-spacing="1" opacity="0.06"%3EÉdition 8K%3C/text%3E%3C/svg%3E';
+
+            let pages = [];
+            let currentIndex = 0;
+            let currentLang = 'fr';
+            let solutionVisible = false;
+            let isLocked = false;
+            let isAdminLocked = true;
+            let isSaving = false;
+            let adminOpen = false;
+            let searchQuery = '';
+            let searchResults = [];
+            let audioElement = null;
+
+            const translations = {
+                fr: {
+                    pageLabel: 'Page', noPages: '📭 Aucune page',
+                    prev: 'Précédent', next: 'Suivant', print: 'Imprimer',
+                    upload: 'Image', add: 'Ajouter', delete: 'Suppr.', clear: 'Vider',
+                    save: 'Sauvegarder', lock: 'Verrouiller', unlock: 'Déverrouiller',
+                    admin: 'Admin', closeAdmin: 'Fermer',
+                    noImage: 'Cette page est vide.', noPage: 'Aucune page à imprimer.',
+                    solutionTitle: '💡 Solution',
+                    noSolution: 'Aucune solution enregistrée pour cette page.',
+                    solutionPlaceholder: '📸 Aucune image de solution',
+                    changeImage: '🖼️ Changer l\'image',
+                    dropHint: 'Déposez une image ou une vidéo ici ou cliquez sur "Image" ou "Vidéo"',
+                    noImagePage: 'Aucune image ou vidéo sur cette page',
+                    showSolution: '👁️ Afficher', hideSolution: '🔽 Masquer',
+                    solutionHidden: '🔽 Solution masquée',
+                    solutionShown: '💡 Solution affichée',
+                    translated: '🌐 Traduit',
+                    clickToZoom: 'Cliquez pour agrandir',
+                    confirmDelete: 'Voulez-vous supprimer cette page ?',
+                    onlyPage: 'C\'est la seule page, vous ne pouvez pas la supprimer.',
+                    imageError: 'Veuillez sélectionner une image (jpg, png, ...)',
+                    videoError: 'Veuillez sélectionner une vidéo (mp4, webm, ogg)',
+                    readError: 'Erreur lors de la lecture du fichier.',
+                    saved: '✅ Sauvegarde effectuée !',
+                    saveError: '⚠️ Erreur lors de la sauvegarde.',
+                    saving: '💾 Sauvegarde en cours...',
+                    maxPages: '⚠️ Nombre maximum de pages atteint (100)',
+                    clearConfirm: '⚠️ Voulez-vous vraiment supprimer TOUTES les pages ?',
+                    cleared: '✅ Toutes les pages ont été supprimées !',
+                    locked: '🔒 Carnet verrouillé',
+                    unlocked: '🔓 Carnet déverrouillé',
+                    wrongPassword: '❌ Mot de passe incorrect !',
+                    searchPlaceholder: 'Rechercher un titre...',
+                    noResults: 'Aucune page trouvée',
+                    titlePlaceholder: 'Entrez le titre de la page...',
+                    audioAdded: '🎵 Fichier audio ajouté !',
+                    audioDeleted: '🗑️ Fichier audio supprimé',
+                    audioError: 'Erreur lors du chargement de l\'audio.',
+                    audioLabel: 'Ajouter un fichier audio',
+                    deleteAudio: 'Supprimer l\'audio',
+                    videoAdded: '🎬 Vidéo ajoutée !',
+                    videoDeleted: '🗑️ Vidéo supprimée',
+                    videoError: 'Erreur lors du chargement de la vidéo.',
+                    videoLabel: 'Ajouter une vidéo',
+                    deleteVideo: 'Supprimer la vidéo',
+                    administration: 'Admin',
+                    changePassword: 'Modifier le mot de passe',
+                    currentPassword: 'Mot de passe actuel',
+                    newPassword: 'Nouveau mot de passe',
+                    confirmPassword: 'Confirmer le nouveau mot de passe',
+                    passwordChanged: '✅ Mot de passe modifié avec succès !',
+                    passwordMismatch: '❌ Les mots de passe ne correspondent pas.',
+                    wrongCurrentPassword: '❌ Mot de passe actuel incorrect.',
+                    passwordEmpty: '❌ Le mot de passe ne peut pas être vide.',
+                    passwordTitle: 'Mot de passe',
+                    cancel: 'Annuler',
+                    change: 'Modifier',
+                    passwordChangedTitle: 'Changer le mot de passe',
+                    passwordChangedDesc: 'Entrez votre mot de passe actuel, puis le nouveau',
+                    htmlLabel: 'Importer HTML',
+                    deleteHtml: 'Supprimer HTML',
+                    htmlAdded: '📄 Contenu HTML ajouté !',
+                    htmlDeleted: '🗑️ Contenu HTML supprimé',
+                    htmlError: 'Erreur lors du chargement du HTML.',
+                    htmlPlaceholder: '📄 Contenu HTML',
+                    linkLabel: 'Lien de l\'image',
+                    deleteLink: 'Supprimer le lien',
+                    linkAdded: '🔗 Lien ajouté à l\'image !',
+                    linkDeleted: '🗑️ Lien supprimé',
+                    linkError: 'Veuillez entrer une URL valide (https://...)',
+                    regarder: '👁️ Regarder',
+                },
+                en: {
+                    pageLabel: 'Page', noPages: '📭 No pages',
+                    prev: 'Previous', next: 'Next', print: 'Print',
+                    upload: 'Image', add: 'Add', delete: 'Del', clear: 'Clear',
+                    save: 'Save', lock: 'Lock', unlock: 'Unlock',
+                    admin: 'Admin', closeAdmin: 'Close',
+                    noImage: 'This page is empty.', noPage: 'No page to print.',
+                    solutionTitle: '💡 Solution',
+                    noSolution: 'No solution saved for this page.',
+                    solutionPlaceholder: '📸 No solution image',
+                    changeImage: '🖼️ Change image',
+                    dropHint: 'Drop an image or video here or click "Image" or "Video"',
+                    noImagePage: 'No image or video on this page',
+                    showSolution: '👁️ Show', hideSolution: '🔽 Hide',
+                    solutionHidden: '🔽 Solution hidden',
+                    solutionShown: '💡 Solution shown',
+                    translated: '🌐 Translated',
+                    clickToZoom: 'Click to zoom',
+                    confirmDelete: 'Do you want to delete this page?',
+                    onlyPage: 'This is the only page, you cannot delete it.',
+                    imageError: 'Please select an image (jpg, png, ...)',
+                    videoError: 'Please select a video (mp4, webm, ogg)',
+                    readError: 'Error reading file.',
+                    saved: '✅ Saved successfully!',
+                    saveError: '⚠️ Error during save.',
+                    saving: '💾 Saving...',
+                    maxPages: '⚠️ Maximum number of pages reached (100)',
+                    clearConfirm: '⚠️ Do you really want to delete ALL pages?',
+                    cleared: '✅ All pages have been deleted!',
+                    locked: '🔒 Notebook locked',
+                    unlocked: '🔓 Notebook unlocked',
+                    wrongPassword: '❌ Wrong password!',
+                    searchPlaceholder: 'Search by title...',
+                    noResults: 'No page found',
+                    titlePlaceholder: 'Enter page title...',
+                    audioAdded: '🎵 Audio file added!',
+                    audioDeleted: '🗑️ Audio file deleted',
+                    audioError: 'Error loading audio.',
+                    audioLabel: 'Add audio file',
+                    deleteAudio: 'Delete audio',
+                    videoAdded: '🎬 Video added!',
+                    videoDeleted: '🗑️ Video deleted',
+                    videoError: 'Error loading video.',
+                    videoLabel: 'Add video',
+                    deleteVideo: 'Delete video',
+                    administration: 'Admin',
+                    changePassword: 'Change password',
+                    currentPassword: 'Current password',
+                    newPassword: 'New password',
+                    confirmPassword: 'Confirm new password',
+                    passwordChanged: '✅ Password changed successfully!',
+                    passwordMismatch: '❌ Passwords do not match.',
+                    wrongCurrentPassword: '❌ Current password is incorrect.',
+                    passwordEmpty: '❌ Password cannot be empty.',
+                    passwordTitle: 'Password',
+                    cancel: 'Cancel',
+                    change: 'Change',
+                    passwordChangedTitle: 'Change password',
+                    passwordChangedDesc: 'Enter your current password, then the new one',
+                    htmlLabel: 'Import HTML',
+                    deleteHtml: 'Delete HTML',
+                    htmlAdded: '📄 HTML content added!',
+                    htmlDeleted: '🗑️ HTML content deleted',
+                    htmlError: 'Error loading HTML.',
+                    htmlPlaceholder: '📄 HTML Content',
+                    linkLabel: 'Image link',
+                    deleteLink: 'Delete link',
+                    linkAdded: '🔗 Link added to image!',
+                    linkDeleted: '🗑️ Link deleted',
+                    linkError: 'Please enter a valid URL (https://...)',
+                    regarder: '👁️ View',
+                },
+                ar: {
+                    pageLabel: 'صفحة', noPages: '📭 لا توجد صفحات',
+                    prev: 'السابق', next: 'التالي', print: 'طباعة',
+                    upload: 'صورة', add: 'إضافة', delete: 'حذف', clear: 'مسح',
+                    save: 'حفظ', lock: 'قفل', unlock: 'فتح',
+                    admin: 'المشرف', closeAdmin: 'إغلاق',
+                    noImage: 'هذه الصفحة فارغة.', noPage: 'لا توجد صفحة للطباعة.',
+                    solutionTitle: '💡 الحل',
+                    noSolution: 'لا يوجد حل محفوظ لهذه الصفحة.',
+                    solutionPlaceholder: '📸 لا توجد صورة للحل',
+                    changeImage: '🖼️ تغيير الصورة',
+                    dropHint: 'أفلت صورة أو فيديو هنا أو انقر على "صورة" أو "فيديو"',
+                    noImagePage: 'لا توجد صورة أو فيديو في هذه الصفحة',
+                    showSolution: '👁️ عرض', hideSolution: '🔽 إخفاء',
+                    solutionHidden: '🔽 الحل مخفي',
+                    solutionShown: '💡 الحل ظاهر',
+                    translated: '🌐 مترجم',
+                    clickToZoom: 'انقر للتكبير',
+                    confirmDelete: 'هل تريد حذف هذه الصفحة؟',
+                    onlyPage: 'هذه هي الصفحة الوحيدة، لا يمكنك حذفها.',
+                    imageError: 'الرجاء تحديد صورة (jpg، png، ...)',
+                    videoError: 'الرجاء تحديد فيديو (mp4، webm، ogg)',
+                    readError: 'خطأ في قراءة الملف.',
+                    saved: '✅ تم الحفظ بنجاح!',
+                    saveError: '⚠️ خطأ أثناء الحفظ.',
+                    saving: '💾 جاري الحفظ...',
+                    maxPages: '⚠️ تم الوصول إلى الحد الأقصى لعدد الصفحات (100)',
+                    clearConfirm: '⚠️ هل تريد حقاً حذف جميع الصفحات؟',
+                    cleared: '✅ تم حذف جميع الصفحات!',
+                    locked: '🔒 دفتر الملاحظات مقفل',
+                    unlocked: '🔓 دفتر الملاحظات مفتوح',
+                    wrongPassword: '❌ كلمة المرور غير صحيحة!',
+                    searchPlaceholder: 'ابحث عن عنوان...',
+                    noResults: 'لم يتم العثور على صفحة',
+                    titlePlaceholder: 'أدخل عنوان الصفحة...',
+                    audioAdded: '🎵 تم إضافة الملف الصوتي!',
+                    audioDeleted: '🗑️ تم حذف الملف الصوتي',
+                    audioError: 'خطأ في تحميل الصوت.',
+                    audioLabel: 'إضافة ملف صوتي',
+                    deleteAudio: 'حذف الصوت',
+                    videoAdded: '🎬 تم إضافة الفيديو!',
+                    videoDeleted: '🗑️ تم حذف الفيديو',
+                    videoError: 'خطأ في تحميل الفيديو.',
+                    videoLabel: 'إضافة فيديو',
+                    deleteVideo: 'حذف الفيديو',
+                    administration: 'الإدارة',
+                    changePassword: 'تغيير كلمة المرور',
+                    currentPassword: 'كلمة المرور الحالية',
+                    newPassword: 'كلمة المرور الجديدة',
+                    confirmPassword: 'تأكيد كلمة المرور الجديدة',
+                    passwordChanged: '✅ تم تغيير كلمة المرور بنجاح!',
+                    passwordMismatch: '❌ كلمات المرور غير متطابقة.',
+                    wrongCurrentPassword: '❌ كلمة المرور الحالية غير صحيحة.',
+                    passwordEmpty: '❌ لا يمكن أن تكون كلمة المرور فارغة.',
+                    passwordTitle: 'كلمة المرور',
+                    cancel: 'إلغاء',
+                    change: 'تغيير',
+                    passwordChangedTitle: 'تغيير كلمة المرور',
+                    passwordChangedDesc: 'أدخل كلمة المرور الحالية، ثم الجديدة',
+                    htmlLabel: 'استيراد HTML',
+                    deleteHtml: 'حذف HTML',
+                    htmlAdded: '📄 تم إضافة محتوى HTML!',
+                    htmlDeleted: '🗑️ تم حذف محتوى HTML',
+                    htmlError: 'خطأ في تحميل HTML.',
+                    htmlPlaceholder: '📄 محتوى HTML',
+                    linkLabel: 'رابط الصورة',
+                    deleteLink: 'حذف الرابط',
+                    linkAdded: '🔗 تم إضافة الرابط للصورة!',
+                    linkDeleted: '🗑️ تم حذف الرابط',
+                    linkError: 'الرجاء إدخال عنوان URL صحيح (https://...)',
+                    regarder: '👁️ عرض',
+                },
+                es: {
+                    pageLabel: 'Página', noPages: '📭 Sin páginas',
+                    prev: 'Anterior', next: 'Siguiente', print: 'Imprimir',
+                    upload: 'Imagen', add: 'Añadir', delete: 'Eliminar', clear: 'Vaciar',
+                    save: 'Guardar', lock: 'Bloquear', unlock: 'Desbloquear',
+                    admin: 'Admin', closeAdmin: 'Cerrar',
+                    noImage: 'Esta página está vacía.', noPage: 'No hay página para imprimir.',
+                    solutionTitle: '💡 Solución',
+                    noSolution: 'No hay solución guardada para esta página.',
+                    solutionPlaceholder: '📸 Sin imagen de solución',
+                    changeImage: '🖼️ Cambiar imagen',
+                    dropHint: 'Suelta una imagen o video aquí o haz clic en "Imagen" o "Video"',
+                    noImagePage: 'No hay imagen o video en esta página',
+                    showSolution: '👁️ Mostrar', hideSolution: '🔽 Ocultar',
+                    solutionHidden: '🔽 Solución oculta',
+                    solutionShown: '💡 Solución mostrada',
+                    translated: '🌐 Traducido',
+                    clickToZoom: 'Haz clic para ampliar',
+                    confirmDelete: '¿Quieres eliminar esta página?',
+                    onlyPage: 'Esta es la única página, no puedes eliminarla.',
+                    imageError: 'Selecciona una imagen (jpg, png, ...)',
+                    videoError: 'Selecciona un video (mp4, webm, ogg)',
+                    readError: 'Error al leer el archivo.',
+                    saved: '✅ ¡Guardado correctamente!',
+                    saveError: '⚠️ Error al guardar.',
+                    saving: '💾 Guardando...',
+                    maxPages: '⚠️ Número máximo de páginas alcanzado (100)',
+                    clearConfirm: '⚠️ ¿Realmente quieres eliminar TODAS las páginas?',
+                    cleared: '✅ ¡Todas las páginas han sido eliminadas!',
+                    locked: '🔒 Cuaderno bloqueado',
+                    unlocked: '🔓 Cuaderno desbloqueado',
+                    wrongPassword: '❌ ¡Contraseña incorrecta!',
+                    searchPlaceholder: 'Buscar por título...',
+                    noResults: 'No se encontraron páginas',
+                    titlePlaceholder: 'Introduce el título de la página...',
+                    audioAdded: '🎵 ¡Archivo de audio añadido!',
+                    audioDeleted: '🗑️ Archivo de audio eliminado',
+                    audioError: 'Error al cargar el audio.',
+                    audioLabel: 'Añadir archivo de audio',
+                    deleteAudio: 'Eliminar audio',
+                    videoAdded: '🎬 ¡Video añadido!',
+                    videoDeleted: '🗑️ Video eliminado',
+                    videoError: 'Error al cargar el video.',
+                    videoLabel: 'Añadir video',
+                    deleteVideo: 'Eliminar video',
+                    administration: 'Administración',
+                    changePassword: 'Cambiar contraseña',
+                    currentPassword: 'Contraseña actual',
+                    newPassword: 'Nueva contraseña',
+                    confirmPassword: 'Confirmar nueva contraseña',
+                    passwordChanged: '✅ ¡Contraseña cambiada con éxito!',
+                    passwordMismatch: '❌ Las contraseñas no coinciden.',
+                    wrongCurrentPassword: '❌ La contraseña actual es incorrecta.',
+                    passwordEmpty: '❌ La contraseña no puede estar vacía.',
+                    passwordTitle: 'Contraseña',
+                    cancel: 'Cancelar',
+                    change: 'Cambiar',
+                    passwordChangedTitle: 'Cambiar contraseña',
+                    passwordChangedDesc: 'Introduce tu contraseña actual, luego la nueva',
+                    htmlLabel: 'Importar HTML',
+                    deleteHtml: 'Eliminar HTML',
+                    htmlAdded: '📄 ¡Contenido HTML añadido!',
+                    htmlDeleted: '🗑️ Contenido HTML eliminado',
+                    htmlError: 'Error al cargar el HTML.',
+                    htmlPlaceholder: '📄 Contenido HTML',
+                    linkLabel: 'Enlace de la imagen',
+                    deleteLink: 'Eliminar enlace',
+                    linkAdded: '🔗 ¡Enlace añadido a la imagen!',
+                    linkDeleted: '🗑️ Enlace eliminado',
+                    linkError: 'Por favor, introduce una URL válida (https://...)',
+                    regarder: '👁️ Ver',
+                },
+                de: {
+                    pageLabel: 'Seite', noPages: '📭 Keine Seiten',
+                    prev: 'Zurück', next: 'Weiter', print: 'Drucken',
+                    upload: 'Bild', add: 'Hinzufügen', delete: 'Löschen', clear: 'Leeren',
+                    save: 'Speichern', lock: 'Sperren', unlock: 'Entsperren',
+                    admin: 'Admin', closeAdmin: 'Schließen',
+                    noImage: 'Diese Seite ist leer.', noPage: 'Keine Seite zum Drucken.',
+                    solutionTitle: '💡 Lösung',
+                    noSolution: 'Keine Lösung für diese Seite gespeichert.',
+                    solutionPlaceholder: '📸 Kein Lösungsbild',
+                    changeImage: '🖼️ Bild ändern',
+                    dropHint: 'Bild oder Video hier ablegen oder auf "Bild" oder "Video" klicken',
+                    noImagePage: 'Kein Bild oder Video auf dieser Seite',
+                    showSolution: '👁️ Anzeigen', hideSolution: '🔽 Ausblenden',
+                    solutionHidden: '🔽 Lösung ausgeblendet',
+                    solutionShown: '💡 Lösung angezeigt',
+                    translated: '🌐 Übersetzt',
+                    clickToZoom: 'Zum Vergrößern klicken',
+                    confirmDelete: 'Möchtest du diese Seite löschen?',
+                    onlyPage: 'Dies ist die einzige Seite, du kannst sie nicht löschen.',
+                    imageError: 'Bitte wähle ein Bild (jpg, png, ...)',
+                    videoError: 'Bitte wähle ein Video (mp4, webm, ogg)',
+                    readError: 'Fehler beim Lesen der Datei.',
+                    saved: '✅ Erfolgreich gespeichert!',
+                    saveError: '⚠️ Fehler beim Speichern.',
+                    saving: '💾 Speichern...',
+                    maxPages: '⚠️ Maximale Seitenanzahl erreicht (100)',
+                    clearConfirm: '⚠️ Möchtest du wirklich ALLE Seiten löschen?',
+                    cleared: '✅ Alle Seiten wurden gelöscht!',
+                    locked: '🔒 Notizbuch gesperrt',
+                    unlocked: '🔓 Notizbuch entsperrt',
+                    wrongPassword: '❌ Falsches Passwort!',
+                    searchPlaceholder: 'Nach Titel suchen...',
+                    noResults: 'Keine Seite gefunden',
+                    titlePlaceholder: 'Seitentitel eingeben...',
+                    audioAdded: '🎵 Audiodatei hinzugefügt!',
+                    audioDeleted: '🗑️ Audiodatei gelöscht',
+                    audioError: 'Fehler beim Laden der Audio.',
+                    audioLabel: 'Audiodatei hinzufügen',
+                    deleteAudio: 'Audio löschen',
+                    videoAdded: '🎬 Video hinzugefügt!',
+                    videoDeleted: '🗑️ Video gelöscht',
+                    videoError: 'Fehler beim Laden des Videos.',
+                    videoLabel: 'Video hinzufügen',
+                    deleteVideo: 'Video löschen',
+                    administration: 'Verwaltung',
+                    changePassword: 'Passwort ändern',
+                    currentPassword: 'Aktuelles Passwort',
+                    newPassword: 'Neues Passwort',
+                    confirmPassword: 'Neues Passwort bestätigen',
+                    passwordChanged: '✅ Passwort erfolgreich geändert!',
+                    passwordMismatch: '❌ Passwörter stimmen nicht überein.',
+                    wrongCurrentPassword: '❌ Aktuelles Passwort ist falsch.',
+                    passwordEmpty: '❌ Passwort darf nicht leer sein.',
+                    passwordTitle: 'Passwort',
+                    cancel: 'Abbrechen',
+                    change: 'Ändern',
+                    passwordChangedTitle: 'Passwort ändern',
+                    passwordChangedDesc: 'Gib dein aktuelles Passwort ein, dann das neue',
+                    htmlLabel: 'HTML importieren',
+                    deleteHtml: 'HTML löschen',
+                    htmlAdded: '📄 HTML-Inhalt hinzugefügt!',
+                    htmlDeleted: '🗑️ HTML-Inhalt gelöscht',
+                    htmlError: 'Fehler beim Laden des HTML.',
+                    htmlPlaceholder: '📄 HTML-Inhalt',
+                    linkLabel: 'Bild-Link',
+                    deleteLink: 'Link löschen',
+                    linkAdded: '🔗 Link zum Bild hinzugefügt!',
+                    linkDeleted: '🗑️ Link gelöscht',
+                    linkError: 'Bitte gib eine gültige URL ein (https://...)',
+                    regarder: '👁️ Ansehen',
+                }
+            };
+
+            function t(key) { return translations[currentLang][key] || key; }
+
+            // --- DOM ---
+            const pageContent = document.getElementById('pageContent');
+            const pageNumTop = document.getElementById('pageNumTop');
+            const pageTotalTop = document.getElementById('pageTotalTop');
+            const pageLabelTop = document.getElementById('pageLabelTop');
+            const pageCounterTop = document.getElementById('pageCounterTop');
+            const pageNumBottom = document.getElementById('pageNumBottom');
+            const pageTotalBottom = document.getElementById('pageTotalBottom');
+            const pageLabelBottom = document.getElementById('pageLabelBottom');
+            const logoText = document.getElementById('logoText');
+
+            const printBtn = document.getElementById('printPageBtn');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const bookView = document.getElementById('bookView');
+            const toast = document.getElementById('toast');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const translateBadge = document.getElementById('translateBadge');
+            const showSolutionBottomBtn = document.getElementById('showSolutionBottomBtn');
+            const hideSolutionBottomBtn = document.getElementById('hideSolutionBottomBtn');
+            const lightboxOverlay = document.getElementById('lightboxOverlay');
+            const lightboxContent = document.getElementById('lightboxContent');
+            const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+            const bookContainer = document.getElementById('bookContainer');
+
+            const searchInput = document.getElementById('searchInput');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+            const adminPanel = document.getElementById('adminPanel');
+            const adminPanelOverlay = document.getElementById('adminPanelOverlay');
+            const adminToggleBtn = document.getElementById('adminToggleBtn');
+            const adminToggleLabel = document.getElementById('adminToggleLabel');
+            const closeAdminBtn = document.getElementById('closeAdminBtn');
+            const panelPageCount = document.getElementById('panelPageCount');
+            const adminPanelTitle = document.getElementById('adminPanelTitle');
+
+            const imageUpload = document.getElementById('imageUpload');
+            const videoUpload = document.getElementById('videoUpload');
+            const htmlUpload = document.getElementById('htmlUpload');
+            const addBtn = document.getElementById('addPageBtn');
+            const deleteBtn = document.getElementById('deletePageBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            const saveExplicitBtn = document.getElementById('saveExplicitBtn');
+            const lockBtn = document.getElementById('lockBtn');
+            const lockLabel = document.getElementById('panelLockLabel');
+            const titleInput = document.getElementById('titleInput');
+
+            // Lien
+            const linkInput = document.getElementById('linkInput');
+            const deleteLinkBtn = document.getElementById('deleteLinkBtn');
+
+            const audioUpload = document.getElementById('audioUpload');
+            const deleteAudioBtn = document.getElementById('deleteAudioBtn');
+            const deleteVideoBtn = document.getElementById('deleteVideoBtn');
+            const deleteHtmlBtn = document.getElementById('deleteHtmlBtn');
+
+            const adminLockOverlay = document.getElementById('adminLockOverlay');
+            const adminLockPassword = document.getElementById('adminLockPassword');
+            const adminLockUnlockBtn = document.getElementById('adminLockUnlockBtn');
+            const adminLockError = document.getElementById('adminLockError');
+
+            const changePasswordBtn = document.getElementById('changePasswordBtn');
+            const changePasswordOverlay = document.getElementById('changePasswordOverlay');
+            const currentPasswordInput = document.getElementById('currentPasswordInput');
+            const newPasswordInput = document.getElementById('newPasswordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const changePwdConfirmBtn = document.getElementById('changePwdConfirmBtn');
+            const changePwdCancelBtn = document.getElementById('changePwdCancelBtn');
+            const changePwdError = document.getElementById('changePwdError');
+            const changePwdTitle = document.getElementById('changePwdTitle');
+            const changePwdDesc = document.getElementById('changePwdDesc');
+
+            const translatable = {
+                prevText: document.getElementById('prevText'),
+                nextText: document.getElementById('nextText'),
+                printText: document.getElementById('printText'),
+                panelUploadLabel: document.getElementById('panelUploadLabel'),
+                panelAddLabel: document.getElementById('panelAddLabel'),
+                panelDeleteLabel: document.getElementById('panelDeleteLabel'),
+                panelClearLabel: document.getElementById('panelClearLabel'),
+                panelSaveLabel: document.getElementById('panelSaveLabel'),
+                panelLockLabel: document.getElementById('panelLockLabel'),
+                adminToggleLabel: document.getElementById('adminToggleLabel'),
+                panelAudioLabel: document.getElementById('panelAudioLabel'),
+                panelDeleteAudioLabel: document.getElementById('panelDeleteAudioLabel'),
+                panelVideoLabel: document.getElementById('panelVideoLabel'),
+                panelDeleteVideoLabel: document.getElementById('panelDeleteVideoLabel'),
+                panelHtmlLabel: document.getElementById('panelHtmlLabel'),
+                panelDeleteHtmlLabel: document.getElementById('panelDeleteHtmlLabel'),
+                panelDeleteLinkLabel: document.getElementById('panelDeleteLinkLabel'),
+                panelChangePasswordLabel: document.getElementById('panelChangePasswordLabel'),
+                panelPasswordTitle: document.getElementById('panelPasswordTitle'),
+            };
+
+            const langBtns = document.querySelectorAll('.lang-btn');
+
+            // --- Toast ---
+            let toastTimeout = null;
+            function showToast(message, type = 'info') {
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toast.className = 'toast';
+                toast.textContent = message;
+                if (type === 'success') toast.classList.add('success');
+                else if (type === 'error') toast.classList.add('error');
+                else if (type === 'info') toast.classList.add('info');
+                toast.classList.add('show');
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // --- Progress ---
+            function showProgress(percent) {
+                progressBar.classList.add('active');
+                progressFill.style.width = percent + '%';
+                if (percent >= 100) {
+                    setTimeout(() => {
+                        progressBar.classList.remove('active');
+                        progressFill.style.width = '0%';
+                    }, 400);
+                }
+            }
+
+            // --- Lock (carnet) ---
+            const lockOverlay = document.getElementById('lockOverlay');
+            const lockPassword = document.getElementById('lockPassword');
+            const lockUnlockBtn = document.getElementById('lockUnlockBtn');
+            const lockError = document.getElementById('lockError');
+
+            function showLockOverlay() {
+                lockOverlay.classList.add('active');
+                lockPassword.value = '';
+                lockError.classList.remove('show');
+                lockPassword.focus();
+                bookContainer.classList.add('locked-blur');
+            }
+            function hideLockOverlay() {
+                lockOverlay.classList.remove('active');
+                bookContainer.classList.remove('locked-blur');
+                lockError.classList.remove('show');
+            }
+            function attemptUnlock() {
+                const pwd = lockPassword.value.trim();
+                if (pwd === PASSWORD) {
+                    isLocked = false;
+                    lockLabel.textContent = t('lock');
+                    lockBtn.classList.remove('locked');
+                    applyLockState(false);
+                    hideLockOverlay();
+                    renderCurrentPage();
+                    sauvegarderEtat();
+                    showToast(t('unlocked'), 'success');
+                    updatePanelPageCount();
+                } else {
+                    lockError.classList.add('show');
+                    lockPassword.value = '';
+                    lockPassword.focus();
+                    showToast(t('wrongPassword'), 'error');
+                }
+            }
+
+            function toggleLock() {
+                if (isLocked) {
+                    showLockOverlay();
+                } else {
+                    isLocked = true;
+                    lockLabel.textContent = t('unlock');
+                    lockBtn.classList.add('locked');
+                    applyLockState(true);
+                    showLockOverlay();
+                    renderCurrentPage();
+                    sauvegarderEtat();
+                    showToast(t('locked'), 'info');
+                    updatePanelPageCount();
+                }
+            }
+
+            function applyLockState(locked) {
+                if (locked) {
+                    bookContainer.classList.add('locked-state');
+                    titleInput.disabled = true;
+                    titleInput.style.opacity = '0.4';
+                    linkInput.disabled = true;
+                    linkInput.style.opacity = '0.4';
+                } else {
+                    bookContainer.classList.remove('locked-state');
+                    titleInput.disabled = false;
+                    titleInput.style.opacity = '1';
+                    linkInput.disabled = false;
+                    linkInput.style.opacity = '1';
+                }
+            }
+
+            // --- Admin Lock ---
+            function showAdminLockOverlay() {
+                adminLockOverlay.classList.add('active');
+                adminLockPassword.value = '';
+                adminLockError.classList.remove('show');
+                adminLockPassword.focus();
+            }
+            function hideAdminLockOverlay() {
+                adminLockOverlay.classList.remove('active');
+                adminLockError.classList.remove('show');
+            }
+            function attemptAdminUnlock() {
+                const pwd = adminLockPassword.value.trim();
+                if (pwd === ADMIN_PASSWORD) {
+                    isAdminLocked = false;
+                    hideAdminLockOverlay();
+                    openAdminPanel();
+                } else {
+                    adminLockError.classList.add('show');
+                    adminLockPassword.value = '';
+                    adminLockPassword.focus();
+                    showToast('❌ Mot de passe admin incorrect', 'error');
+                }
+            }
+
+            // --- Admin Panel Toggle ---
+            function toggleAdminPanel() {
+                if (isAdminLocked) {
+                    showAdminLockOverlay();
+                    return;
+                }
+                toggleAdminPanelDirect();
+            }
+
+            function toggleAdminPanelDirect() {
+                adminOpen = !adminOpen;
+                adminPanel.classList.toggle('open', adminOpen);
+                adminPanelOverlay.classList.toggle('open', adminOpen);
+                adminToggleBtn.classList.toggle('active', adminOpen);
+                adminToggleLabel.textContent = adminOpen ? t('closeAdmin') : t('admin');
+                if (adminOpen) {
+                    updatePanelPageCount();
+                    updateTitleInput();
+                    updateLinkInput();
+                    updateLangButtons();
+                    updateAdminPanelLanguage();
+                }
+            }
+
+            function openAdminPanel() {
+                if (!adminOpen) {
+                    toggleAdminPanelDirect();
+                }
+            }
+
+            function closeAdminPanel() {
+                if (adminOpen) {
+                    adminOpen = false;
+                    adminPanel.classList.remove('open');
+                    adminPanelOverlay.classList.remove('open');
+                    adminToggleBtn.classList.remove('active');
+                    adminToggleLabel.textContent = t('admin');
+                }
+            }
+
+            function updateAdminPanelLanguage() {
+                adminPanelTitle.textContent = t('administration');
+                translatable.panelPasswordTitle.textContent = t('passwordTitle');
+                translatable.panelChangePasswordLabel.textContent = t('changePassword');
+                translatable.panelHtmlLabel.textContent = t('htmlLabel');
+                translatable.panelDeleteHtmlLabel.textContent = t('deleteHtml');
+                translatable.panelDeleteLinkLabel.textContent = t('deleteLink');
+                changePwdTitle.textContent = t('passwordChangedTitle');
+                changePwdDesc.textContent = t('passwordChangedDesc');
+                currentPasswordInput.placeholder = t('currentPassword');
+                newPasswordInput.placeholder = t('newPassword');
+                confirmPasswordInput.placeholder = t('confirmPassword');
+                changePwdConfirmBtn.textContent = t('change');
+                changePwdCancelBtn.textContent = t('cancel');
+                linkInput.placeholder = t('linkLabel');
+            }
+
+            function updatePanelPageCount() {
+                panelPageCount.textContent = pages.length + ' page' + (pages.length > 1 ? 's' : '');
+            }
+
+            function updateTitleInput() {
+                const page = pages[currentIndex];
+                if (page) {
+                    titleInput.value = page.title || '';
+                } else {
+                    titleInput.value = '';
+                }
+            }
+
+            function updateLinkInput() {
+                const page = pages[currentIndex];
+                if (page) {
+                    linkInput.value = page.linkUrl || '';
+                } else {
+                    linkInput.value = '';
+                }
+            }
+
+            function updateLangButtons() {
+                langBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+                });
+            }
+
+            // --- Search ---
+            function performSearch(query) {
+                searchQuery = query.trim().toLowerCase();
+                searchResults = [];
+
+                if (!searchQuery) {
+                    clearSearch();
+                    return;
+                }
+
+                pages.forEach((page, index) => {
+                    if (index === 0) return;
+                    const title = (page.title || '').toLowerCase();
+                    if (title.includes(searchQuery)) {
+                        searchResults.push(index);
+                    }
+                });
+
+                if (searchResults.length > 0) {
+                    currentIndex = searchResults[0];
+                    solutionVisible = false;
+                    renderCurrentPage();
+                    updateSolutionButtons();
+                    showToast('🔍 ' + searchResults.length + ' page(s) trouvée(s)', 'info');
+                } else {
+                    showToast('📭 ' + t('noResults'), 'info');
+                    renderSearchEmpty();
+                }
+                updateSearchUI();
+            }
+
+            function renderSearchEmpty() {
+                const html = `
+                    <div class="empty-page-placeholder">
+                        <span>🔍</span>
+                        <div>Aucune page ne correspond à "<strong>${searchQuery}</strong>"</div>
+                        <div class="hint" style="font-size:0.7rem;color:rgba(0,0,0,0.06);">Essayez un autre titre</div>
+                    </div>
+                `;
+                pageContent.innerHTML = html;
+                updatePageNumbers(0, 0, 0);
+                translateBadge.classList.remove('active');
+                updateNavButtons();
+                showSolutionBottomBtn.style.display = 'none';
+                hideSolutionBottomBtn.style.display = 'none';
+            }
+
+            function updateSearchUI() {
+                if (searchQuery) {
+                    clearSearchBtn.classList.add('show');
+                } else {
+                    clearSearchBtn.classList.remove('show');
+                }
+            }
+
+            function clearSearch() {
+                searchQuery = '';
+                searchResults = [];
+                searchInput.value = '';
+                clearSearchBtn.classList.remove('show');
+                renderCurrentPage();
+                updateSolutionButtons();
+            }
+
+            // --- Language ---
+            function setLanguage(lang) {
+                if (lang === currentLang) return;
+                currentLang = lang;
+                updateUILanguage();
+                renderCurrentPage();
+                sauvegarderEtat();
+                updateLangButtons();
+                showToast('🌐 Langue: ' + lang.toUpperCase(), 'info');
+            }
+
+            function updateUILanguage() {
+                pageLabelTop.textContent = t('pageLabel');
+                pageLabelBottom.textContent = t('pageLabel');
+                pageCounterTop.textContent = `(${pages.length}/${MAX_PAGES})`;
+                translatable.prevText.textContent = t('prev');
+                translatable.nextText.textContent = t('next');
+                translatable.printText.textContent = t('print');
+                translatable.panelUploadLabel.textContent = t('upload');
+                translatable.panelAddLabel.textContent = t('add');
+                translatable.panelDeleteLabel.textContent = t('delete');
+                translatable.panelClearLabel.textContent = t('clear');
+                translatable.panelSaveLabel.textContent = t('save');
+                translatable.panelAudioLabel.textContent = t('audioLabel');
+                translatable.panelDeleteAudioLabel.textContent = t('deleteAudio');
+                translatable.panelVideoLabel.textContent = t('videoLabel');
+                translatable.panelDeleteVideoLabel.textContent = t('deleteVideo');
+                translatable.panelHtmlLabel.textContent = t('htmlLabel');
+                translatable.panelDeleteHtmlLabel.textContent = t('deleteHtml');
+                translatable.panelDeleteLinkLabel.textContent = t('deleteLink');
+                translatable.panelChangePasswordLabel.textContent = t('changePassword');
+                translatable.panelPasswordTitle.textContent = t('passwordTitle');
+                lockLabel.textContent = isLocked ? t('unlock') : t('lock');
+                translateBadge.textContent = t('translated');
+                translatable.adminToggleLabel.textContent = adminOpen ? t('closeAdmin') : t('admin');
+                searchInput.placeholder = t('searchPlaceholder');
+                titleInput.placeholder = t('titlePlaceholder');
+                linkInput.placeholder = t('linkLabel');
+                adminPanelTitle.textContent = t('administration');
+
+                showSolutionBottomBtn.textContent = t('showSolution');
+                hideSolutionBottomBtn.textContent = t('hideSolution');
+                updatePanelPageCount();
+                updateLangButtons();
+                updateAdminPanelLanguage();
+
+                changePwdTitle.textContent = t('passwordChangedTitle');
+                changePwdDesc.textContent = t('passwordChangedDesc');
+                currentPasswordInput.placeholder = t('currentPassword');
+                newPasswordInput.placeholder = t('newPassword');
+                confirmPasswordInput.placeholder = t('confirmPassword');
+                changePwdConfirmBtn.textContent = t('change');
+                changePwdCancelBtn.textContent = t('cancel');
+            }
+
+            // --- Solution ---
+            function updateSolutionButtons() {
+                if (solutionVisible) {
+                    showSolutionBottomBtn.style.display = 'none';
+                    hideSolutionBottomBtn.style.display = 'inline-flex';
+                } else {
+                    showSolutionBottomBtn.style.display = 'inline-flex';
+                    hideSolutionBottomBtn.style.display = 'none';
+                }
+            }
+            function toggleSolutionFromBottom(show) {
+                const page = pages[currentIndex];
+                if (!page || currentIndex === 0) {
+                    showToast('📖 La page de garde ne contient pas de solution.', 'info');
+                    return;
+                }
+                solutionVisible = show;
+                renderCurrentPage();
+                updateSolutionButtons();
+                showToast(solutionVisible ? t('solutionShown') : t('solutionHidden'), 'info');
+                sauvegarderEtat();
+            }
+
+            // --- Gestion image de solution ---
+            function handleSolutionImageUpload(file, pageIndex) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[pageIndex];
+                if (!page) return;
+                if (!file || !file.type.startsWith('image/')) {
+                    showToast(t('imageError'), 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    page.solution = `<img src="${base64}" class="solution-image" alt="Solution" />`;
+                    sauvegarderEtat();
+                    renderCurrentPage();
+                    showToast('🖼️ Image de solution insérée', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // --- Audio management ---
+            function handleAudioUpload(file) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!file || !file.type.startsWith('audio/')) {
+                    showToast('Veuillez sélectionner un fichier audio (MP3, WAV, OGG)', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    page.audioData = base64;
+                    sauvegarderEtat();
+                    renderCurrentPage();
+                    showToast(t('audioAdded'), 'success');
+                };
+                reader.onerror = function() {
+                    showToast(t('audioError'), 'error');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function deleteAudio() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!page.audioData) {
+                    showToast('Aucun fichier audio à supprimer', 'info');
+                    return;
+                }
+                page.audioData = null;
+                if (audioElement) {
+                    audioElement.pause();
+                    audioElement = null;
+                }
+                sauvegarderEtat();
+                renderCurrentPage();
+                showToast(t('audioDeleted'), 'success');
+            }
+
+            // --- Video management ---
+            function handleVideoUpload(file) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!file || !file.type.startsWith('video/')) {
+                    showToast(t('videoError'), 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    page.videoData = base64;
+                    page.imageData = null;
+                    page.htmlData = null;
+                    sauvegarderEtat();
+                    renderCurrentPage();
+                    showToast(t('videoAdded'), 'success');
+                };
+                reader.onerror = function() {
+                    showToast(t('videoError'), 'error');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function deleteVideo() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!page.videoData) {
+                    showToast('Aucune vidéo à supprimer', 'info');
+                    return;
+                }
+                page.videoData = null;
+                sauvegarderEtat();
+                renderCurrentPage();
+                showToast(t('videoDeleted'), 'success');
+            }
+
+            // --- HTML management ---
+            function handleHtmlUpload(file) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                if (currentIndex === 0) {
+                    showToast('📖 La page de garde ne peut pas contenir de HTML.', 'info');
+                    return;
+                }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!file || !(file.type === 'text/html' || file.name.endsWith('.html') || file.name.endsWith('.htm'))) {
+                    showToast('Veuillez sélectionner un fichier HTML (.html, .htm)', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const htmlContent = e.target.result;
+                    page.htmlData = htmlContent;
+                    page.imageData = null;
+                    page.videoData = null;
+                    sauvegarderEtat();
+                    renderCurrentPage();
+                    showToast(t('htmlAdded'), 'success');
+                };
+                reader.onerror = function() {
+                    showToast(t('htmlError'), 'error');
+                };
+                reader.readAsText(file);
+            }
+
+            function deleteHtml() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!page.htmlData) {
+                    showToast('Aucun contenu HTML à supprimer', 'info');
+                    return;
+                }
+                page.htmlData = null;
+                sauvegarderEtat();
+                renderCurrentPage();
+                showToast(t('htmlDeleted'), 'success');
+            }
+
+            // --- Link management ---
+            function updatePageLink() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                const newLink = linkInput.value.trim();
+                if (newLink && !newLink.startsWith('http://') && !newLink.startsWith('https://')) {
+                    showToast(t('linkError'), 'error');
+                    return;
+                }
+                page.linkUrl = newLink || null;
+                sauvegarderEtat();
+                renderCurrentPage();
+                if (newLink) {
+                    showToast(t('linkAdded'), 'success');
+                } else {
+                    showToast(t('linkDeleted'), 'info');
+                }
+            }
+
+            function deleteLink() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                if (!page.linkUrl) {
+                    showToast('Aucun lien à supprimer', 'info');
+                    return;
+                }
+                page.linkUrl = null;
+                linkInput.value = '';
+                sauvegarderEtat();
+                renderCurrentPage();
+                showToast(t('linkDeleted'), 'success');
+            }
+
+            // --- Title management ---
+            function updatePageTitle() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                const page = pages[currentIndex];
+                if (!page) return;
+                const newTitle = titleInput.value.trim();
+                page.title = newTitle;
+                sauvegarderEtat();
+                renderCurrentPage();
+                showToast('✏️ Titre mis à jour', 'success');
+            }
+
+            // --- Lightbox ---
+            function openLightbox(mediaSrc, isVideo = false) {
+                if (!mediaSrc) return;
+                lightboxContent.innerHTML = '';
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = mediaSrc;
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.style.maxWidth = '96vw';
+                    video.style.maxHeight = '96vh';
+                    video.style.borderRadius = '16px';
+                    video.style.background = '#000';
+                    video.style.padding = '6px';
+                    video.style.border = '0.5px solid rgba(255,255,255,0.04)';
+                    lightboxContent.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = mediaSrc;
+                    img.style.maxWidth = '96vw';
+                    img.style.maxHeight = '96vh';
+                    img.style.borderRadius = '16px';
+                    img.style.background = '#ffffff';
+                    img.style.padding = '6px';
+                    img.style.border = '0.5px solid rgba(255,255,255,0.04)';
+                    lightboxContent.appendChild(img);
+                }
+                lightboxOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeLightbox() {
+                lightboxOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+                lightboxContent.innerHTML = '';
+            }
+            window.openLightbox = openLightbox;
+
+            // --- Update page numbers ---
+            function updatePageNumbers(num, total, max) {
+                pageNumTop.textContent = num;
+                pageTotalTop.textContent = total > 0 ? '/ ' + total : '/ 0';
+                pageCounterTop.textContent = `(${total}/${MAX_PAGES})`;
+                pageNumBottom.textContent = num;
+                pageTotalBottom.textContent = total > 0 ? '/ ' + total : '/ 0';
+            }
+
+            // ============================================================
+            // RENDU
+            // ============================================================
+            function renderCurrentPage() {
+                if (searchQuery && searchResults.length === 0 && pages.length > 1) {
+                    renderSearchEmpty();
+                    return;
+                }
+
+                if (pages.length === 0) {
+                    const html = `
+                        <div class="empty-page-placeholder">
+                            <span>📭</span> ${t('noPages')}
+                        </div>
+                    `;
+                    pageContent.innerHTML = html;
+                    updatePageNumbers(0, 0, 0);
+                    translateBadge.classList.remove('active');
+                    updateNavButtons();
+                    updateSolutionButtons();
+                    updatePanelPageCount();
+                    return;
+                }
+
+                const page = pages[currentIndex];
+                const pageNum = currentIndex + 1;
+                const pageTotal = pages.length;
+                updatePageNumbers(pageNum, pageTotal, MAX_PAGES);
+                updatePanelPageCount();
+                updateTitleInput();
+                updateLinkInput();
+
+                const pageTitle = page.title || '';
+
+                if (currentIndex === 0) {
+                    logoText.textContent = 'Appixo Book';
+                } else {
+                    logoText.textContent = pageTitle || 'Page ' + pageNum;
+                }
+
+                const hasAudio = page.audioData && page.audioData.startsWith('data:audio');
+                const audioIconHtml = hasAudio ? `
+                    <div class="audio-icon" id="audioIcon">🔊</div>
+                ` : '';
+
+                if (currentIndex === 0) {
+                    page.isCover = true;
+                    const coverImage = page.imageData || DEFAULT_COVER;
+                    const html = `
+                        <div class="page-cover" onclick="openLightbox('${coverImage}', false)">
+                            ${audioIconHtml}
+                            <img src="${coverImage}" class="cover-main" alt="Page de garde" draggable="false" />
+                            <div class="click-hint">🔍 ${t('clickToZoom')}</div>
+                            ${pageTitle ? `<div class="page-title-overlay">${pageTitle}</div>` : ''}
+                        </div>
+                    `;
+                    pageContent.innerHTML = html;
+                    translateBadge.classList.remove('active');
+                    updateNavButtons();
+                    showSolutionBottomBtn.style.display = 'none';
+                    hideSolutionBottomBtn.style.display = 'none';
+                    if (isLocked) applyLockState(true);
+                    else applyLockState(false);
+                    
+                    setupAudioIcon();
+                    return;
+                }
+
+                page.isCover = false;
+                showSolutionBottomBtn.style.display = 'inline-flex';
+                updateSolutionButtons();
+
+                const hasImage = page.imageData && page.imageData.length > 100 && page.imageData.startsWith('data:image');
+                const hasVideo = page.videoData && page.videoData.length > 100 && page.videoData.startsWith('data:video');
+                const hasHtml = page.htmlData && page.htmlData.length > 50;
+
+                // Vérifier si un lien est défini
+                const hasLink = page.linkUrl && page.linkUrl.trim().length > 0 && 
+                               (page.linkUrl.startsWith('http://') || page.linkUrl.startsWith('https://'));
+
+                let exerciseHtml = '';
+                if (hasHtml) {
+                    exerciseHtml = `
+                        <div class="html-content" onclick="event.stopPropagation();">
+                            <iframe srcdoc="${page.htmlData.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" 
+                                    style="width:100%;height:100%;border:none;background:white;"
+                                    sandbox="allow-scripts allow-modals allow-same-origin">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (hasVideo) {
+                    exerciseHtml = `
+                        <video src="${page.videoData}" class="full-page-video" controls playsinline onclick="event.stopPropagation();">
+                            Votre navigateur ne supporte pas la lecture de vidéos.
+                        </video>
+                        <div class="click-hint">🎬 ${t('clickToZoom')}</div>
+                    `;
+                    setTimeout(() => {
+                        const videoEl = document.querySelector('.full-page-video');
+                        if (videoEl) {
+                            videoEl.addEventListener('dblclick', function(e) {
+                                e.stopPropagation();
+                                openLightbox(page.videoData, true);
+                            });
+                        }
+                    }, 50);
+                } else if (hasImage) {
+                    const linkOverlay = hasLink ? `
+                        <div class="image-link-overlay show" id="imageLinkOverlay">
+                            <a href="${page.linkUrl}" target="_blank" class="btn-regarder">${t('regarder')}</a>
+                        </div>
+                    ` : '';
+                    exerciseHtml = `
+                        <img src="${page.imageData}" class="full-page-image" alt="Exercice" draggable="false" onclick="openLightbox('${page.imageData}', false)" />
+                        ${linkOverlay}
+                        <div class="click-hint">🔍 ${t('clickToZoom')}</div>
+                    `;
+                } else {
+                    exerciseHtml = `
+                        <div class="image-placeholder">
+                            <span>🖼️</span>
+                            <div>${t('dropHint')}</div>
+                            <div class="hint">${t('noImagePage')}</div>
+                        </div>
+                    `;
+                }
+
+                let solutionHtml = '';
+                const hasSolution = page.solution && page.solution.includes('<img');
+                if (hasSolution) {
+                    const srcMatch = page.solution.match(/src=["']([^"']+)["']/);
+                    const solutionSrc = srcMatch ? srcMatch[1] : '';
+                    solutionHtml = page.solution.replace(
+                        /<img/,
+                        `<img onclick="openLightbox('${solutionSrc}', false)" style="cursor:pointer;"`
+                    );
+                } else {
+                    solutionHtml = `<div class="placeholder">${t('solutionPlaceholder')}</div>`;
+                }
+
+                const solutionClass = solutionVisible ? '' : 'hidden';
+
+                const html = `
+                    <div class="exercise-zone">
+                        ${audioIconHtml}
+                        ${exerciseHtml}
+                    </div>
+                    <div class="solution-zone-wrapper ${solutionClass}" id="solutionZoneWrapper">
+                        <div class="solution-header">
+                            <h4>💡 ${t('solutionTitle')}</h4>
+                        </div>
+                        <div class="solution-image-container" id="solutionImageContainer">
+                            ${solutionHtml}
+                            <label class="upload-btn" id="solutionUploadBtn" style="${isLocked ? 'pointer-events:none;opacity:0.4;' : ''}">
+                                <span>🖼️ ${t('changeImage')}</span>
+                                <input type="file" accept="image/*" id="solutionFileInput" ${isLocked ? 'disabled' : ''}>
+                            </label>
+                        </div>
+                    </div>
+                `;
+                pageContent.innerHTML = html;
+
+                setupAudioIcon();
+
+                const solutionFileInput = document.getElementById('solutionFileInput');
+                if (solutionFileInput) {
+                    solutionFileInput.addEventListener('change', function(e) {
+                        if (isLocked) {
+                            showToast('🔒 Carnet verrouillé', 'error');
+                            this.value = '';
+                            return;
+                        }
+                        const file = this.files[0];
+                        if (file) {
+                            handleSolutionImageUpload(file, currentIndex);
+                        }
+                        this.value = '';
+                    });
+                }
+
+                const solutionImg = document.querySelector('.solution-image-container .solution-image');
+                if (solutionImg && !solutionImg.hasAttribute('onclick')) {
+                    const src = solutionImg.getAttribute('src');
+                    if (src) {
+                        solutionImg.style.cursor = 'pointer';
+                        solutionImg.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            openLightbox(src, false);
+                        });
+                    }
+                }
+
+                translateBadge.classList.remove('active');
+                updateNavButtons();
+                if (isLocked) applyLockState(true);
+                else applyLockState(false);
+            }
+
+            function setupAudioIcon() {
+                const audioIcon = document.getElementById('audioIcon');
+                const page = pages[currentIndex];
+                if (!audioIcon || !page) return;
+                const hasAudio = page.audioData && page.audioData.startsWith('data:audio');
+                
+                if (hasAudio) {
+                    audioIcon.style.display = 'block';
+                    if (!audioElement) {
+                        audioElement = new Audio();
+                    }
+                    audioElement.src = page.audioData;
+                    audioElement.preload = 'auto';
+
+                    audioIcon.replaceWith(audioIcon.cloneNode(true));
+                    const newAudioIcon = document.getElementById('audioIcon');
+                    if (!newAudioIcon) return;
+
+                    newAudioIcon.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (audioElement.paused) {
+                            audioElement.play().catch(() => {});
+                            this.classList.add('playing');
+                            this.textContent = '🔊';
+                        } else {
+                            audioElement.pause();
+                            this.classList.remove('playing');
+                            this.textContent = '🔊';
+                        }
+                    });
+
+                    audioElement.onended = function() {
+                        const icon = document.getElementById('audioIcon');
+                        if (icon) { icon.classList.remove('playing'); icon.textContent = '🔊'; }
+                    };
+
+                    audioElement.onpause = function() {
+                        const icon = document.getElementById('audioIcon');
+                        if (icon) { icon.classList.remove('playing'); icon.textContent = '🔊'; }
+                    };
+                } else {
+                    audioIcon.style.display = 'none';
+                }
+            }
+
+            function updateNavButtons() {
+                if (pages.length === 0) { prevBtn.disabled = true; nextBtn.disabled = true; return; }
+                if (searchQuery && searchResults.length > 0) {
+                    const idx = searchResults.indexOf(currentIndex);
+                    prevBtn.disabled = (idx <= 0);
+                    nextBtn.disabled = (idx >= searchResults.length - 1);
+                    return;
+                }
+                prevBtn.disabled = (currentIndex === 0);
+                nextBtn.disabled = (currentIndex === pages.length - 1);
+            }
+
+            function goToPrev() {
+                if (pages.length === 0) return;
+                if (audioElement && !audioElement.paused) {
+                    audioElement.pause();
+                    const icon = document.getElementById('audioIcon');
+                    if (icon) { icon.classList.remove('playing'); icon.textContent = '🔊'; }
+                }
+                if (searchQuery && searchResults.length > 0) {
+                    const idx = searchResults.indexOf(currentIndex);
+                    if (idx > 0) {
+                        currentIndex = searchResults[idx - 1];
+                        solutionVisible = false;
+                        renderCurrentPage();
+                        updateSolutionButtons();
+                    }
+                    return;
+                }
+                if (currentIndex === 0) return;
+                currentIndex--;
+                solutionVisible = false;
+                renderCurrentPage();
+                updateSolutionButtons();
+            }
+            function goToNext() {
+                if (pages.length === 0) return;
+                if (audioElement && !audioElement.paused) {
+                    audioElement.pause();
+                    const icon = document.getElementById('audioIcon');
+                    if (icon) { icon.classList.remove('playing'); icon.textContent = '🔊'; }
+                }
+                if (searchQuery && searchResults.length > 0) {
+                    const idx = searchResults.indexOf(currentIndex);
+                    if (idx < searchResults.length - 1) {
+                        currentIndex = searchResults[idx + 1];
+                        solutionVisible = false;
+                        renderCurrentPage();
+                        updateSolutionButtons();
+                    }
+                    return;
+                }
+                if (currentIndex === pages.length - 1) return;
+                currentIndex++;
+                solutionVisible = false;
+                renderCurrentPage();
+                updateSolutionButtons();
+            }
+
+            // --- Gestion pages ---
+            function addNewPage() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                if (pages.length >= MAX_PAGES) {
+                    showToast(t('maxPages'), 'error');
+                    return;
+                }
+                pages.push({ content: '', solution: '', imageData: null, videoData: null, htmlData: null, linkUrl: null, isCover: false, title: '', audioData: null });
+                currentIndex = pages.length - 1;
+                solutionVisible = false;
+                clearSearch();
+                renderCurrentPage();
+                updateSolutionButtons();
+                sauvegarderEtat();
+                showToast('➕ Page ajoutée', 'success');
+            }
+
+            function deleteCurrentPage() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                if (pages.length === 0) return;
+                if (currentIndex === 0) {
+                    showToast('📖 La page de garde ne peut pas être supprimée.', 'info');
+                    return;
+                }
+                if (!confirm(t('confirmDelete'))) return;
+                pages.splice(currentIndex, 1);
+                if (currentIndex >= pages.length) currentIndex = pages.length - 1;
+                solutionVisible = false;
+                clearSearch();
+                renderCurrentPage();
+                updateSolutionButtons();
+                sauvegarderEtat();
+                showToast('🗑️ Page supprimée', 'success');
+            }
+
+            // --- Upload image ---
+            function handleImageUpload(event) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); imageUpload.value = ''; return; }
+                const file = event.target.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    showToast(t('imageError'), 'error');
+                    imageUpload.value = '';
+                    return;
+                }
+
+                if (currentIndex === 0) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const page = pages[0];
+                        if (page) {
+                            page.imageData = e.target.result;
+                            page.videoData = null;
+                            page.htmlData = null;
+                            page.isCover = true;
+                            sauvegarderEtat();
+                            renderCurrentPage();
+                            showToast('🖼️ Image de couverture mise à jour', 'success');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                    imageUpload.value = '';
+                    return;
+                }
+
+                showProgress(20);
+                const maxSize = 30 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showToast('⚠️ Image trop volumineuse (max 30MB)', 'error');
+                    imageUpload.value = '';
+                    showProgress(0);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        showProgress(50);
+                        const base64 = e.target.result;
+                        if (!base64 || !base64.startsWith('data:image')) {
+                            showToast(t('readError'), 'error');
+                            imageUpload.value = '';
+                            showProgress(0);
+                            return;
+                        }
+                        showProgress(90);
+                        if (pages.length === 0) {
+                            pages.push({ content: '', solution: '', imageData: base64, videoData: null, htmlData: null, linkUrl: null, isCover: false, title: '', audioData: null });
+                            currentIndex = 0;
+                        } else {
+                            pages[currentIndex].imageData = base64;
+                            pages[currentIndex].videoData = null;
+                            pages[currentIndex].htmlData = null;
+                            pages[currentIndex].isCover = false;
+                        }
+                        renderCurrentPage();
+                        sauvegarderEtat();
+                        imageUpload.value = '';
+                        showProgress(100);
+                        showToast('🖼️ Image insérée (qualité originale)', 'success');
+                    } catch (err) {
+                        showToast(t('readError'), 'error');
+                        imageUpload.value = '';
+                        showProgress(0);
+                    }
+                };
+                reader.onerror = function() {
+                    showToast(t('readError'), 'error');
+                    imageUpload.value = '';
+                    showProgress(0);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // --- Upload video ---
+            function handleVideoUploadEvent(event) {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); videoUpload.value = ''; return; }
+                const file = event.target.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('video/')) {
+                    showToast(t('videoError'), 'error');
+                    videoUpload.value = '';
+                    return;
+                }
+
+                if (currentIndex === 0) {
+                    showToast('📖 La page de garde ne peut pas contenir de vidéo.', 'info');
+                    videoUpload.value = '';
+                    return;
+                }
+
+                showProgress(20);
+                const maxSize = 50 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showToast('⚠️ Vidéo trop volumineuse (max 50MB)', 'error');
+                    videoUpload.value = '';
+                    showProgress(0);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        showProgress(50);
+                        const base64 = e.target.result;
+                        if (!base64 || !base64.startsWith('data:video')) {
+                            showToast(t('readError'), 'error');
+                            videoUpload.value = '';
+                            showProgress(0);
+                            return;
+                        }
+                        showProgress(90);
+                        if (pages.length === 0) {
+                            pages.push({ content: '', solution: '', imageData: null, videoData: base64, htmlData: null, linkUrl: null, isCover: false, title: '', audioData: null });
+                            currentIndex = 0;
+                        } else {
+                            pages[currentIndex].videoData = base64;
+                            pages[currentIndex].imageData = null;
+                            pages[currentIndex].htmlData = null;
+                            pages[currentIndex].isCover = false;
+                        }
+                        renderCurrentPage();
+                        sauvegarderEtat();
+                        videoUpload.value = '';
+                        showProgress(100);
+                        showToast(t('videoAdded'), 'success');
+                    } catch (err) {
+                        showToast(t('readError'), 'error');
+                        videoUpload.value = '';
+                        showProgress(0);
+                    }
+                };
+                reader.onerror = function() {
+                    showToast(t('videoError'), 'error');
+                    videoUpload.value = '';
+                    showProgress(0);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // --- Print ---
+            function printCurrentPage() { window.print(); }
+
+            // --- Vider tout ---
+            async function clearAllPages() {
+                if (isLocked) { showToast('🔒 Carnet verrouillé', 'error'); return; }
+                if (pages.length === 0 || (pages.length === 1 && !pages[0].content && !pages[0].imageData && !pages[0].videoData && !pages[0].htmlData && !pages[0].solution && !pages[0].linkUrl)) {
+                    showToast('📭 Aucune page à supprimer', 'info');
+                    return;
+                }
+                if (!confirm(t('clearConfirm'))) return;
+                try {
+                    showProgress(20);
+                    await storage.clear();
+                    showProgress(50);
+                    pages = [{ content: '', solution: '', imageData: null, videoData: null, htmlData: null, linkUrl: null, isCover: true, title: '', audioData: null }];
+                    currentIndex = 0;
+                    solutionVisible = false;
+                    clearSearch();
+                    localStorage.removeItem('carnetMeta_100_v5');
+                    localStorage.removeItem('bookData_100_v5');
+                    renderCurrentPage();
+                    updateUILanguage();
+                    updateSolutionButtons();
+                    showProgress(100);
+                    showToast(t('cleared'), 'success');
+                } catch (e) {
+                    console.error('Erreur lors du vidage:', e);
+                    showToast(t('saveError'), 'error');
+                    showProgress(0);
+                }
+            }
+
+            // --- Sauvegarde ---
+            async function sauvegarderEtat() {
+                if (isSaving) return;
+                isSaving = true;
+                try {
+                    showProgress(20);
+                    await storage.savePages(pages);
+                    showProgress(70);
+                    const meta = {
+                        currentIndex: currentIndex,
+                        lang: currentLang,
+                        pageCount: pages.length,
+                        isLocked: isLocked,
+                        solutionVisible: solutionVisible,
+                        password: PASSWORD,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem('carnetMeta_100_v5', JSON.stringify(meta));
+                    showProgress(100);
+                    console.log('💾 Sauvegarde IndexedDB OK (' + pages.length + ' pages)');
+                } catch (e) {
+                    console.error('❌ Erreur sauvegarde:', e);
+                    try {
+                        localStorage.setItem('bookData_100_v5', JSON.stringify({
+                            pages: pages,
+                            currentIndex: currentIndex,
+                            lang: currentLang,
+                            isLocked: isLocked,
+                            solutionVisible: solutionVisible,
+                            password: PASSWORD
+                        }));
+                        console.log('💾 Sauvegarde fallback localStorage');
+                    } catch (e2) {
+                        showToast(t('saveError'), 'error');
+                    }
+                }
+                isSaving = false;
+            }
+
+            async function sauvegarderExplicite() {
+                showToast(t('saving'), 'info');
+                await sauvegarderEtat();
+                showToast(t('saved'), 'success');
+            }
+
+            // --- Chargement ---
+            async function loadState() {
+                try {
+                    const pagesFromDB = await storage.loadPages();
+                    if (pagesFromDB && pagesFromDB.length > 0) {
+                        pages = pagesFromDB;
+                        const meta = localStorage.getItem('carnetMeta_100_v5');
+                        if (meta) {
+                            const parsed = JSON.parse(meta);
+                            currentIndex = (parsed.currentIndex !== undefined && parsed.currentIndex < pages.length) ?
+                                parsed.currentIndex : 0;
+                            if (parsed.lang) currentLang = parsed.lang;
+                            if (parsed.isLocked !== undefined) isLocked = parsed.isLocked;
+                            if (parsed.solutionVisible !== undefined) solutionVisible = parsed.solutionVisible;
+                            if (parsed.password) PASSWORD = parsed.password;
+                        }
+                        if (pages.length > 0) pages[0].isCover = true;
+                        if (pages.length === 0) {
+                            pages = [{ content: '', solution: '', imageData: null, videoData: null, htmlData: null, linkUrl: null, isCover: true, title: '', audioData: null }];
+                            currentIndex = 0;
+                        }
+                        updateUILanguage();
+                        if (isLocked) {
+                            lockLabel.textContent = t('unlock');
+                            lockBtn.classList.add('locked');
+                            applyLockState(true);
+                            showLockOverlay();
+                        } else {
+                            lockLabel.textContent = t('lock');
+                            lockBtn.classList.remove('locked');
+                            applyLockState(false);
+                            hideLockOverlay();
+                        }
+                        renderCurrentPage();
+                        updateSolutionButtons();
+                        console.log('✅ Chargé depuis IndexedDB (' + pages.length + ' pages)');
+                        return true;
+                    }
+
+                    const raw = localStorage.getItem('bookData_100_v5');
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+                            pages = data.pages;
+                            currentIndex = (data.currentIndex !== undefined && data.currentIndex < pages.length) ?
+                                data.currentIndex : 0;
+                            if (data.lang) currentLang = data.lang;
+                            if (data.isLocked !== undefined) isLocked = data.isLocked;
+                            if (data.solutionVisible !== undefined) solutionVisible = data.solutionVisible;
+                            if (data.password) PASSWORD = data.password;
+                            if (pages.length > 0) pages[0].isCover = true;
+                            await storage.savePages(pages);
+                            localStorage.setItem('carnetMeta_100_v5', JSON.stringify({
+                                currentIndex: currentIndex,
+                                lang: currentLang,
+                                pageCount: pages.length,
+                                isLocked: isLocked,
+                                solutionVisible: solutionVisible,
+                                password: PASSWORD,
+                                timestamp: Date.now()
+                            }));
+                            updateUILanguage();
+                            if (isLocked) {
+                                lockLabel.textContent = t('unlock');
+                                lockBtn.classList.add('locked');
+                                applyLockState(true);
+                                showLockOverlay();
+                            } else {
+                                lockLabel.textContent = t('lock');
+                                lockBtn.classList.remove('locked');
+                                applyLockState(false);
+                                hideLockOverlay();
+                            }
+                            renderCurrentPage();
+                            updateSolutionButtons();
+                            console.log('✅ Migré depuis localStorage (' + pages.length + ' pages)');
+                            return true;
+                        }
+                    }
+                    return false;
+                } catch (e) {
+                    console.warn('⚠️ Erreur chargement:', e);
+                    return false;
+                }
+            }
+
+            // --- Chargement depuis paramètre URL ---
+            function loadFromURLParam() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const dataParam = urlParams.get('data');
+                if (!dataParam) return false;
+
+                try {
+                    const decoded = atob(dataParam);
+                    const parsed = JSON.parse(decoded);
+                    if (!parsed.pages || !Array.isArray(parsed.pages)) {
+                        throw new Error('Format invalide');
+                    }
+                    pages = parsed.pages;
+                    if (parsed.currentIndex !== undefined && parsed.currentIndex < pages.length) {
+                        currentIndex = parsed.currentIndex;
+                    } else {
+                        currentIndex = 0;
+                    }
+                    if (parsed.lang) currentLang = parsed.lang;
+                    if (parsed.solutionVisible !== undefined) solutionVisible = parsed.solutionVisible;
+                    if (parsed.password) PASSWORD = parsed.password;
+                    if (pages.length > 0) pages[0].isCover = true;
+
+                    sauvegarderEtat().then(() => {
+                        showToast('📥 Données chargées depuis le paramètre URL', 'success');
+                        renderCurrentPage();
+                        updateUILanguage();
+                        updateSolutionButtons();
+                    });
+                    return true;
+                } catch (e) {
+                    console.error('Erreur chargement paramètre URL:', e);
+                    showToast('❌ Erreur de chargement des données depuis l\'URL', 'error');
+                    return false;
+                }
+            }
+
+            // --- Swipe ---
+            let startX = 0, isSwiping = false;
+            function handleTouchStart(e) { const touch = e.touches[0]; startX = touch.clientX; isSwiping = true; }
+            function handleTouchEnd(e) {
+                if (!isSwiping) return;
+                isSwiping = false;
+                const endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+                if (Math.abs(diff) > 40) { diff > 0 ? goToNext() : goToPrev(); }
+            }
+            let mouseDown = false, mouseStartX = 0;
+            function handleMouseDown(e) { mouseDown = true; mouseStartX = e.clientX; }
+            function handleMouseUp(e) {
+                if (!mouseDown) return;
+                mouseDown = false;
+                const diff = mouseStartX - e.clientX;
+                if (Math.abs(diff) > 40) { diff > 0 ? goToNext() : goToPrev(); }
+            }
+
+            // ============================================================
+            // CHANGE PASSWORD
+            // ============================================================
+            function openChangePasswordModal() {
+                if (isLocked) {
+                    showToast('🔒 Carnet verrouillé', 'error');
+                    return;
+                }
+                changePasswordOverlay.classList.add('active');
+                currentPasswordInput.value = '';
+                newPasswordInput.value = '';
+                confirmPasswordInput.value = '';
+                changePwdError.classList.remove('show');
+                currentPasswordInput.focus();
+            }
+
+            function closeChangePasswordModal() {
+                changePasswordOverlay.classList.remove('active');
+                changePwdError.classList.remove('show');
+            }
+
+            function handleChangePassword() {
+                const current = currentPasswordInput.value.trim();
+                const newPwd = newPasswordInput.value.trim();
+                const confirm = confirmPasswordInput.value.trim();
+
+                if (!current || !newPwd || !confirm) {
+                    changePwdError.textContent = t('passwordEmpty');
+                    changePwdError.classList.add('show');
+                    return;
+                }
+
+                if (current !== PASSWORD) {
+                    changePwdError.textContent = t('wrongCurrentPassword');
+                    changePwdError.classList.add('show');
+                    currentPasswordInput.value = '';
+                    currentPasswordInput.focus();
+                    return;
+                }
+
+                if (newPwd !== confirm) {
+                    changePwdError.textContent = t('passwordMismatch');
+                    changePwdError.classList.add('show');
+                    newPasswordInput.value = '';
+                    confirmPasswordInput.value = '';
+                    newPasswordInput.focus();
+                    return;
+                }
+
+                if (newPwd.length < 4) {
+                    changePwdError.textContent = '❌ Le mot de passe doit contenir au moins 4 caractères.';
+                    changePwdError.classList.add('show');
+                    newPasswordInput.value = '';
+                    confirmPasswordInput.value = '';
+                    newPasswordInput.focus();
+                    return;
+                }
+
+                PASSWORD = newPwd;
+                localStorage.setItem('appixo_password', PASSWORD);
+                closeChangePasswordModal();
+                showToast(t('passwordChanged'), 'success');
+                sauvegarderEtat();
+            }
+
+            // --- INIT ---
+            async function initBook() {
+                const savedPwd = localStorage.getItem('appixo_password');
+                if (savedPwd) PASSWORD = savedPwd;
+
+                const loadedFromParam = loadFromURLParam();
+
+                if (!loadedFromParam) {
+                    const loaded = await loadState();
+                    if (!loaded) {
+                        pages = [{ content: '', solution: '', imageData: null, videoData: null, htmlData: null, linkUrl: null, isCover: true, title: '', audioData: null }];
+                        currentIndex = 0;
+                        solutionVisible = false;
+                        isLocked = false;
+                        await storage.savePages(pages);
+                    }
+                }
+
+                updateUILanguage();
+                renderCurrentPage();
+                updateSolutionButtons();
+                updatePanelPageCount();
+                updateTitleInput();
+                updateLinkInput();
+                updateLangButtons();
+
+                bookView.addEventListener('touchstart', handleTouchStart, { passive: true });
+                bookView.addEventListener('touchend', handleTouchEnd, { passive: true });
+                bookView.addEventListener('mousedown', handleMouseDown);
+                bookView.addEventListener('mouseup', handleMouseUp);
+                bookView.addEventListener('mouseleave', () => { mouseDown = false; });
+
+                // --- Search Events ---
+                searchInput.addEventListener('input', function(e) {
+                    const query = e.target.value;
+                    if (query.trim()) {
+                        performSearch(query);
+                    } else {
+                        clearSearch();
+                    }
+                });
+
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        clearSearch();
+                        searchInput.blur();
+                    }
+                });
+
+                clearSearchBtn.addEventListener('click', function() {
+                    clearSearch();
+                    searchInput.focus();
+                });
+
+                // --- Title Events ---
+                titleInput.addEventListener('change', updatePageTitle);
+                titleInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        updatePageTitle();
+                        titleInput.blur();
+                    }
+                });
+
+                // --- Link Events ---
+                linkInput.addEventListener('change', updatePageLink);
+                linkInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        updatePageLink();
+                        linkInput.blur();
+                    }
+                });
+
+                deleteLinkBtn.addEventListener('click', deleteLink);
+
+                // --- Audio Events ---
+                audioUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleAudioUpload(file);
+                    }
+                    this.value = '';
+                });
+
+                deleteAudioBtn.addEventListener('click', deleteAudio);
+
+                // --- Video Events ---
+                videoUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleVideoUploadEvent(e);
+                    }
+                    this.value = '';
+                });
+
+                deleteVideoBtn.addEventListener('click', deleteVideo);
+
+                // --- HTML Events ---
+                htmlUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleHtmlUpload(file);
+                    }
+                    this.value = '';
+                });
+
+                deleteHtmlBtn.addEventListener('click', deleteHtml);
+
+                // --- Language Events ---
+                langBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        setLanguage(this.dataset.lang);
+                    });
+                });
+
+                // --- Events ---
+                showSolutionBottomBtn.addEventListener('click', function() { toggleSolutionFromBottom(true); });
+                hideSolutionBottomBtn.addEventListener('click', function() { toggleSolutionFromBottom(false); });
+
+                lockUnlockBtn.addEventListener('click', attemptUnlock);
+                lockPassword.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); attemptUnlock(); }
+                });
+                lockBtn.addEventListener('click', toggleLock);
+
+                adminLockUnlockBtn.addEventListener('click', attemptAdminUnlock);
+                adminLockPassword.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); attemptAdminUnlock(); }
+                });
+
+                lightboxCloseBtn.addEventListener('click', closeLightbox);
+                lightboxOverlay.addEventListener('click', function(e) {
+                    if (e.target === this || e.target === lightboxContent) {
+                        closeLightbox();
+                    }
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeLightbox();
+                        closeAdminPanel();
+                        clearSearch();
+                        closeChangePasswordModal();
+                        hideAdminLockOverlay();
+                    }
+                });
+
+                prevBtn.addEventListener('click', goToPrev);
+                nextBtn.addEventListener('click', goToNext);
+                printBtn.addEventListener('click', printCurrentPage);
+
+                adminToggleBtn.addEventListener('click', toggleAdminPanel);
+                adminPanelOverlay.addEventListener('click', closeAdminPanel);
+                closeAdminBtn.addEventListener('click', closeAdminPanel);
+
+                imageUpload.addEventListener('change', handleImageUpload);
+                addBtn.addEventListener('click', addNewPage);
+                deleteBtn.addEventListener('click', deleteCurrentPage);
+                clearAllBtn.addEventListener('click', clearAllPages);
+                saveExplicitBtn.addEventListener('click', sauvegarderExplicite);
+
+                changePasswordBtn.addEventListener('click', openChangePasswordModal);
+                changePwdCancelBtn.addEventListener('click', closeChangePasswordModal);
+                changePwdConfirmBtn.addEventListener('click', handleChangePassword);
+                changePasswordOverlay.addEventListener('click', function(e) {
+                    if (e.target === this) closeChangePasswordModal();
+                });
+
+                currentPasswordInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); newPasswordInput.focus(); }
+                });
+                newPasswordInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); confirmPasswordInput.focus(); }
+                });
+                confirmPasswordInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); handleChangePassword(); }
+                });
+
+                const stats = await storage.loadPages();
+                console.log('📊 Nombre de pages chargées:', stats.length);
+            }
+
+            initBook();
+            console.log('📖 Appixo Book · Studio v4.0 · Interface moderne 8K');
+        })();
+    </script>
+</body>
+</html>
