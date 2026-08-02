@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متتبع تحليل السلوك - التقرير الشامل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #e8f4f2 0%, #c8dfda 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 1080px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 38px 34px;
+            border-radius: 56px;
+            box-shadow: 
+                0 50px 100px -20px rgba(20, 60, 60, 0.35),
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                0 0 0 1px rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+            padding-bottom: 20px;
+            border-bottom: none;
+            position: relative;
+            background: linear-gradient(135deg, #f0f8f6, #ddf0ec);
+            border-radius: 32px;
+            padding: 28px 20px 20px;
+            border: 1px solid rgba(61, 155, 139, 0.15);
+            box-shadow: inset 0 2px 10px rgba(61, 155, 139, 0.05);
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #1e6b5e, #b36b4a, #1e6b5e);
+            border-radius: 10px;
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .header h1 {
+            font-weight: 900;
+            font-size: 34px;
+            color: #0d3d3d;
+            letter-spacing: -0.8px;
+            text-shadow: 0 2px 10px rgba(13, 61, 61, 0.06);
+        }
+        .header h1 .highlight { 
+            color: #b36b4a;
+            background: linear-gradient(135deg, #b36b4a, #d48a6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #3e6b6b;
+            font-weight: 400;
+            font-size: 16px;
+            margin-top: 6px;
+            letter-spacing: 0.2px;
+        }
+        .header-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e6b5e, #3d9b8b);
+            color: white;
+            padding: 8px 28px;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(30, 107, 94, 0.25);
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+        .header-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(30, 107, 94, 0.35);
+        }
+
+        /* ===== NAME INPUT ===== */
+        .name-section {
+            margin: 16px 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.6);
+            padding: 14px 24px;
+            border-radius: 60px;
+            border: 2px solid rgba(61, 155, 139, 0.12);
+            backdrop-filter: blur(10px);
+        }
+        .name-section label {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0d3d3d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .name-section input {
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 2px solid rgba(61, 155, 139, 0.15);
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: #0d3d3d;
+            background: white;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 220px;
+        }
+        .name-section input:focus {
+            border-color: #3d9b8b;
+            box-shadow: 0 0 0 4px rgba(61, 155, 139, 0.1);
+            transform: translateY(-1px);
+        }
+        .name-section input::placeholder {
+            color: #b0caca;
+            font-weight: 300;
+        }
+        .name-section .name-icon {
+            font-size: 28px;
+        }
+
+        /* ===== LANGUAGE SELECTOR ===== */
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 6px 0 24px;
+            padding: 8px 16px;
+            background: rgba(236, 248, 246, 0.5);
+            border-radius: 60px;
+            border: 1px solid rgba(61, 155, 139, 0.12);
+        }
+        .lang-btn {
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 2px solid transparent;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a7a7a;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: none;
+        }
+        .lang-btn:hover {
+            background: rgba(61, 155, 139, 0.08);
+            color: #1e6b5e;
+            transform: translateY(-2px);
+        }
+        .lang-btn.active {
+            background: linear-gradient(135deg, #1e6b5e, #155a4e);
+            color: white;
+            border-color: #1e6b5e;
+            box-shadow: 0 4px 20px rgba(30, 107, 94, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ===== DAY CARDS ===== */
+        .day-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 22px 26px 20px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(61, 155, 139, 0.12);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e6b5e, #b36b4a, #3d9b8b, #1e6b5e);
+            background-size: 300% 100%;
+            opacity: 0;
+            transition: all 0.4s;
+            border-radius: 32px 32px 0 0;
+        }
+        .day-card:hover::before {
+            opacity: 1;
+            animation: gradientMove 2s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .day-card:hover {
+            border-color: rgba(61, 155, 139, 0.25);
+            box-shadow: 0 12px 40px rgba(30, 107, 94, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(61, 155, 139, 0.08);
+        }
+        .day-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .day-name {
+            font-weight: 700;
+            font-size: 20px;
+            color: #0d3d3d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .day-name .day-number {
+            background: linear-gradient(135deg, #e8f3f0, #d4eae6);
+            color: #1a5a5a;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(61, 155, 139, 0.1);
+        }
+        .day-selector {
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 2px solid rgba(61, 155, 139, 0.15);
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0d3d3d;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 130px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233d9b8b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            padding-left: 38px;
+            appearance: none;
+        }
+        .day-selector:focus {
+            border-color: #3d9b8b;
+            box-shadow: 0 0 0 4px rgba(61, 155, 139, 0.12);
+        }
+        .day-selector:hover {
+            border-color: #3d9b8b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(61, 155, 139, 0.08);
+        }
+        .day-meta {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .day-meta label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a7575;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .day-meta input[type="datetime-local"] {
+            border: 2px solid rgba(61, 155, 139, 0.15);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            background: white;
+            color: #0d3d3d;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 180px;
+        }
+        .day-meta input[type="datetime-local"]:focus {
+            border-color: #3d9b8b;
+            box-shadow: 0 0 0 4px rgba(61, 155, 139, 0.1);
+            transform: translateY(-1px);
+        }
+        .day-meta input[type="datetime-local"]:hover {
+            border-color: #3d9b8b;
+        }
+
+        /* ===== FIELDS ===== */
+        .row-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px 20px;
+            margin-top: 4px;
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .field-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a7575;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        .field-group label:hover {
+            color: #1e6b5e;
+        }
+        .field-group select,
+        .field-group input[type="text"] {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 40px;
+            border: 2px solid rgba(61, 155, 139, 0.12);
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #0d3d3d;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233d9b8b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 16px center;
+            padding-left: 44px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .field-group select:focus,
+        .field-group input[type="text"]:focus {
+            border-color: #3d9b8b;
+            box-shadow: 0 0 0 4px rgba(61, 155, 139, 0.08), 0 4px 16px rgba(61, 155, 139, 0.04);
+            transform: translateY(-1px);
+        }
+        .field-group select:hover,
+        .field-group input[type="text"]:hover {
+            border-color: rgba(61, 155, 139, 0.3);
+            box-shadow: 0 4px 16px rgba(61, 155, 139, 0.04);
+        }
+
+        /* ===== MOOD BUTTONS ===== */
+        .mood-emoji-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #f4faf9, #ecf6f4);
+            padding: 8px 14px;
+            border-radius: 60px;
+            border: 2px solid rgba(61, 155, 139, 0.08);
+            transition: all 0.3s;
+        }
+        .mood-emoji-group:hover {
+            border-color: rgba(61, 155, 139, 0.2);
+            box-shadow: 0 4px 16px rgba(61, 155, 139, 0.04);
+        }
+        .mood-btn {
+            font-size: 28px;
+            background: none;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.3;
+            transform: scale(0.85);
+            line-height: 1;
+            position: relative;
+        }
+        .mood-btn::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(61, 155, 139, 0.05);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .mood-btn:hover {
+            opacity: 0.7;
+            transform: scale(0.95);
+            background: rgba(61, 155, 139, 0.04);
+        }
+        .mood-btn:hover::after {
+            opacity: 1;
+        }
+        .mood-btn.active {
+            opacity: 1;
+            transform: scale(1.1);
+            border-color: #3d9b8b;
+            background: rgba(61, 155, 139, 0.12);
+            box-shadow: 0 4px 20px rgba(61, 155, 139, 0.15);
+        }
+        .mood-btn.active::after {
+            opacity: 1;
+            background: rgba(61, 155, 139, 0.08);
+        }
+        .mood-btn.active:hover {
+            transform: scale(1.15);
+        }
+
+        /* ===== NOTE FIELD ===== */
+        .note-field {
+            grid-column: 1 / -1;
+            margin-top: 4px;
+            padding-top: 14px;
+            border-top: 2px dashed rgba(61, 155, 139, 0.08);
+        }
+        .note-field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a7575;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .note-field textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 28px;
+            border: 2px solid rgba(61, 155, 139, 0.12);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+            background: white;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #0d3d3d;
+            line-height: 1.7;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .note-field textarea:focus {
+            border-color: #3d9b8b;
+            box-shadow: 0 0 0 4px rgba(61, 155, 139, 0.06), 0 4px 16px rgba(61, 155, 139, 0.04);
+            transform: translateY(-1px);
+        }
+        .note-field textarea::placeholder {
+            color: #b0caca;
+            font-weight: 300;
+        }
+        .note-field textarea:hover {
+            border-color: rgba(61, 155, 139, 0.25);
+        }
+
+        /* ===== ACTIONS BUTTONS ===== */
+        .actions {
+            display: flex;
+            gap: 14px;
+            margin: 28px 0 22px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 16px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            min-width: 130px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            opacity: 0;
+            transition: all 0.4s;
+        }
+        .btn:hover::after {
+            opacity: 1;
+        }
+        .btn:active { transform: scale(0.95); }
+        
+        /* ألوان الأزرار المحسّنة */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 8px 28px rgba(102, 126, 234, 0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.45);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 8px 28px rgba(17, 153, 142, 0.35);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .btn-save:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(17, 153, 142, 0.45);
+        }
+        .btn-save .save-icon {
+            display: inline-block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 18px;
+        }
+        .btn-save:hover .save-icon {
+            transform: rotate(15deg) scale(1.15);
+        }
+        
+        .btn-pdf {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            box-shadow: 0 8px 28px rgba(245, 87, 108, 0.35);
+        }
+        .btn-pdf:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(245, 87, 108, 0.45);
+        }
+        
+        .btn-save-pdf {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 8px 28px rgba(79, 172, 254, 0.35);
+        }
+        .btn-save-pdf:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(79, 172, 254, 0.45);
+        }
+        
+        .btn-copy {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            box-shadow: 0 8px 28px rgba(67, 233, 123, 0.35);
+            color: #1a5a4f;
+        }
+        .btn-copy:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(67, 233, 123, 0.45);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            box-shadow: 0 8px 28px rgba(168, 237, 234, 0.35);
+            color: #1f5a52;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(168, 237, 234, 0.45);
+        }
+
+        /* ===== SAVE INDICATOR ===== */
+        .save-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .save-indicator.saved {
+            background: #38ef7d;
+            box-shadow: 0 0 20px rgba(56, 239, 125, 0.4);
+        }
+        .save-indicator.saving {
+            background: #f093fb;
+            box-shadow: 0 0 20px rgba(240, 147, 251, 0.4);
+            animation: pulse 0.8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+        }
+
+        /* ===== RESULT PANEL ===== */
+        .result-panel {
+            background: linear-gradient(135deg, #f4fbfa, #e8f5f2);
+            border-radius: 36px;
+            padding: 32px 28px;
+            margin-top: 28px;
+            border: 1px solid rgba(61, 155, 139, 0.15);
+            display: none;
+            animation: fadeSlide 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 40px rgba(30, 107, 94, 0.06);
+        }
+        .result-panel.show { display: block; }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(30px) scale(0.97); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== MEDICAL REPORT ===== */
+        .medical-report {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 32px 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+            direction: rtl;
+            border: 1px solid rgba(61, 155, 139, 0.08);
+        }
+        .medical-report h2 {
+            font-size: 24px;
+            color: #0d3d3d;
+            border-bottom: 3px solid rgba(61, 155, 139, 0.1);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        /* اسم الشخص في التقرير */
+        .report-person-name {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e6b5e;
+            background: linear-gradient(135deg, #e8f5f2, #d4eae6);
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(61, 155, 139, 0.1);
+            display: none;
+        }
+        .report-person-name.show {
+            display: block;
+        }
+        .report-person-name .name-label {
+            font-weight: 400;
+            color: #4a7575;
+        }
+        .report-person-name .name-value {
+            color: #b36b4a;
+            font-weight: 800;
+        }
+        .report-section {
+            margin-bottom: 24px;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            border: 1px solid rgba(61, 155, 139, 0.06);
+            transition: all 0.3s;
+        }
+        .report-section:hover {
+            border-color: rgba(61, 155, 139, 0.12);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+        .report-section h3 {
+            font-size: 17px;
+            color: #1a5a5a;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(61, 155, 139, 0.06);
+        }
+        .report-section p, .report-section li {
+            font-size: 14px;
+            color: #2a4f4f;
+            line-height: 1.9;
+            font-weight: 400;
+        }
+        .report-section ul {
+            list-style: none;
+            padding-right: 6px;
+        }
+        .report-section ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(61, 155, 139, 0.04);
+        }
+        .report-section ul li::before {
+            content: "✦ ";
+            color: #3d9b8b;
+            font-weight: 700;
+        }
+        .report-section ul li:last-child { border-bottom: none; }
+
+        /* ===== REPORT TABLE ===== */
+        .report-table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.4);
+            padding: 4px;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border-radius: 16px;
+            overflow: hidden;
+            min-width: 600px;
+        }
+        .report-table th {
+            background: linear-gradient(135deg, #2d6b6b, #1e5a5a);
+            color: white;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .report-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(61, 155, 139, 0.06);
+            background: rgba(255,255,255,0.6);
+            font-size: 13px;
+            color: #1a4a4a;
+        }
+        .report-table tr:nth-child(even) td { 
+            background: rgba(248, 252, 251, 0.7); 
+        }
+        .report-table tr:hover td { 
+            background: rgba(61, 155, 139, 0.06); 
+        }
+        .report-table tr:last-child td { border-bottom: none; }
+
+        /* ===== REC BOX ===== */
+        .rec-box-report {
+            padding: 20px 24px;
+            border-radius: 28px;
+            margin-top: 8px;
+            background: #eaf5f1;
+            border-right: 8px solid #3d9b8b;
+            transition: all 0.3s;
+        }
+        .rec-box-report:hover {
+            transform: translateX(-4px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .rec-box-report.red { border-right-color: #f5576c; background: #fce8ea; }
+        .rec-box-report.orange { border-right-color: #f093fb; background: #f8ecf8; }
+        .rec-box-report.yellow { border-right-color: #f6d365; background: #f8f4e0; }
+        .rec-box-report.green { border-right-color: #38ef7d; background: #eaf5f1; }
+        .rec-box-report p {
+            margin: 6px 0;
+        }
+        .rec-box-report strong {
+            font-size: 18px;
+        }
+
+        /* ===== DOCTOR RECOMMEND ===== */
+        .doctor-recommend {
+            background: linear-gradient(135deg, #f0f7f5, #e4efec);
+            padding: 18px 24px;
+            border-radius: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 17px;
+            color: #0d3d3d;
+            margin-top: 16px;
+            border: 2px solid rgba(61, 155, 139, 0.08);
+            transition: all 0.3s;
+        }
+        .doctor-recommend:hover {
+            border-color: #3d9b8b;
+            box-shadow: 0 4px 20px rgba(61, 155, 139, 0.06);
+        }
+        .doctor-recommend .highlight-rec {
+            color: #f5576c;
+            font-weight: 800;
+        }
+
+        /* ===== PDF ACTIONS INSIDE REPORT ===== */
+        .pdf-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 3px solid rgba(61, 155, 139, 0.06);
+        }
+        .pdf-actions .btn {
+            padding: 12px 22px;
+            font-size: 14px;
+            min-width: 110px;
+        }
+
+        /* ===== DISCLAIMER ===== */
+        .disclaimer {
+            font-size: 12px;
+            color: #7a9b9b;
+            text-align: center;
+            margin-top: 28px;
+            border-top: 2px solid rgba(61, 155, 139, 0.06);
+            padding-top: 20px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-msg {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(18, 69, 69, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container { padding: 22px 18px; border-radius: 36px; }
+            .header h1 { font-size: 26px; }
+            .row-fields { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .day-card { padding: 18px 16px; }
+            .day-header { flex-direction: column; align-items: stretch; }
+            .day-meta { flex-direction: column; align-items: stretch; }
+            .day-meta input[type="datetime-local"] { min-width: auto; width: 100%; }
+            .day-name-wrapper { flex-direction: column; align-items: stretch; }
+            .actions .btn { min-width: 100%; padding: 14px 20px; font-size: 14px; }
+            .medical-report { padding: 18px; }
+            .report-section { padding: 14px 16px; }
+            .report-table { font-size: 11px; min-width: 400px; }
+            .report-table th, .report-table td { padding: 8px 4px; }
+            .lang-selector { gap: 6px; padding: 8px 12px; border-radius: 40px; }
+            .lang-btn { padding: 6px 12px; font-size: 11px; }
+            .name-section { flex-direction: column; padding: 14px 18px; border-radius: 32px; }
+            .name-section input { min-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .row-fields { grid-template-columns: 1fr; }
+            .mood-emoji-group { justify-content: center; }
+            .btn { font-size: 13px; padding: 12px 16px; min-width: 100%; }
+            .container { padding: 16px 12px; border-radius: 28px; }
+            .header { padding: 20px 16px; }
+            .header h1 { font-size: 22px; }
+            .result-panel { padding: 18px 14px; }
+        }
+
+        /* ===== أنماط الطباعة لـ PDF ===== */
+        @media print {
+            body { background: white; padding: 10px; }
+            .container { box-shadow: none; border: none; padding: 20px; }
+            .header { background: #f0f8f6; }
+            .btn, .actions, .lang-selector, .name-section, .pdf-actions { display: none !important; }
+            .result-panel { display: block !important; background: white; box-shadow: none; border: 1px solid #ddd; }
+            .medical-report { background: white; box-shadow: none; border: 1px solid #eee; }
+            .report-table th { background: #2d6b6b !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .report-table td { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .report-table tr:nth-child(even) td { background: #f8fcfb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .rec-box-report { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .doctor-recommend { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .report-person-name { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>🧠 <span class="highlight" id="mainTitle">متتبع</span> <span id="mainTitle2">تحليل السلوك</span></h1>
+        <p id="mainSub">سجّل يومياتك مع التاريخ والملاحظات، واحصل على تقرير مفصل للفترة</p>
+        <span class="header-badge" id="headerBadge">👥 للمراهقين • أولياء الأمور • المختصين</span>
+    </div>
+
+    <!-- ===== NAME SECTION ===== -->
+    <div class="name-section">
+        <label for="personName">
+            <span class="name-icon">👤</span>
+            <span id="nameLabel">اسم الشخص:</span>
+        </label>
+        <input type="text" id="personName" placeholder="أدخل اسمك هنا..." value="">
+        <span style="font-size:12px;color:#7a9b9b;" id="nameHint">سيظهر في التقرير</span>
+    </div>
+
+    <!-- ===== LANGUAGE SELECTOR ===== -->
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="ar">🇸🇦 العربية</button>
+        <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+        <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+        <button class="lang-btn" data-lang="pt">🇵🇹 Português</button>
+    </div>
+
+    <!-- ===== DAYS ===== -->
+    <div id="daysContainer"></div>
+
+    <!-- ===== ACTIONS ===== -->
+    <div class="actions">
+        <button class="btn btn-primary" id="analyzeBtn">📊 <span id="btnAnalyze">حلّل وأنشئ التقرير</span></button>
+        <button class="btn btn-save" id="saveBtn">💾 <span class="save-icon">⬇</span> <span id="btnSave">حفظ البيانات</span> <span class="save-indicator saved" id="saveIndicator"></span></button>
+        <button class="btn btn-pdf" id="pdfBtn">📄 <span id="btnPdf">تحميل PDF</span></button>
+        <button class="btn btn-save-pdf" id="savePdfBtn">💾 <span id="btnSavePdf">حفظ PDF</span></button>
+        <button class="btn btn-copy" id="copyBtn">📋 <span id="btnCopy">نسخ التقرير</span></button>
+        <button class="btn btn-secondary" id="resetBtn">↺ <span id="btnReset">إعادة ضبط</span></button>
+    </div>
+
+    <!-- ===== RESULT PANEL ===== -->
+    <div class="result-panel" id="resultPanel">
+        <div class="medical-report" id="medicalReport">
+            <h2 id="reportTitle">📋 تقرير تحليل السلوك للفترة</h2>
+            <!-- اسم الشخص في التقرير -->
+            <div class="report-person-name" id="reportPersonName">
+                <span class="name-label">👤 اسم الشخص:</span>
+                <span class="name-value" id="reportNameValue">---</span>
+            </div>
+            <div id="reportContent"></div>
+            <div class="pdf-actions">
+                <button class="btn btn-pdf" id="pdfBtnInline">📄 <span id="btnPdfInline">تحميل PDF</span></button>
+                <button class="btn btn-save-pdf" id="savePdfBtnInline">💾 <span id="btnSavePdfInline">حفظ PDF</span></button>
+                <button class="btn btn-copy" id="copyBtnInline">📋 <span id="btnCopyInline">نسخ التقرير</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DISCLAIMER ===== -->
+    <div class="disclaimer" id="disclaimerText">
+        ⚠️ هذا التقرير لأغراض مساعدة وتوعوية، ولا يغني عن التشخيص الطبي المختص. يُستخدم كمدخل للحوار مع الطبيب.
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+    (function() {
+        // ===== منع سجل المتصفح =====
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+            window.addEventListener('popstate', function(event) {
+                window.history.pushState(null, null, window.location.href);
+            });
+        }
+
+        // ===== TRANSLATIONS =====
+        const LANGUAGES = {
+            ar: {
+                name: 'العربية',
+                mainTitle: 'متتبع',
+                mainTitle2: 'تحليل السلوك',
+                mainSub: 'سجّل يومياتك مع التاريخ والملاحظات، واحصل على تقرير مفصل للفترة',
+                headerBadge: '👥 للمراهقين • أولياء الأمور • المختصين',
+                btnAnalyze: 'حلّل وأنشئ التقرير',
+                btnSave: 'حفظ البيانات',
+                btnPdf: 'تحميل PDF',
+                btnSavePdf: 'حفظ PDF',
+                btnCopy: 'نسخ التقرير',
+                btnReset: 'إعادة ضبط',
+                btnPdfInline: 'تحميل PDF',
+                btnSavePdfInline: 'حفظ PDF',
+                btnCopyInline: 'نسخ التقرير',
+                nameLabel: 'اسم الشخص:',
+                namePlaceholder: 'أدخل اسمك هنا...',
+                nameHint: 'سيظهر في التقرير',
+                days: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+                moodLabel: 'المزاج',
+                triggerLabel: 'المحفز',
+                reactionLabel: 'رد الفعل',
+                durationLabel: 'المدة',
+                noteLabel: '📝 ملاحظة إضافية',
+                notePlaceholder: 'اكتب أي تفاصيل إضافية عن الموقف أو المشاعر...',
+                dateLabel: '📅 التاريخ والوقت',
+                daySelectLabel: 'اختر اليوم',
+                mood: {1:'منخفض جداً',2:'منخفض',3:'متوسط',4:'جيد',5:'ممتاز'},
+                triggers: {none:'لا شيء', study:'ضغط دراسي', family:'خلاف عائلي', bullying:'تنمر', rejection:'رفض', boredom:'ملل', social:'موقف اجتماعي', other:'أخرى'},
+                reactions: {calm:'هدوء', withdraw:'انسحاب', yell:'صراخ', verbal:'عنف لفظي', physical:'عنف جسدي', ignore:'تجاهل'},
+                durations: {short:'قصير', medium:'متوسط', long:'طويل'},
+                reportTitle: '📋 تقرير تحليل السلوك للفترة',
+                sectionLog: '📅 سجل الأيام المتطور',
+                sectionStats: '📊 ملخص إحصائي',
+                sectionNotes: '📝 ملاحظات المسجل',
+                sectionEval: '🧠 التقييم السلوكي',
+                avgMood: 'متوسط المزاج',
+                aggressCount: 'عدد الردود الحادة',
+                peakDay: 'أكثر يوم توتر',
+                topTrigger: 'المحفز الأكثر تكراراً',
+                weightedScore: 'مؤشر السلوك المرجح',
+                doctorRec: '🩺 توصية المختص',
+                green: 'سلوك متوازن',
+                greenDesc: 'يظهر الملف نمطاً مستقراً مع ردود فعل هادئة في معظم المواقف.',
+                greenRec: 'لا حاجة لزيارة مختص حالياً، مع استمرار الرعاية الذاتية.',
+                yellow: 'سلوك حاد خفيف',
+                yellowDesc: 'توجد بعض ردود الفعل الحادة في مواقف محددة، لكنها غير منتشرة.',
+                yellowRec: 'يوصى بالمراقبة المستمرة، وإن استمر النمط يُنصح باستشارة مختص.',
+                orange: 'سلوك حاد ملحوظ',
+                orangeDesc: 'تكرار ملحوظ للردود الحادة، خاصة تحت ضغوط معينة.',
+                orangeRec: 'يُنصح بزيارة معالج نفسي لتقييم أعمق ووضع خطة تدخل.',
+                red: 'سلوك حاد يستدعي التدخل',
+                redDesc: 'نمط واضح من السلوك الحاد مع تأثير على الأداء اليومي.',
+                redRec: 'يوصى بشدة بزيارة طبيب نفسي أو معالج مختص في أقرب وقت.',
+                generated: 'تم إنشاء هذا التقرير في',
+                copySuccess: '📋 تم نسخ التقرير إلى الحافظة!',
+                pdfSuccess: '✅ تم تحميل التقرير بنجاح!',
+                pdfError: '❌ حدث خطأ أثناء التحميل، حاول مجدداً.',
+                pdfSaving: '⏳ جاري تحضير ملف PDF...',
+                savePdfSuccess: '💾 تم حفظ التقرير كـ PDF داخل الصفحة!',
+                resetConfirm: 'هل أنت متأكد؟ سيتم مسح جميع التسجيلات.',
+                resetDone: '↺ تم إعادة ضبط جميع البيانات.',
+                noReport: '⚠️ أنشئ التقرير أولاً بالضغط على "حلّل"',
+                analyzeFirst: 'أنشئ التقرير أولاً',
+                disclaimer: '⚠️ هذا التقرير لأغراض مساعدة وتوعوية، ولا يغني عن التشخيص الطبي المختص. يُستخدم كمدخل للحوار مع الطبيب.',
+                langChanged: 'تم تغيير اللغة إلى العربية',
+                saveSuccess: '💾 تم حفظ البيانات بنجاح!',
+                saveManual: '💾 جاري حفظ البيانات...',
+                saveError: '❌ حدث خطأ أثناء حفظ البيانات.',
+                personNameLabel: 'اسم الشخص:'
+            },
+            fr: {
+                name: 'Français',
+                mainTitle: 'Suivi',
+                mainTitle2: "d'analyse comportementale",
+                mainSub: "Enregistrez votre journal avec la date et les notes, et obtenez un rapport détaillé pour la période",
+                headerBadge: '👥 Pour adolescents • Parents • Spécialistes',
+                btnAnalyze: 'Analyser et générer le rapport',
+                btnSave: 'Sauvegarder les données',
+                btnPdf: 'Télécharger PDF',
+                btnSavePdf: 'Enregistrer PDF',
+                btnCopy: 'Copier le rapport',
+                btnReset: 'Réinitialiser',
+                btnPdfInline: 'Télécharger PDF',
+                btnSavePdfInline: 'Enregistrer PDF',
+                btnCopyInline: 'Copier le rapport',
+                nameLabel: 'Nom de la personne:',
+                namePlaceholder: 'Entrez votre nom ici...',
+                nameHint: 'Apparaîtra dans le rapport',
+                days: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+                moodLabel: 'Humeur',
+                triggerLabel: 'Déclencheur',
+                reactionLabel: 'Réaction',
+                durationLabel: 'Durée',
+                noteLabel: '📝 Note additionnelle',
+                notePlaceholder: "Écrivez des détails supplémentaires sur la situation ou les émotions...",
+                dateLabel: '📅 Date et heure',
+                daySelectLabel: 'Choisir le jour',
+                mood: {1:'Très bas',2:'Bas',3:'Moyen',4:'Bon',5:'Excellent'},
+                triggers: {none:'Rien', study:'Pression scolaire', family:'Conflit familial', bullying:'Harcèlement', rejection:'Rejet', boredom:'Ennui', social:'Situation sociale', other:'Autre'},
+                reactions: {calm:'Calme', withdraw:'Retrait', yell:'Cri', verbal:'Violence verbale', physical:'Violence physique', ignore:'Ignorance'},
+                durations: {short:'Court', medium:'Moyen', long:'Long'},
+                reportTitle: "📋 Rapport d'analyse comportementale",
+                sectionLog: '📅 Journal des jours avancé',
+                sectionStats: '📊 Résumé statistique',
+                sectionNotes: '📝 Notes enregistrées',
+                sectionEval: '🧠 Évaluation comportementale',
+                avgMood: 'Humeur moyenne',
+                aggressCount: 'Réactions intenses',
+                peakDay: 'Jour le plus tendu',
+                topTrigger: 'Déclencheur le plus fréquent',
+                weightedScore: 'Score comportemental pondéré',
+                doctorRec: '🩺 Recommandation du spécialiste',
+                green: 'Comportement équilibré',
+                greenDesc: 'Le profil montre un schéma stable avec des réactions calmes.',
+                greenRec: 'Pas de consultation nécessaire pour le moment.',
+                yellow: 'Comportement légèrement intense',
+                yellowDesc: 'Quelques réactions intenses dans des situations spécifiques.',
+                yellowRec: 'Surveillance recommandée, consulter si persiste.',
+                orange: 'Comportement intense notable',
+                orangeDesc: 'Réactions intenses fréquentes, surtout sous pression.',
+                orangeRec: "Consulter un psychologue pour une évaluation approfondie.",
+                red: 'Comportement nécessitant une intervention',
+                redDesc: 'Schéma clair de comportement intense affectant le quotidien.',
+                redRec: 'Consulter un psychiatre ou thérapeute dès que possible.',
+                generated: 'Généré le',
+                copySuccess: '📋 Rapport copié dans le presse-papiers !',
+                pdfSuccess: '✅ PDF téléchargé avec succès !',
+                pdfError: '❌ Erreur lors du téléchargement.',
+                pdfSaving: '⏳ Préparation du PDF...',
+                savePdfSuccess: '💾 PDF sauvegardé dans la page !',
+                resetConfirm: 'Êtes-vous sûr ? Toutes les données seront effacées.',
+                resetDone: '↺ Toutes les données ont été réinitialisées.',
+                noReport: "⚠️ Générez d'abord le rapport.",
+                analyzeFirst: "Générez d'abord le rapport",
+                disclaimer: "⚠️ Ce rapport est à des fins d'aide et de sensibilisation uniquement, et ne remplace pas un diagnostic médical spécialisé. Il est utilisé comme point de départ pour le dialogue avec le médecin.",
+                langChanged: 'Langue changée vers Français',
+                saveSuccess: '💾 Données sauvegardées avec succès !',
+                saveManual: '💾 Sauvegarde des données en cours...',
+                saveError: '❌ Erreur lors de la sauvegarde.',
+                personNameLabel: 'Nom:'
+            },
+            en: {
+                name: 'English',
+                mainTitle: 'Behavior',
+                mainTitle2: 'Tracking & Analysis',
+                mainSub: 'Log your daily entries with date and notes, and get a detailed period report',
+                headerBadge: '👥 For Teens • Parents • Specialists',
+                btnAnalyze: 'Analyze & Generate Report',
+                btnSave: 'Save Data',
+                btnPdf: 'Download PDF',
+                btnSavePdf: 'Save PDF',
+                btnCopy: 'Copy Report',
+                btnReset: 'Reset',
+                btnPdfInline: 'Download PDF',
+                btnSavePdfInline: 'Save PDF',
+                btnCopyInline: 'Copy Report',
+                nameLabel: 'Person Name:',
+                namePlaceholder: 'Enter your name here...',
+                nameHint: 'Will appear in the report',
+                days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                moodLabel: 'Mood',
+                triggerLabel: 'Trigger',
+                reactionLabel: 'Reaction',
+                durationLabel: 'Duration',
+                noteLabel: '📝 Additional Note',
+                notePlaceholder: 'Write any additional details about the situation or feelings...',
+                dateLabel: '📅 Date & Time',
+                daySelectLabel: 'Select Day',
+                mood: {1:'Very low',2:'Low',3:'Average',4:'Good',5:'Excellent'},
+                triggers: {none:'None', study:'Academic pressure', family:'Family conflict', bullying:'Bullying', rejection:'Rejection', boredom:'Boredom', social:'Social situation', other:'Other'},
+                reactions: {calm:'Calm', withdraw:'Withdrawal', yell:'Yelling', verbal:'Verbal aggression', physical:'Physical aggression', ignore:'Ignoring'},
+                durations: {short:'Short', medium:'Medium', long:'Long'},
+                reportTitle: '📋 Behavioral Analysis Report',
+                sectionLog: '📅 Advanced Daily Log',
+                sectionStats: '📊 Statistical Summary',
+                sectionNotes: '📝 Recorded Notes',
+                sectionEval: '🧠 Behavioral Assessment',
+                avgMood: 'Average Mood',
+                aggressCount: 'Intense Reactions',
+                peakDay: 'Most Tense Day',
+                topTrigger: 'Most Frequent Trigger',
+                weightedScore: 'Weighted Behavior Score',
+                doctorRec: '🩺 Specialist Recommendation',
+                green: 'Balanced Behavior',
+                greenDesc: 'Profile shows stable pattern with calm reactions.',
+                greenRec: 'No consultation needed at this time.',
+                yellow: 'Mild Intense Behavior',
+                yellowDesc: 'Some intense reactions in specific situations.',
+                yellowRec: 'Monitor and consult if pattern persists.',
+                orange: 'Notable Intense Behavior',
+                orangeDesc: 'Frequent intense reactions, especially under pressure.',
+                orangeRec: 'Consult a psychologist for deeper assessment.',
+                red: 'Behavior Requiring Intervention',
+                redDesc: 'Clear pattern of intense behavior affecting daily life.',
+                redRec: 'Strongly recommend seeing a psychiatrist or therapist.',
+                generated: 'Generated on',
+                copySuccess: '📋 Report copied to clipboard!',
+                pdfSuccess: '✅ PDF downloaded successfully!',
+                pdfError: '❌ Error during download.',
+                pdfSaving: '⏳ Preparing PDF...',
+                savePdfSuccess: '💾 PDF saved within the page!',
+                resetConfirm: 'Are you sure? All data will be erased.',
+                resetDone: '↺ All data has been reset.',
+                noReport: '⚠️ Generate the report first.',
+                analyzeFirst: 'Generate the report first',
+                disclaimer: '⚠️ This report is for assistive and awareness purposes only, and does not replace specialist medical diagnosis. It is used as an entry point for dialogue with the doctor.',
+                langChanged: 'Language changed to English',
+                saveSuccess: '💾 Data saved successfully!',
+                saveManual: '💾 Saving data...',
+                saveError: '❌ Error saving data.',
+                personNameLabel: 'Name:'
+            },
+            es: {
+                name: 'Español',
+                mainTitle: 'Seguimiento',
+                mainTitle2: 'de análisis conductual',
+                mainSub: 'Registra tu diario con fecha y notas, y obtén un informe detallado del período',
+                headerBadge: '👥 Para adolescentes • Padres • Especialistas',
+                btnAnalyze: 'Analizar y generar informe',
+                btnSave: 'Guardar datos',
+                btnPdf: 'Descargar PDF',
+                btnSavePdf: 'Guardar PDF',
+                btnCopy: 'Copiar informe',
+                btnReset: 'Reiniciar',
+                btnPdfInline: 'Descargar PDF',
+                btnSavePdfInline: 'Guardar PDF',
+                btnCopyInline: 'Copiar informe',
+                nameLabel: 'Nombre de la persona:',
+                namePlaceholder: 'Introduzca su nombre aquí...',
+                nameHint: 'Aparecerá en el informe',
+                days: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                moodLabel: 'Estado de ánimo',
+                triggerLabel: 'Desencadenante',
+                reactionLabel: 'Reacción',
+                durationLabel: 'Duración',
+                noteLabel: '📝 Nota adicional',
+                notePlaceholder: 'Escribe detalles adicionales sobre la situación o emociones...',
+                dateLabel: '📅 Fecha y hora',
+                daySelectLabel: 'Seleccionar día',
+                mood: {1:'Muy bajo',2:'Bajo',3:'Medio',4:'Bueno',5:'Excelente'},
+                triggers: {none:'Nada', study:'Presión académica', family:'Conflicto familiar', bullying:'Acoso', rejection:'Rechazo', boredom:'Aburrimiento', social:'Situación social', other:'Otro'},
+                reactions: {calm:'Calma', withdraw:'Retiro', yell:'Grito', verbal:'Agresión verbal', physical:'Agresión física', ignore:'Ignorar'},
+                durations: {short:'Corto', medium:'Medio', long:'Largo'},
+                reportTitle: '📋 Informe de Análisis de Conducta',
+                sectionLog: '📅 Registro Diario Avanzado',
+                sectionStats: '📊 Resumen Estadístico',
+                sectionNotes: '📝 Notas Registradas',
+                sectionEval: '🧠 Evaluación Conductual',
+                avgMood: 'Estado de ánimo promedio',
+                aggressCount: 'Reacciones intensas',
+                peakDay: 'Día más tenso',
+                topTrigger: 'Desencadenante más frecuente',
+                weightedScore: 'Puntuación conductual ponderada',
+                doctorRec: '🩺 Recomendación del especialista',
+                green: 'Conducta equilibrada',
+                greenDesc: 'Perfil estable con reacciones tranquilas.',
+                greenRec: 'No se necesita consulta por ahora.',
+                yellow: 'Conducta ligeramente intensa',
+                yellowDesc: 'Algunas reacciones intensas en situaciones específicas.',
+                yellowRec: 'Monitorear y consultar si persiste.',
+                orange: 'Conducta intensa notable',
+                orangeDesc: 'Reacciones intensas frecuentes, especialmente bajo presión.',
+                orangeRec: 'Consultar a un psicólogo para evaluación.',
+                red: 'Conducta que requiere intervención',
+                redDesc: 'Patrón claro de conducta intensa que afecta la vida diaria.',
+                redRec: 'Recomendación de visitar a un psiquiatra o terapeuta.',
+                generated: 'Generado el',
+                copySuccess: '📋 Informe copiado al portapapeles!',
+                pdfSuccess: '✅ PDF descargado con éxito!',
+                pdfError: '❌ Error durante la descarga.',
+                pdfSaving: '⏳ Preparando PDF...',
+                savePdfSuccess: '💾 PDF guardado en la página!',
+                resetConfirm: '¿Estás seguro? Todos los datos serán borrados.',
+                resetDone: '↺ Todos los datos han sido restablecidos.',
+                noReport: '⚠️ Genera el informe primero.',
+                analyzeFirst: 'Genera el informe primero',
+                disclaimer: '⚠️ Este informe es solo para fines de asistencia y concienciación, y no reemplaza el diagnóstico médico especializado. Se utiliza como punto de partida para el diálogo con el médico.',
+                langChanged: 'Idioma cambiado a Español',
+                saveSuccess: '💾 Datos guardados con éxito!',
+                saveManual: '💾 Guardando datos...',
+                saveError: '❌ Error al guardar datos.',
+                personNameLabel: 'Nombre:'
+            },
+            de: {
+                name: 'Deutsch',
+                mainTitle: 'Verhaltens-',
+                mainTitle2: 'analyse & Tracking',
+                mainSub: 'Tagebuch mit Datum und Notizen, erhalten Sie einen detaillierten Periodenbericht',
+                headerBadge: '👥 Für Jugendliche • Eltern • Spezialisten',
+                btnAnalyze: 'Analysieren & Bericht erstellen',
+                btnSave: 'Daten speichern',
+                btnPdf: 'PDF herunterladen',
+                btnSavePdf: 'PDF speichern',
+                btnCopy: 'Bericht kopieren',
+                btnReset: 'Zurücksetzen',
+                btnPdfInline: 'PDF herunterladen',
+                btnSavePdfInline: 'PDF speichern',
+                btnCopyInline: 'Bericht kopieren',
+                nameLabel: 'Name der Person:',
+                namePlaceholder: 'Geben Sie hier Ihren Namen ein...',
+                nameHint: 'Erscheint im Bericht',
+                days: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+                moodLabel: 'Stimmung',
+                triggerLabel: 'Auslöser',
+                reactionLabel: 'Reaktion',
+                durationLabel: 'Dauer',
+                noteLabel: '📝 Zusätzliche Notiz',
+                notePlaceholder: 'Schreiben Sie zusätzliche Details zur Situation oder zu den Gefühlen...',
+                dateLabel: '📅 Datum & Uhrzeit',
+                daySelectLabel: 'Tag auswählen',
+                mood: {1:'Sehr niedrig',2:'Niedrig',3:'Mittel',4:'Gut',5:'Exzellent'},
+                triggers: {none:'Nichts', study:'Schulischer Druck', family:'Familienkonflikt', bullying:'Mobbing', rejection:'Ablehnung', boredom:'Langeweile', social:'Soziale Situation', other:'Andere'},
+                reactions: {calm:'Ruhe', withdraw:'Rückzug', yell:'Schreien', verbal:'Verbale Gewalt', physical:'Körperliche Gewalt', ignore:'Ignorieren'},
+                durations: {short:'Kurz', medium:'Mittel', long:'Lang'},
+                reportTitle: '📋 Verhaltensanalyse-Bericht',
+                sectionLog: '📅 Erweitertes Tagebuch',
+                sectionStats: '📊 Statistische Zusammenfassung',
+                sectionNotes: '📝 Aufgezeichnete Notizen',
+                sectionEval: '🧠 Verhaltensbewertung',
+                avgMood: 'Durchschnittliche Stimmung',
+                aggressCount: 'Intensive Reaktionen',
+                peakDay: 'Angespanntester Tag',
+                topTrigger: 'Häufigster Auslöser',
+                weightedScore: 'Gewichteter Verhaltensscore',
+                doctorRec: '🩺 Empfehlung des Spezialisten',
+                green: 'Ausgeglichenes Verhalten',
+                greenDesc: 'Stabiles Muster mit ruhigen Reaktionen.',
+                greenRec: 'Keine Konsultation erforderlich.',
+                yellow: 'Leicht intensives Verhalten',
+                yellowDesc: 'Einige intensive Reaktionen in bestimmten Situationen.',
+                yellowRec: 'Beobachten und bei Persistenz konsultieren.',
+                orange: 'Deutlich intensives Verhalten',
+                orangeDesc: 'Häufige intensive Reaktionen, besonders unter Druck.',
+                orangeRec: 'Psychologen zur vertieften Bewertung aufsuchen.',
+                red: 'Verhalten erfordert Intervention',
+                redDesc: 'Klares Muster intensiven Verhaltens.',
+                redRec: 'Dringend Psychiater oder Therapeut aufsuchen.',
+                generated: 'Erstellt am',
+                copySuccess: '📋 Bericht in die Zwischenablage kopiert!',
+                pdfSuccess: '✅ PDF erfolgreich heruntergeladen!',
+                pdfError: '❌ Fehler beim Herunterladen.',
+                pdfSaving: '⏳ PDF wird vorbereitet...',
+                savePdfSuccess: '💾 PDF innerhalb der Seite gespeichert!',
+                resetConfirm: 'Sind Sie sicher? Alle Daten werden gelöscht.',
+                resetDone: '↺ Alle Daten wurden zurückgesetzt.',
+                noReport: '⚠️ Erstellen Sie zuerst den Bericht.',
+                analyzeFirst: 'Erstellen Sie zuerst den Bericht',
+                disclaimer: '⚠️ Dieser Bericht dient nur zu Hilfs- und Sensibilisierungszwecken und ersetzt keine spezialisierte medizinische Diagnose. Er wird als Einstieg in den Dialog mit dem Arzt verwendet.',
+                langChanged: 'Sprache geändert auf Deutsch',
+                saveSuccess: '💾 Daten erfolgreich gespeichert!',
+                saveManual: '💾 Daten werden gespeichert...',
+                saveError: '❌ Fehler beim Speichern.',
+                personNameLabel: 'Name:'
+            },
+            it: {
+                name: 'Italiano',
+                mainTitle: 'Monitoraggio',
+                mainTitle2: "dell'analisi comportamentale",
+                mainSub: 'Registra il tuo diario con data e note, ottieni un rapporto dettagliato del periodo',
+                headerBadge: '👥 Per adolescenti • Genitori • Specialisti',
+                btnAnalyze: 'Analizza e genera rapporto',
+                btnSave: 'Salva dati',
+                btnPdf: 'Scarica PDF',
+                btnSavePdf: 'Salva PDF',
+                btnCopy: 'Copia rapporto',
+                btnReset: 'Reimposta',
+                btnPdfInline: 'Scarica PDF',
+                btnSavePdfInline: 'Salva PDF',
+                btnCopyInline: 'Copia rapporto',
+                nameLabel: 'Nome della persona:',
+                namePlaceholder: 'Inserisci il tuo nome qui...',
+                nameHint: 'Apparirà nel rapporto',
+                days: ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
+                moodLabel: 'Umore',
+                triggerLabel: 'Innesco',
+                reactionLabel: 'Reazione',
+                durationLabel: 'Durata',
+                noteLabel: '📝 Nota aggiuntiva',
+                notePlaceholder: 'Scrivi dettagli aggiuntivi sulla situazione o sulle emozioni...',
+                dateLabel: '📅 Data e ora',
+                daySelectLabel: 'Seleziona giorno',
+                mood: {1:'Molto basso',2:'Basso',3:'Medio',4:'Buono',5:'Eccellente'},
+                triggers: {none:'Niente', study:'Pressione scolastica', family:'Conflitto familiare', bullying:'Bullismo', rejection:'Rifiuto', boredom:'Noia', social:'Situazione sociale', other:'Altro'},
+                reactions: {calm:'Calma', withdraw:'Ritiro', yell:'Urlo', verbal:'Aggressività verbale', physical:'Aggressività fisica', ignore:'Ignorare'},
+                durations: {short:'Breve', medium:'Medio', long:'Lungo'},
+                reportTitle: '📋 Rapporto di Analisi Comportamentale',
+                sectionLog: '📅 Registro Giornaliero Avanzato',
+                sectionStats: '📊 Riepilogo Statistico',
+                sectionNotes: '📝 Note Registrate',
+                sectionEval: '🧠 Valutazione Comportamentale',
+                avgMood: 'Umore medio',
+                aggressCount: 'Reazioni intense',
+                peakDay: 'Giorno più teso',
+                topTrigger: 'Innesco più frequente',
+                weightedScore: 'Punteggio comportamentale ponderato',
+                doctorRec: '🩺 Raccomandazione dello specialista',
+                green: 'Comportamento equilibrato',
+                greenDesc: 'Profilo stabile con reazioni calme.',
+                greenRec: 'Nessuna consultazione necessaria.',
+                yellow: 'Comportamento leggermente intenso',
+                yellowDesc: 'Alcune reazioni intense in situazioni specifiche.',
+                yellowRec: 'Monitorare e consultare se persiste.',
+                orange: 'Comportamento intenso notevole',
+                orangeDesc: 'Reazioni intense frequenti, soprattutto sotto pressione.',
+                orangeRec: 'Consultare uno psicologo per valutazione.',
+                red: 'Comportamento che richiede intervento',
+                redDesc: 'Modello chiaro di comportamento intenso.',
+                redRec: 'Consigliata visita a uno psichiatra o terapeuta.',
+                generated: 'Generato il',
+                copySuccess: '📋 Rapporto copiato negli appunti!',
+                pdfSuccess: '✅ PDF scaricato con successo!',
+                pdfError: '❌ Errore durante il download.',
+                pdfSaving: '⏳ Preparazione PDF...',
+                savePdfSuccess: '💾 PDF salvato nella pagina!',
+                resetConfirm: 'Sei sicuro? Tutti i dati verranno cancellati.',
+                resetDone: '↺ Tutti i dati sono stati resettati.',
+                noReport: '⚠️ Genera prima il rapporto.',
+                analyzeFirst: 'Genera prima il rapporto',
+                disclaimer: '⚠️ Questo rapporto è solo a scopo di assistenza e sensibilizzazione e non sostituisce la diagnosi medica specialistica. Viene utilizzato come punto di partenza per il dialogo con il medico.',
+                langChanged: 'Lingua cambiata in Italiano',
+                saveSuccess: '💾 Dati salvati con successo!',
+                saveManual: '💾 Salvataggio dati...',
+                saveError: '❌ Errore durante il salvataggio.',
+                personNameLabel: 'Nome:'
+            },
+            pt: {
+                name: 'Português',
+                mainTitle: 'Monitoramento',
+                mainTitle2: 'da análise comportamental',
+                mainSub: 'Registre seu diário com data e notas, obtenha um relatório detalhado do período',
+                headerBadge: '👥 Para adolescentes • Pais • Especialistas',
+                btnAnalyze: 'Analisar e gerar relatório',
+                btnSave: 'Salvar dados',
+                btnPdf: 'Baixar PDF',
+                btnSavePdf: 'Salvar PDF',
+                btnCopy: 'Copiar relatório',
+                btnReset: 'Reiniciar',
+                btnPdfInline: 'Baixar PDF',
+                btnSavePdfInline: 'Salvar PDF',
+                btnCopyInline: 'Copiar relatório',
+                nameLabel: 'Nome da pessoa:',
+                namePlaceholder: 'Digite seu nome aqui...',
+                nameHint: 'Aparecerá no relatório',
+                days: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                moodLabel: 'Humor',
+                triggerLabel: 'Gatilho',
+                reactionLabel: 'Reação',
+                durationLabel: 'Duração',
+                noteLabel: '📝 Nota adicional',
+                notePlaceholder: 'Escreva detalhes adicionais sobre a situação ou emoções...',
+                dateLabel: '📅 Data e hora',
+                daySelectLabel: 'Selecionar dia',
+                mood: {1:'Muito baixo',2:'Baixo',3:'Médio',4:'Bom',5:'Excelente'},
+                triggers: {none:'Nada', study:'Pressão acadêmica', family:'Conflito familiar', bullying:'Bullying', rejection:'Rejeição', boredom:'Tédio', social:'Situação social', other:'Outro'},
+                reactions: {calm:'Calma', withdraw:'Retraimento', yell:'Grito', verbal:'Agressão verbal', physical:'Agressão física', ignore:'Ignorar'},
+                durations: {short:'Curto', medium:'Médio', long:'Longo'},
+                reportTitle: '📋 Relatório de Análise Comportamental',
+                sectionLog: '📅 Registro Diário Avançado',
+                sectionStats: '📊 Resumo Estatístico',
+                sectionNotes: '📝 Notas Registradas',
+                sectionEval: '🧠 Avaliação Comportamental',
+                avgMood: 'Humor médio',
+                aggressCount: 'Reações intensas',
+                peakDay: 'Dia mais tenso',
+                topTrigger: 'Gatilho mais frequente',
+                weightedScore: 'Pontuação comportamental ponderada',
+                doctorRec: '🩺 Recomendação do especialista',
+                green: 'Comportamento equilibrado',
+                greenDesc: 'Perfil estável com reações calmas.',
+                greenRec: 'Nenhuma consulta necessária no momento.',
+                yellow: 'Comportamento levemente intenso',
+                yellowDesc: 'Algumas reações intensas em situações específicas.',
+                yellowRec: 'Monitorar e consultar se persistir.',
+                orange: 'Comportamento intenso notável',
+                orangeDesc: 'Reações intensas frequentes, especialmente sob pressão.',
+                orangeRec: 'Consultar um psicólogo para avaliação.',
+                red: 'Comportamento que requer intervenção',
+                redDesc: 'Padrão claro de comportamento intenso.',
+                redRec: 'Recomenda-se consultar um psiquiatra ou terapeuta.',
+                generated: 'Gerado em',
+                copySuccess: '📋 Relatório copiado para a área de transferência!',
+                pdfSuccess: '✅ PDF baixado com sucesso!',
+                pdfError: '❌ Erro durante o download.',
+                pdfSaving: '⏳ Preparando PDF...',
+                savePdfSuccess: '💾 PDF salvo na página!',
+                resetConfirm: 'Tem certeza? Todos os dados serão apagados.',
+                resetDone: '↺ Todos os dados foram reiniciados.',
+                noReport: '⚠️ Gere o relatório primeiro.',
+                analyzeFirst: 'Gere o relatório primeiro',
+                disclaimer: '⚠️ Este relatório é apenas para fins de assistência e conscientização, e não substitui o diagnóstico médico especializado. É usado como ponto de entrada para o diálogo com o médico.',
+                langChanged: 'Idioma alterado para Português',
+                saveSuccess: '💾 Dados salvos com sucesso!',
+                saveManual: '💾 Salvando dados...',
+                saveError: '❌ Erro ao salvar dados.',
+                personNameLabel: 'Nome:'
+            }
+        };
+
+        // ===== VARIABLES =====
+        const STORAGE_KEY = 'appixi_teen_behavior_advanced_v4';
+        const NAME_STORAGE_KEY = 'appixi_person_name';
+        let currentLang = 'ar';
+        let weekData = [];
+        let isSaving = false;
+        let personName = '';
+        const ALL_DAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+        function defaultDay(index) {
+            const now = new Date();
+            const d = new Date(now);
+            d.setDate(d.getDate() - (6 - index));
+            const iso = d.toISOString().slice(0, 16);
+            return { mood: 3, trigger: 'none', reaction: 'calm', duration: 'short', note: '', datetime: iso, dayName: ALL_DAYS[index] };
+        }
+
+        function getLang() { return LANGUAGES[currentLang] || LANGUAGES.ar; }
+
+        // ===== STORAGE =====
+        function loadData() {
+            // تحميل الاسم
+            const storedName = localStorage.getItem(NAME_STORAGE_KEY);
+            if (storedName) {
+                personName = storedName;
+                document.getElementById('personName').value = personName;
+            }
+            
+            // تحميل بيانات الأيام
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length === 7) {
+                        weekData = parsed.map((d, i) => ({
+                            mood: d.mood || 3,
+                            trigger: d.trigger || 'none',
+                            reaction: d.reaction || 'calm',
+                            duration: d.duration || 'short',
+                            note: d.note || '',
+                            datetime: d.datetime || defaultDay(i).datetime,
+                            dayName: d.dayName || ALL_DAYS[i]
+                        }));
+                        return;
+                    }
+                } catch(e) {}
+            }
+            weekData = Array.from({ length: 7 }, (_, i) => defaultDay(i));
+            saveData();
+        }
+
+        function saveData(showToastMsg = true) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(weekData));
+                // حفظ الاسم
+                const nameInput = document.getElementById('personName');
+                if (nameInput) {
+                    localStorage.setItem(NAME_STORAGE_KEY, nameInput.value);
+                }
+                const indicator = document.getElementById('saveIndicator');
+                if (indicator) indicator.className = 'save-indicator saved';
+                if (showToastMsg) showToast('💾 ' + getLang().saveSuccess);
+                return true;
+            } catch(e) {
+                console.warn('تعذر حفظ البيانات:', e);
+                if (showToastMsg) showToast('❌ ' + getLang().saveError);
+                return false;
+            }
+        }
+
+        function manualSave() {
+            if (isSaving) return;
+            isSaving = true;
+            const indicator = document.getElementById('saveIndicator');
+            if (indicator) indicator.className = 'save-indicator saving';
+            showToast('⏳ ' + getLang().saveManual);
+            setTimeout(() => {
+                const success = saveData(true);
+                isSaving = false;
+                if (success) {
+                    const btn = document.getElementById('saveBtn');
+                    if (btn) {
+                        btn.style.transform = 'scale(0.95)';
+                        setTimeout(() => { btn.style.transform = ''; }, 200);
+                    }
+                }
+            }, 400);
+        }
+
+        function autoSave() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(weekData));
+                const nameInput = document.getElementById('personName');
+                if (nameInput) {
+                    localStorage.setItem(NAME_STORAGE_KEY, nameInput.value);
+                }
+                const indicator = document.getElementById('saveIndicator');
+                if (indicator) indicator.className = 'save-indicator saved';
+            } catch(e) { console.warn('تعذر الحفظ التلقائي:', e); }
+        }
+
+        // ===== UPDATE UI TEXT =====
+        function updateUIText() {
+            const lang = getLang();
+            document.getElementById('mainTitle').textContent = lang.mainTitle;
+            document.getElementById('mainTitle2').textContent = lang.mainTitle2;
+            document.getElementById('mainSub').textContent = lang.mainSub;
+            document.getElementById('headerBadge').textContent = lang.headerBadge;
+            document.getElementById('btnAnalyze').textContent = lang.btnAnalyze;
+            document.getElementById('btnSave').textContent = lang.btnSave;
+            document.getElementById('btnPdf').textContent = lang.btnPdf;
+            document.getElementById('btnSavePdf').textContent = lang.btnSavePdf;
+            document.getElementById('btnCopy').textContent = lang.btnCopy;
+            document.getElementById('btnReset').textContent = lang.btnReset;
+            document.getElementById('btnPdfInline').textContent = lang.btnPdfInline;
+            document.getElementById('btnSavePdfInline').textContent = lang.btnSavePdfInline;
+            document.getElementById('btnCopyInline').textContent = lang.btnCopyInline;
+            document.getElementById('disclaimerText').textContent = lang.disclaimer;
+            document.getElementById('nameLabel').textContent = lang.nameLabel;
+            document.getElementById('personName').placeholder = lang.namePlaceholder;
+            document.getElementById('nameHint').textContent = lang.nameHint;
+            const reportTitle = document.getElementById('reportTitle');
+            if (reportTitle) reportTitle.textContent = lang.reportTitle;
+            
+            // تحديث اسم الشخص في التقرير إذا كان موجوداً
+            updateReportName();
+        }
+
+        // ===== تحديث اسم الشخص في التقرير =====
+        function updateReportName() {
+            const nameInput = document.getElementById('personName');
+            const nameDisplay = document.getElementById('reportNameValue');
+            const nameContainer = document.getElementById('reportPersonName');
+            
+            if (nameInput && nameDisplay && nameContainer) {
+                const name = nameInput.value.trim();
+                if (name) {
+                    nameDisplay.textContent = name;
+                    nameContainer.classList.add('show');
+                } else {
+                    nameContainer.classList.remove('show');
+                }
+            }
+        }
+
+        // ===== RENDER DAYS =====
+        function renderDays() {
+            const container = document.getElementById('daysContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            const lang = getLang();
+            const dayNames = lang.days;
+            for (let i = 0; i < 7; i++) {
+                const data = weekData[i];
+                const card = document.createElement('div');
+                card.className = 'day-card';
+                card.dataset.index = i;
+
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                const nameWrapper = document.createElement('div');
+                nameWrapper.className = 'day-name-wrapper';
+                const daySelect = document.createElement('select');
+                daySelect.className = 'day-selector';
+                daySelect.setAttribute('aria-label', lang.daySelectLabel);
+                dayNames.forEach((dayName, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = ALL_DAYS[idx];
+                    opt.textContent = dayName;
+                    if (data.dayName === ALL_DAYS[idx]) opt.selected = true;
+                    daySelect.appendChild(opt);
+                });
+                daySelect.addEventListener('change', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].dayName = this.value;
+                    autoSave();
+                });
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'day-name';
+                nameSpan.innerHTML = `<span class="day-number">#${i+1}</span>`;
+                nameWrapper.appendChild(daySelect);
+                nameWrapper.appendChild(nameSpan);
+                const meta = document.createElement('div');
+                meta.className = 'day-meta';
+                const dateLabel = document.createElement('label');
+                dateLabel.textContent = lang.dateLabel;
+                const dtInput = document.createElement('input');
+                dtInput.type = 'datetime-local';
+                dtInput.value = data.datetime;
+                dtInput.addEventListener('change', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].datetime = this.value;
+                    autoSave();
+                });
+                dateLabel.appendChild(dtInput);
+                meta.appendChild(dateLabel);
+                header.appendChild(nameWrapper);
+                header.appendChild(meta);
+
+                const fields = document.createElement('div');
+                fields.className = 'row-fields';
+
+                // Mood
+                const moodGroup = document.createElement('div');
+                moodGroup.className = 'field-group';
+                const moodLabel = document.createElement('label');
+                moodLabel.textContent = '😌 ' + lang.moodLabel;
+                moodGroup.appendChild(moodLabel);
+                const moodDiv = document.createElement('div');
+                moodDiv.className = 'mood-emoji-group';
+                const emojis = ['😞','😟','😐','🙂','😊'];
+                for (let v = 1; v <= 5; v++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'mood-btn' + (data.mood === v ? ' active' : '');
+                    btn.textContent = emojis[v-1];
+                    btn.dataset.value = v;
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(card.dataset.index);
+                        weekData[idx].mood = parseInt(this.dataset.value);
+                        autoSave();
+                        renderDays();
+                        document.getElementById('resultPanel').classList.remove('show');
+                    });
+                    moodDiv.appendChild(btn);
+                }
+                moodGroup.appendChild(moodDiv);
+                fields.appendChild(moodGroup);
+
+                // Trigger
+                const trigGroup = document.createElement('div');
+                trigGroup.className = 'field-group';
+                const trigLabel = document.createElement('label');
+                trigLabel.textContent = '⚡ ' + lang.triggerLabel;
+                trigGroup.appendChild(trigLabel);
+                const trigSelect = document.createElement('select');
+                const triggerOpts = [
+                    {val:'none', label: lang.triggers.none},
+                    {val:'study', label: lang.triggers.study},
+                    {val:'family', label: lang.triggers.family},
+                    {val:'bullying', label: lang.triggers.bullying},
+                    {val:'rejection', label: lang.triggers.rejection},
+                    {val:'boredom', label: lang.triggers.boredom},
+                    {val:'social', label: lang.triggers.social},
+                    {val:'other', label: lang.triggers.other}
+                ];
+                triggerOpts.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.val;
+                    opt.textContent = t.label;
+                    if (data.trigger === t.val) opt.selected = true;
+                    trigSelect.appendChild(opt);
+                });
+                trigSelect.addEventListener('change', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].trigger = this.value;
+                    autoSave();
+                    document.getElementById('resultPanel').classList.remove('show');
+                });
+                trigGroup.appendChild(trigSelect);
+                fields.appendChild(trigGroup);
+
+                // Reaction
+                const reacGroup = document.createElement('div');
+                reacGroup.className = 'field-group';
+                const reacLabel = document.createElement('label');
+                reacLabel.textContent = '💥 ' + lang.reactionLabel;
+                reacGroup.appendChild(reacLabel);
+                const reacSelect = document.createElement('select');
+                const reacOpts = [
+                    {val:'calm', label: lang.reactions.calm},
+                    {val:'withdraw', label: lang.reactions.withdraw},
+                    {val:'yell', label: lang.reactions.yell},
+                    {val:'verbal', label: lang.reactions.verbal},
+                    {val:'physical', label: lang.reactions.physical},
+                    {val:'ignore', label: lang.reactions.ignore}
+                ];
+                reacOpts.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.val;
+                    opt.textContent = r.label;
+                    if (data.reaction === r.val) opt.selected = true;
+                    reacSelect.appendChild(opt);
+                });
+                reacSelect.addEventListener('change', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].reaction = this.value;
+                    autoSave();
+                    document.getElementById('resultPanel').classList.remove('show');
+                });
+                reacGroup.appendChild(reacSelect);
+                fields.appendChild(reacGroup);
+
+                // Duration
+                const durGroup = document.createElement('div');
+                durGroup.className = 'field-group';
+                const durLabel = document.createElement('label');
+                durLabel.textContent = '⏳ ' + lang.durationLabel;
+                durGroup.appendChild(durLabel);
+                const durSelect = document.createElement('select');
+                const durOpts = [
+                    {val:'short', label: lang.durations.short},
+                    {val:'medium', label: lang.durations.medium},
+                    {val:'long', label: lang.durations.long}
+                ];
+                durOpts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.val;
+                    opt.textContent = d.label;
+                    if (data.duration === d.val) opt.selected = true;
+                    durSelect.appendChild(opt);
+                });
+                durSelect.addEventListener('change', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].duration = this.value;
+                    autoSave();
+                    document.getElementById('resultPanel').classList.remove('show');
+                });
+                durGroup.appendChild(durSelect);
+                fields.appendChild(durGroup);
+
+                // Note
+                const noteGroup = document.createElement('div');
+                noteGroup.className = 'field-group note-field';
+                const noteLabel = document.createElement('label');
+                noteLabel.textContent = lang.noteLabel;
+                noteGroup.appendChild(noteLabel);
+                const noteText = document.createElement('textarea');
+                noteText.placeholder = lang.notePlaceholder;
+                noteText.value = data.note || '';
+                noteText.addEventListener('input', function() {
+                    const idx = parseInt(card.dataset.index);
+                    weekData[idx].note = this.value;
+                    autoSave();
+                });
+                noteGroup.appendChild(noteText);
+                fields.appendChild(noteGroup);
+
+                card.appendChild(header);
+                card.appendChild(fields);
+                container.appendChild(card);
+            }
+        }
+
+        // ===== GENERATE REPORT =====
+        function generateReport() {
+            const lang = getLang();
+            const dayNames = lang.days;
+            const moods = weekData.map(d => d.mood);
+            const reactions = weekData.map(d => d.reaction);
+            const triggers = weekData.map(d => d.trigger);
+            const durations = weekData.map(d => d.duration);
+            const notes = weekData.map(d => d.note);
+            const datetimes = weekData.map(d => d.datetime);
+            const selectedDayNames = weekData.map(d => d.dayName);
+
+            // تحديث اسم الشخص في التقرير
+            updateReportName();
+
+            const avgMood = moods.reduce((a,b) => a+b, 0) / 7;
+            const intenseReactions = ['verbal', 'physical', 'yell'];
+            const intenseCount = reactions.filter(r => intenseReactions.includes(r)).length;
+            let weightedScore = intenseCount;
+            for (let i = 0; i < 7; i++) {
+                if (intenseReactions.includes(reactions[i]) && durations[i] === 'long') weightedScore += 1.5;
+                if (intenseReactions.includes(reactions[i]) && durations[i] === 'medium') weightedScore += 0.5;
+                if (triggers[i] === 'bullying' || triggers[i] === 'rejection') {
+                    if (intenseReactions.includes(reactions[i])) weightedScore += 0.5;
+                }
+            }
+
+            let minMoodIdx = 0;
+            let minMood = 5;
+            for (let i = 0; i < 7; i++) {
+                if (moods[i] < minMood) { minMood = moods[i]; minMoodIdx = i; }
+            }
+
+            const triggerCounts = {};
+            triggers.forEach(t => { triggerCounts[t] = (triggerCounts[t] || 0) + 1; });
+            let topTrigger = 'none';
+            let topCount = 0;
+            for (const [key, val] of Object.entries(triggerCounts)) {
+                if (val > topCount) { topCount = val; topTrigger = key; }
+            }
+
+            let level, emoji, title, desc, doctorRec;
+            if (weightedScore <= 1 && avgMood >= 3.5) {
+                level = 'green'; emoji = '🧘'; title = lang.green; desc = lang.greenDesc; doctorRec = lang.greenRec;
+            } else if (weightedScore <= 3 && avgMood >= 2.5) {
+                level = 'yellow'; emoji = '🟡'; title = lang.yellow; desc = lang.yellowDesc; doctorRec = lang.yellowRec;
+            } else if (weightedScore <= 5 && avgMood >= 1.8) {
+                level = 'orange'; emoji = '🟠'; title = lang.orange; desc = lang.orangeDesc; doctorRec = lang.orangeRec;
+            } else {
+                level = 'red'; emoji = '🔴'; title = lang.red; desc = lang.redDesc; doctorRec = lang.redRec;
+            }
+
+            const reportDiv = document.getElementById('reportContent');
+            document.getElementById('reportTitle').textContent = lang.reportTitle;
+            let html = '';
+
+            // ===== جدول سجل الأيام المتطور =====
+            const dateTimeHeader = currentLang === 'ar' ? 'التاريخ/الوقت' : 
+                                   currentLang === 'fr' ? 'Date/Heure' :
+                                   currentLang === 'en' ? 'Date/Time' :
+                                   currentLang === 'es' ? 'Fecha/Hora' :
+                                   currentLang === 'de' ? 'Datum/Uhrzeit' :
+                                   currentLang === 'it' ? 'Data/Ora' : 'Data/Hora';
+            const moodHeader = currentLang === 'ar' ? 'المزاج' :
+                               currentLang === 'fr' ? 'Humeur' :
+                               currentLang === 'en' ? 'Mood' :
+                               currentLang === 'es' ? 'Estado de ánimo' :
+                               currentLang === 'de' ? 'Stimmung' :
+                               currentLang === 'it' ? 'Umore' : 'Humor';
+            const triggerHeader = currentLang === 'ar' ? 'المحفز' :
+                                  currentLang === 'fr' ? 'Déclencheur' :
+                                  currentLang === 'en' ? 'Trigger' :
+                                  currentLang === 'es' ? 'Desencadenante' :
+                                  currentLang === 'de' ? 'Auslöser' :
+                                  currentLang === 'it' ? 'Innesco' : 'Gatilho';
+            const reactionHeader = currentLang === 'ar' ? 'رد الفعل' :
+                                   currentLang === 'fr' ? 'Réaction' :
+                                   currentLang === 'en' ? 'Reaction' :
+                                   currentLang === 'es' ? 'Reacción' :
+                                   currentLang === 'de' ? 'Reaktion' :
+                                   currentLang === 'it' ? 'Reazione' : 'Reação';
+            const durationHeader = currentLang === 'ar' ? 'المدة' :
+                                   currentLang === 'fr' ? 'Durée' :
+                                   currentLang === 'en' ? 'Duration' :
+                                   currentLang === 'es' ? 'Duración' :
+                                   currentLang === 'de' ? 'Dauer' :
+                                   currentLang === 'it' ? 'Durata' : 'Duração';
+
+            html += `<div class="report-section"><h3>${lang.sectionLog}</h3>
+            <div class="report-table-wrapper">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>${currentLang === 'ar' ? 'اليوم' : 'Day'}</th>
+                        <th>${dateTimeHeader}</th>
+                        <th>${moodHeader}</th>
+                        <th>${triggerHeader}</th>
+                        <th>${reactionHeader}</th>
+                        <th>${durationHeader}</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            for (let i = 0; i < 7; i++) {
+                const dt = datetimes[i] ? datetimes[i].replace('T', ' ') : '--';
+                const dayDisplay = selectedDayNames[i] || dayNames[i];
+                let moodColor = '';
+                const moodValue = moods[i];
+                if (moodValue <= 2) moodColor = 'style="color:#c44a4a;font-weight:700;"';
+                else if (moodValue >= 4) moodColor = 'style="color:#2d8a6b;font-weight:700;"';
+                html += `<tr>
+                    <td><strong>${i+1}</strong></td>
+                    <td><strong>${dayDisplay}</strong></td>
+                    <td>${dt}</td>
+                    <td ${moodColor}>${lang.mood[moods[i]]}</td>
+                    <td>${lang.triggers[triggers[i]] || triggers[i]}</td>
+                    <td>${lang.reactions[reactions[i]] || reactions[i]}</td>
+                    <td>${lang.durations[durations[i]] || durations[i]}</td>
+                </tr>`;
+            }
+            html += `</tbody></table></div></div>`;
+
+            // ===== الإحصائيات =====
+            html += `<div class="report-section"><h3>${lang.sectionStats}</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:8px;">
+                <div style="background:rgba(61,155,139,0.06);border-radius:16px;padding:14px 18px;text-align:center;border:1px solid rgba(61,155,139,0.06);">
+                    <div style="font-size:28px;font-weight:800;color:#1e6b5e;">${avgMood.toFixed(1)}</div>
+                    <div style="font-size:12px;color:#4a7575;">${lang.avgMood}</div>
+                </div>
+                <div style="background:rgba(245,87,108,0.06);border-radius:16px;padding:14px 18px;text-align:center;border:1px solid rgba(245,87,108,0.06);">
+                    <div style="font-size:28px;font-weight:800;color:#f5576c;">${intenseCount}</div>
+                    <div style="font-size:12px;color:#4a7575;">${lang.aggressCount}</div>
+                </div>
+                <div style="background:rgba(240,147,251,0.06);border-radius:16px;padding:14px 18px;text-align:center;border:1px solid rgba(240,147,251,0.06);">
+                    <div style="font-size:28px;font-weight:800;color:#764ba2;">${selectedDayNames[minMoodIdx] || dayNames[minMoodIdx]}</div>
+                    <div style="font-size:12px;color:#4a7575;">${lang.peakDay}</div>
+                </div>
+                <div style="background:rgba(79,172,254,0.06);border-radius:16px;padding:14px 18px;text-align:center;border:1px solid rgba(79,172,254,0.06);">
+                    <div style="font-size:28px;font-weight:800;color:#4facfe;">${lang.triggers[topTrigger] || topTrigger}</div>
+                    <div style="font-size:12px;color:#4a7575;">${lang.topTrigger}</div>
+                </div>
+                <div style="background:rgba(17,153,142,0.06);border-radius:16px;padding:14px 18px;text-align:center;border:1px solid rgba(17,153,142,0.06);">
+                    <div style="font-size:28px;font-weight:800;color:#11998e;">${weightedScore.toFixed(1)}</div>
+                    <div style="font-size:12px;color:#4a7575;">${lang.weightedScore}</div>
+                </div>
+            </div></div>`;
+
+            // ===== الملاحظات =====
+            const hasNotes = notes.some(n => n.trim().length > 0);
+            if (hasNotes) {
+                html += `<div class="report-section"><h3>${lang.sectionNotes}</h3><ul>`;
+                for (let i = 0; i < 7; i++) {
+                    if (notes[i] && notes[i].trim()) {
+                        const dayDisplay = selectedDayNames[i] || dayNames[i];
+                        html += `<li><strong>${dayDisplay}:</strong> ${notes[i].trim()}</li>`;
+                    }
+                }
+                html += `</ul></div>`;
+            }
+
+            // ===== التقييم =====
+            html += `<div class="report-section"><h3>${lang.sectionEval}</h3>
+            <div class="rec-box-report ${level}">
+                <p><strong>${emoji} ${title}</strong></p>
+                <p>${desc}</p>
+            </div>
+            <div class="doctor-recommend">
+                ${lang.doctorRec}: <span class="highlight-rec">${doctorRec}</span>
+            </div>
+            </div>`;
+
+            const now = new Date().toLocaleString(currentLang === 'ar' ? 'ar-EG' : 
+                                                  currentLang === 'fr' ? 'fr-FR' :
+                                                  currentLang === 'en' ? 'en-US' :
+                                                  currentLang === 'es' ? 'es-ES' :
+                                                  currentLang === 'de' ? 'de-DE' :
+                                                  currentLang === 'it' ? 'it-IT' : 'pt-PT');
+            html += `<div style="font-size:11px; color:#7a9b9b; text-align:center; margin-top:16px; border-top:1px solid #e8f3f0; padding-top:12px;">
+                ${lang.generated}: ${now}
+            </div>`;
+
+            reportDiv.innerHTML = html;
+            return { level, title, doctorRec };
+        }
+
+        // ===== ACTIONS =====
+        function showResult() {
+            generateReport();
+            document.getElementById('resultPanel').classList.add('show');
+            document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ===== إصلاح مشكلة PDF =====
+        function downloadPDF() {
+            const lang = getLang();
+            
+            // التأكد من وجود محتوى
+            const content = document.getElementById('reportContent');
+            if (!content || !content.innerHTML.trim()) {
+                showToast('⚠️ ' + lang.analyzeFirst);
+                return;
+            }
+            
+            // تحديث اسم الشخص في التقرير قبل التصدير
+            updateReportName();
+            
+            showToast('⏳ ' + lang.pdfSaving);
+            
+            // استخدام العنصر الكامل للتقرير
+            const element = document.getElementById('medicalReport');
+            
+            // إضافة أنماط الطباعة
+            const style = document.createElement('style');
+            style.textContent = `
+                .report-table { font-size: 11px; width: 100%; border-collapse: collapse; }
+                .report-table th { background: #2d6b6b !important; color: white !important; padding: 10px 8px; text-align: center; }
+                .report-table td { background: white !important; padding: 8px 6px; text-align: center; border-bottom: 1px solid #e8f3f0; }
+                .report-table tr:nth-child(even) td { background: #f8fcfb !important; }
+                .report-table-wrapper { overflow: visible !important; }
+                .rec-box-report { padding: 12px 16px; border-radius: 16px; }
+                .doctor-recommend { padding: 12px 16px; border-radius: 16px; }
+                .report-section { margin-bottom: 12px; padding: 12px 16px; border-radius: 12px; }
+                .medical-report { padding: 20px; background: white; }
+                .report-person-name { display: block !important; text-align: center; font-size: 18px; font-weight: 700; color: #1e6b5e; padding: 10px; }
+                .report-person-name .name-label { font-weight: 400; color: #4a7575; }
+                .report-person-name .name-value { color: #b36b4a; font-weight: 800; }
+                .btn, .pdf-actions { display: none !important; }
+            `;
+            element.appendChild(style);
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `behavior_report_${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    letterRendering: true, 
+                    useCORS: true,
+                    logging: false,
+                    width: element.scrollWidth || 800
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast('✅ ' + lang.pdfSuccess);
+                element.removeChild(style);
+            }).catch((err) => {
+                console.error('PDF Error:', err);
+                showToast('❌ ' + lang.pdfError);
+                element.removeChild(style);
+            });
+        }
+
+        function savePdfInline() {
+            const lang = getLang();
+            
+            const content = document.getElementById('reportContent');
+            if (!content || !content.innerHTML.trim()) {
+                showToast('⚠️ ' + lang.analyzeFirst);
+                return;
+            }
+            
+            updateReportName();
+            showToast('⏳ ' + lang.pdfSaving);
+            
+            const element = document.getElementById('medicalReport');
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                .report-table { font-size: 11px; width: 100%; border-collapse: collapse; }
+                .report-table th { background: #2d6b6b !important; color: white !important; padding: 10px 8px; text-align: center; }
+                .report-table td { background: white !important; padding: 8px 6px; text-align: center; border-bottom: 1px solid #e8f3f0; }
+                .report-table tr:nth-child(even) td { background: #f8fcfb !important; }
+                .report-table-wrapper { overflow: visible !important; }
+                .rec-box-report { padding: 12px 16px; border-radius: 16px; }
+                .doctor-recommend { padding: 12px 16px; border-radius: 16px; }
+                .report-section { margin-bottom: 12px; padding: 12px 16px; border-radius: 12px; }
+                .medical-report { padding: 20px; background: white; }
+                .report-person-name { display: block !important; text-align: center; font-size: 18px; font-weight: 700; color: #1e6b5e; padding: 10px; }
+                .report-person-name .name-label { font-weight: 400; color: #4a7575; }
+                .report-person-name .name-value { color: #b36b4a; font-weight: 800; }
+                .btn, .pdf-actions { display: none !important; }
+            `;
+            element.appendChild(style);
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `behavior_report_${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    letterRendering: true, 
+                    useCORS: true,
+                    logging: false,
+                    width: element.scrollWidth || 800
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+            
+            html2pdf().set(opt).from(element).outputPdf('blob').then((blob) => {
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                showToast('💾 ' + lang.savePdfSuccess);
+                element.removeChild(style);
+            }).catch((err) => {
+                console.error('PDF Error:', err);
+                showToast('❌ ' + lang.pdfError);
+                element.removeChild(style);
+            });
+        }
+
+        function copyReport() {
+            const content = document.getElementById('reportContent').innerText;
+            const lang = getLang();
+            if (!content) {
+                showToast('⚠️ ' + lang.analyzeFirst);
+                return;
+            }
+            
+            const nameInput = document.getElementById('personName');
+            const name = nameInput ? nameInput.value.trim() : '';
+            const nameHeader = name ? `👤 اسم الشخص: ${name}\n${'='.repeat(40)}\n` : '';
+            
+            const textToCopy = `${lang.reportTitle}\n${'='.repeat(40)}\n${nameHeader}${content}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('📋 ' + lang.copySuccess);
+            }).catch(() => {
+                showToast('❌ ' + (currentLang === 'ar' ? 'تعذر النسخ، حاول يدوياً.' : 'Copy failed, try manually.'));
+            });
+        }
+
+        function resetWeek() {
+            const lang = getLang();
+            if (confirm(lang.resetConfirm)) {
+                weekData = Array.from({ length: 7 }, (_, i) => defaultDay(i));
+                saveData(true);
+                renderDays();
+                document.getElementById('resultPanel').classList.remove('show');
+                showToast('↺ ' + lang.resetDone);
+            }
+        }
+
+        function showToast(msg) {
+            const el = document.getElementById('toastMsg');
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(el._timeout);
+            el._timeout = setTimeout(() => el.classList.remove('show'), 3500);
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            updateUIText();
+            renderDays();
+            document.getElementById('resultPanel').classList.remove('show');
+            const langObj = LANGUAGES[lang];
+            showToast('🌐 ' + langObj.langChanged);
+        }
+
+        // ===== INIT =====
+        loadData();
+        updateUIText();
+        renderDays();
+
+        // حفظ الاسم عند التغيير
+        document.getElementById('personName').addEventListener('input', function() {
+            autoSave();
+            // تحديث اسم الشخص في التقرير إذا كان ظاهراً
+            if (document.getElementById('resultPanel').classList.contains('show')) {
+                updateReportName();
+                // إعادة توليد التقرير لتحديث المحتوى
+                generateReport();
+            }
+        });
+
+        window.addEventListener('beforeunload', function() { saveData(false); });
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) saveData(false);
+        });
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() { setLanguage(this.dataset.lang); });
+        });
+
+        document.getElementById('analyzeBtn').addEventListener('click', showResult);
+        document.getElementById('saveBtn').addEventListener('click', manualSave);
+        document.getElementById('pdfBtn').addEventListener('click', downloadPDF);
+        document.getElementById('savePdfBtn').addEventListener('click', savePdfInline);
+        document.getElementById('copyBtn').addEventListener('click', copyReport);
+        document.getElementById('resetBtn').addEventListener('click', resetWeek);
+
+        document.getElementById('pdfBtnInline').addEventListener('click', downloadPDF);
+        document.getElementById('savePdfBtnInline').addEventListener('click', savePdfInline);
+        document.getElementById('copyBtnInline').addEventListener('click', copyReport);
+
+        window.addEventListener('popstate', function(event) {
+            window.history.pushState(null, null, window.location.href);
+        });
+        window.history.pushState(null, null, window.location.href);
+
+        const indicator = document.getElementById('saveIndicator');
+        if (indicator) indicator.className = 'save-indicator saved';
+
+        console.log('✅ تم تحميل متتبع تحليل السلوك بنجاح!');
+        console.log('👤 أضف اسمك في الأعلى ليظهر في التقرير.');
+        console.log('📄 تم إصلاح مشكلة PDF - التقرير يظهر الآن بشكل كامل.');
+        console.log('📊 جدول سجل الأيام متطور مع تلوين حسب المزاج.');
+    })();
+</script>
+</body>
+</html>
