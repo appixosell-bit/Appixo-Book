@@ -1,0 +1,2707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suivi Comportemental - Sécurisé</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 1080px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            padding: 30px 24px;
+            border-radius: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+        /* ===== ÉCRAN DE CONNEXION ===== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .login-overlay.hidden {
+            display: none;
+        }
+        .login-box {
+            background: white;
+            border-radius: 48px;
+            padding: 40px 32px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeSlide 0.5s ease;
+        }
+        .login-box h2 {
+            font-size: 28px;
+            color: #1a3a3a;
+            margin-bottom: 8px;
+        }
+        .login-box p {
+            color: #4a7575;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 40px;
+            border: 2px solid rgba(43, 122, 120, 0.15);
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 16px;
+        }
+        .login-box input[type="password"]:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.1);
+        }
+        .login-box .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #2b7a78, #3a9b8b);
+            color: white;
+            box-shadow: 0 6px 20px rgba(43, 122, 120, 0.3);
+            transition: 0.3s;
+        }
+        .login-box .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(43, 122, 120, 0.4);
+        }
+        .login-box .error-msg {
+            color: #f5576c;
+            font-size: 13px;
+            margin-top: 12px;
+            min-height: 20px;
+        }
+        .login-box .change-pw-link {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #4a7575;
+        }
+        .login-box .change-pw-link a {
+            color: #2b7a78;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+            padding: 22px 16px 18px;
+            background: linear-gradient(135deg, #f0f8f6 0%, #d4e8e6 100%);
+            border-radius: 32px;
+            border: 1px solid rgba(72, 149, 149, 0.15);
+            box-shadow: 0 4px 20px rgba(72, 149, 149, 0.05);
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #2b7a78, #ff8a5c, #2b7a78);
+            border-radius: 10px;
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        .header h1 {
+            font-weight: 900;
+            font-size: 28px;
+            color: #1a3a3a;
+            letter-spacing: -0.5px;
+        }
+        .header h1 .highlight {
+            color: #ff8a5c;
+            background: linear-gradient(135deg, #ff8a5c, #ff6f48);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #3a6b6b;
+            font-weight: 400;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .header-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #2b7a78, #3a9b8b);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 6px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(43, 122, 120, 0.2);
+        }
+        /* ===== NAME SECTION ===== */
+        .name-section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 2px solid rgba(43, 122, 120, 0.08);
+            backdrop-filter: blur(10px);
+            margin: 6px 0 16px;
+        }
+        .name-section label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a3a3a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .name-section .name-icon {
+            font-size: 22px;
+        }
+        .name-section input {
+            flex: 1;
+            min-width: 140px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 2px solid rgba(43, 122, 120, 0.12);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a3a3a;
+            background: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .name-section input:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.08);
+        }
+        .name-section input::placeholder {
+            color: #b0caca;
+            font-weight: 300;
+        }
+        .name-section .name-hint {
+            font-size: 11px;
+            color: #7a9b9b;
+            white-space: nowrap;
+        }
+        /* ===== LANGUAGE SELECTOR ===== */
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin: 4px 0 18px;
+            padding: 6px 12px;
+            background: rgba(236, 248, 246, 0.5);
+            border-radius: 40px;
+            border: 1px solid rgba(43, 122, 120, 0.08);
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a7a7a;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-btn:hover {
+            background: rgba(58, 155, 139, 0.08);
+            color: #2b7a78;
+            transform: translateY(-1px);
+        }
+        .lang-btn.active {
+            background: linear-gradient(135deg, #2b7a78, #1a5a5a);
+            color: white;
+            border-color: #2b7a78;
+            box-shadow: 0 4px 16px rgba(43, 122, 120, 0.25);
+            transform: translateY(-1px);
+        }
+        /* ===== DAY CARD ===== */
+        .day-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(43, 122, 120, 0.08);
+            transition: all 0.4s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2b7a78, #ff8a5c, #3a9b8b, #2b7a78);
+            background-size: 300% 100%;
+            opacity: 0;
+            transition: all 0.4s;
+        }
+        .day-card:hover::before {
+            opacity: 1;
+            animation: gradientMove 2s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        .day-card:hover {
+            border-color: rgba(43, 122, 120, 0.2);
+            box-shadow: 0 8px 30px rgba(43, 122, 120, 0.06);
+            transform: translateY(-2px);
+        }
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(43, 122, 120, 0.06);
+        }
+        .day-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .day-select {
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 2px solid rgba(43, 122, 120, 0.12);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a3a3a;
+            background: white;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            min-width: 120px;
+        }
+        .day-select:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.08);
+        }
+        .day-meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .day-meta label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a7575;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .day-meta input[type="datetime-local"] {
+            border: 2px solid rgba(43, 122, 120, 0.12);
+            border-radius: 30px;
+            padding: 6px 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            background: white;
+            color: #1a3a3a;
+            outline: none;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        .day-meta input[type="datetime-local"]:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.08);
+        }
+        /* ===== FIELDS ===== */
+        .row-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px 16px;
+            margin-top: 4px;
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .field-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a7575;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .field-group select,
+        .field-group input[type="text"] {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 30px;
+            border: 2px solid rgba(43, 122, 120, 0.08);
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #1a3a3a;
+            outline: none;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233a9b8b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            padding-left: 38px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .field-group select:focus,
+        .field-group input[type="text"]:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.06);
+        }
+        .field-group select:hover,
+        .field-group input[type="text"]:hover {
+            border-color: rgba(43, 122, 120, 0.2);
+        }
+        /* ===== MOOD BUTTONS ===== */
+        .mood-emoji-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #f4faf9, #ecf6f4);
+            padding: 6px 10px;
+            border-radius: 40px;
+            border: 2px solid rgba(43, 122, 120, 0.06);
+            transition: all 0.3s;
+        }
+        .mood-emoji-group:hover {
+            border-color: rgba(43, 122, 120, 0.15);
+        }
+        .mood-btn {
+            font-size: 24px;
+            background: none;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            padding: 4px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.3;
+            transform: scale(0.85);
+            line-height: 1;
+        }
+        .mood-btn:hover {
+            opacity: 0.7;
+            transform: scale(0.95);
+            background: rgba(58, 155, 139, 0.04);
+        }
+        .mood-btn.active {
+            opacity: 1;
+            transform: scale(1.05);
+            border-color: #3a9b8b;
+            background: rgba(58, 155, 139, 0.1);
+            box-shadow: 0 4px 16px rgba(58, 155, 139, 0.12);
+        }
+        .mood-btn.active:hover {
+            transform: scale(1.1);
+        }
+        /* ===== NOTE FIELD ===== */
+        .note-field {
+            grid-column: 1 / -1;
+            margin-top: 2px;
+            padding-top: 10px;
+            border-top: 2px dashed rgba(43, 122, 120, 0.06);
+        }
+        .note-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a7575;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        .note-field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 2px solid rgba(43, 122, 120, 0.08);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 50px;
+            background: white;
+            outline: none;
+            transition: all 0.3s;
+            color: #1a3a3a;
+            line-height: 1.6;
+        }
+        .note-field textarea:focus {
+            border-color: #3a9b8b;
+            box-shadow: 0 0 0 4px rgba(58, 155, 139, 0.05);
+        }
+        .note-field textarea::placeholder {
+            color: #b0caca;
+            font-weight: 300;
+        }
+        /* ===== ACTIONS BUTTONS ===== */
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.4s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            min-width: 100px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.2px;
+            color: white;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+        }
+        .btn-save {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 6px 24px rgba(17, 153, 142, 0.3);
+        }
+        .btn-save:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(17, 153, 142, 0.4);
+        }
+        .btn-copy {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            box-shadow: 0 6px 24px rgba(67, 233, 123, 0.3);
+            color: #1a5a4f;
+        }
+        .btn-copy:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(67, 233, 123, 0.4);
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 6px 24px rgba(79, 172, 254, 0.3);
+        }
+        .btn-add:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(79, 172, 254, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            box-shadow: 0 6px 24px rgba(168, 237, 234, 0.3);
+            color: #1f5a52;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(168, 237, 234, 0.4);
+        }
+        .btn-print {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            box-shadow: 0 6px 24px rgba(245, 87, 108, 0.3);
+        }
+        .btn-print:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(245, 87, 108, 0.4);
+        }
+        .save-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 6px;
+            transition: all 0.4s;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .save-indicator.saved {
+            background: #38ef7d;
+            box-shadow: 0 0 16px rgba(56, 239, 125, 0.4);
+        }
+        .save-indicator.saving {
+            background: #f093fb;
+            box-shadow: 0 0 16px rgba(240, 147, 251, 0.4);
+            animation: pulse 0.8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.4);
+            }
+        }
+        /* ===== RESULT PANEL ===== */
+        .result-panel {
+            background: linear-gradient(135deg, #f4fbfa, #e8f5f2);
+            border-radius: 32px;
+            padding: 24px 20px;
+            margin-top: 22px;
+            border: 1px solid rgba(43, 122, 120, 0.08);
+            display: none;
+            animation: fadeSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(43, 122, 120, 0.05);
+        }
+        .result-panel.show {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* ===== MEDICAL REPORT ===== */
+        .medical-report {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(43, 122, 120, 0.06);
+        }
+        .medical-report h2 {
+            font-size: 20px;
+            color: #1a3a3a;
+            border-bottom: 3px solid rgba(43, 122, 120, 0.08);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+        .report-person-name {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2b7a78;
+            background: linear-gradient(135deg, #e8f5f2, #d4eae6);
+            padding: 10px 16px;
+            border-radius: 40px;
+            margin-bottom: 16px;
+            border: 2px solid rgba(43, 122, 120, 0.08);
+            display: none;
+        }
+        .report-person-name.show {
+            display: block;
+        }
+        .report-person-name .name-label {
+            font-weight: 400;
+            color: #4a7575;
+        }
+        .report-person-name .name-value {
+            color: #ff8a5c;
+            font-weight: 800;
+        }
+        .report-section {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            border: 1px solid rgba(43, 122, 120, 0.04);
+            transition: all 0.3s;
+        }
+        .report-section:hover {
+            border-color: rgba(43, 122, 120, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+        .report-section h3 {
+            font-size: 15px;
+            color: #1a5a5a;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed rgba(43, 122, 120, 0.05);
+        }
+        .report-section p,
+        .report-section li {
+            font-size: 13px;
+            color: #2a4f4f;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+        .report-section ul {
+            list-style: none;
+            padding-right: 6px;
+        }
+        .report-section ul li {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(43, 122, 120, 0.04);
+        }
+        .report-section ul li::before {
+            content: "✦ ";
+            color: #3a9b8b;
+            font-weight: 700;
+        }
+        .report-section ul li:last-child {
+            border-bottom: none;
+        }
+        /* ===== REPORT TABLE ===== */
+        .report-table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 3px;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            border-radius: 14px;
+            overflow: hidden;
+            min-width: 500px;
+        }
+        .report-table th {
+            background: linear-gradient(135deg, #2d6b6b, #1a5a5a);
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.2px;
+        }
+        .report-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid rgba(43, 122, 120, 0.04);
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            color: #1a4a4a;
+        }
+        .report-table tr:nth-child(even) td {
+            background: rgba(248, 252, 251, 0.6);
+        }
+        .report-table tr:hover td {
+            background: rgba(58, 155, 139, 0.04);
+        }
+        .report-table tr:last-child td {
+            border-bottom: none;
+        }
+        .rec-box-report {
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-top: 6px;
+            background: #eaf5f1;
+            border-right: 6px solid #3a9b8b;
+            transition: all 0.3s;
+        }
+        .rec-box-report:hover {
+            transform: translateX(-3px);
+        }
+        .rec-box-report.red {
+            border-right-color: #f5576c;
+            background: #fce8ea;
+        }
+        .rec-box-report.orange {
+            border-right-color: #f093fb;
+            background: #f8ecf8;
+        }
+        .rec-box-report.yellow {
+            border-right-color: #f6d365;
+            background: #f8f4e0;
+        }
+        .rec-box-report.green {
+            border-right-color: #38ef7d;
+            background: #eaf5f1;
+        }
+        .rec-box-report p {
+            margin: 4px 0;
+        }
+        .rec-box-report strong {
+            font-size: 16px;
+        }
+        .doctor-recommend {
+            background: linear-gradient(135deg, #f0f7f5, #e4efec);
+            padding: 14px 18px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1a3a3a;
+            margin-top: 12px;
+            border: 2px solid rgba(43, 122, 120, 0.06);
+            transition: all 0.3s;
+        }
+        .doctor-recommend:hover {
+            border-color: #3a9b8b;
+            box-shadow: 0 4px 16px rgba(58, 155, 139, 0.05);
+        }
+        .doctor-recommend .highlight-rec {
+            color: #f5576c;
+            font-weight: 800;
+        }
+        .disclaimer {
+            font-size: 11px;
+            color: #7a9b9b;
+            text-align: center;
+            margin-top: 22px;
+            border-top: 2px solid rgba(43, 122, 120, 0.05);
+            padding-top: 16px;
+            font-weight: 300;
+        }
+        /* ===== TOAST ===== */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(18, 69, 69, 0.95);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: all 0.5s;
+            z-index: 999;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 32px;
+            padding: 30px 28px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes modalIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-box h2 {
+            font-size: 22px;
+            color: #1a3a3a;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .modal-box p {
+            color: #4a7575;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .modal-box .modal-icon {
+            font-size: 48px;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .modal-actions .btn {
+            min-width: 80px;
+            padding: 10px 18px;
+            font-size: 12px;
+        }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 18px 14px;
+                border-radius: 32px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .header {
+                padding: 16px 12px 14px;
+            }
+            .row-fields {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .day-card {
+                padding: 14px 14px;
+            }
+            .day-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .day-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .day-meta input[type="datetime-local"] {
+                min-width: auto;
+                width: 100%;
+            }
+            .day-name-wrapper {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .day-select {
+                min-width: 100px;
+                flex: 1;
+            }
+            .actions .btn {
+                min-width: 100%;
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            .medical-report {
+                padding: 16px;
+            }
+            .report-section {
+                padding: 12px;
+            }
+            .report-table {
+                font-size: 10px;
+                min-width: 400px;
+            }
+            .report-table th,
+            .report-table td {
+                padding: 6px 4px;
+            }
+            .lang-selector {
+                gap: 4px;
+                padding: 6px 10px;
+            }
+            .lang-btn {
+                padding: 4px 10px;
+                font-size: 10px;
+            }
+            .name-section {
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 8px 14px;
+                border-radius: 30px;
+            }
+            .name-section input {
+                min-width: 100px;
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+            .name-section .name-hint {
+                font-size: 10px;
+            }
+            .modal-box {
+                padding: 24px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .row-fields {
+                grid-template-columns: 1fr;
+            }
+            .mood-emoji-group {
+                justify-content: center;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 10px 12px;
+                min-width: 100%;
+            }
+            .container {
+                padding: 12px 10px;
+                border-radius: 24px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .result-panel {
+                padding: 14px 12px;
+            }
+            .name-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .name-section input {
+                min-width: auto;
+            }
+            .name-section .name-hint {
+                text-align: center;
+            }
+            .report-table {
+                font-size: 9px;
+                min-width: 300px;
+            }
+            .report-table th,
+            .report-table td {
+                padding: 4px 2px;
+            }
+            .day-select {
+                min-width: 80px;
+                font-size: 12px;
+            }
+        }
+        /* ===== PRINT STYLES (pour la nouvelle fenêtre) ===== */
+        @media print {
+            body {
+                background: white;
+                padding: 10px;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 15px;
+            }
+            .report-actions {
+                display: none !important;
+            }
+            .medical-report {
+                background: white;
+                border: 1px solid #ddd;
+            }
+        }
+        /* ===== STYLES POUR LA COPIE HTML ===== */
+        .copy-container {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            width: 1000px;
+            background: white;
+            padding: 30px;
+            font-family: 'Poppins', sans-serif;
+            z-index: 9999;
+        }
+        .copy-container .report-table {
+            font-size: 12px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .copy-container .report-table th {
+            background: #2d6b6b !important;
+            color: white !important;
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid #1a5a5a;
+        }
+        .copy-container .report-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid #d4eae6;
+            background: white !important;
+        }
+        .copy-container .report-table tr:nth-child(even) td {
+            background: #f8fcfb !important;
+        }
+        .copy-container .rec-box-report {
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-top: 6px;
+            border: 1px solid #3a9b8b;
+        }
+        .copy-container .rec-box-report.red {
+            border-color: #f5576c;
+            background: #fce8ea;
+        }
+        .copy-container .rec-box-report.orange {
+            border-color: #f093fb;
+            background: #f8ecf8;
+        }
+        .copy-container .rec-box-report.yellow {
+            border-color: #f6d365;
+            background: #f8f4e0;
+        }
+        .copy-container .rec-box-report.green {
+            border-color: #38ef7d;
+            background: #eaf5f1;
+        }
+        .copy-container .doctor-recommend {
+            background: #f0f7f5;
+            padding: 14px 18px;
+            border-radius: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1a3a3a;
+            margin-top: 12px;
+            border: 2px solid #3a9b8b;
+        }
+        .copy-container .report-section {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border: 1px solid #e8f3f0;
+            border-radius: 20px;
+        }
+        .copy-container .report-person-name {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2b7a78;
+            background: #e8f5f2;
+            padding: 10px 16px;
+            border-radius: 40px;
+            margin-bottom: 16px;
+            border: 2px solid #3a9b8b;
+        }
+        .copy-container .medical-report {
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 28px;
+        }
+        .copy-container .medical-report h2 {
+            font-size: 20px;
+            color: #1a3a3a;
+            border-bottom: 3px solid #3a9b8b;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-weight: 800;
+        }
+        .copy-container .report-section h3 {
+            font-size: 15px;
+            color: #1a5a5a;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #3a9b8b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ÉCRAN DE CONNEXION ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2>🔐 Accès sécurisé</h2>
+            <p>Veuillez saisir le mot de passe pour accéder à l'application.</p>
+            <input type="password" id="loginPassword" placeholder="Mot de passe" autofocus />
+            <button class="btn" id="loginBtn">Se connecter</button>
+            <div class="error-msg" id="loginError"></div>
+            <div class="change-pw-link">
+                <a id="changePwLink">Changer le mot de passe</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APPLICATION PRINCIPALE ===== -->
+    <div class="container" id="appContainer">
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <h1>🧠 <span class="highlight" id="mainTitle">Suivi</span> <span id="mainTitle2">Comportemental</span></h1>
+            <p id="mainSub">Enregistrez votre journal avec la date et les notes, obtenez un rapport détaillé</p>
+            <span class="header-badge" id="headerBadge">👥 Pour adolescents • Parents • Spécialistes</span>
+        </div>
+
+        <!-- ===== NAME SECTION ===== -->
+        <div class="name-section">
+            <label for="personName">
+                <span class="name-icon">👤</span>
+                <span id="nameLabel">Nom de la personne:</span>
+            </label>
+            <input type="text" id="personName" placeholder="Entrez votre nom ici..." value="">
+            <span class="name-hint" id="nameHint">📌 Apparaîtra dans le rapport</span>
+        </div>
+
+        <!-- ===== LANGUAGE SELECTOR ===== -->
+        <div class="lang-selector">
+            <button class="lang-btn active" data-lang="fr">🇫🇷 Français</button>
+            <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+            <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+            <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+            <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+            <button class="lang-btn" data-lang="pt">🇵🇹 Português</button>
+        </div>
+
+        <!-- ===== DAY CARD ===== -->
+        <div class="day-card" id="dayCard">
+            <div class="day-header">
+                <div class="day-name-wrapper">
+                    <select id="daySelect" class="day-select"></select>
+                </div>
+                <div class="day-meta">
+                    <label>
+                        <span id="dateLabel">📅 Date et heure</span>
+                        <input type="datetime-local" id="dayDateTime">
+                    </label>
+                </div>
+            </div>
+            <div class="row-fields">
+                <!-- Mood -->
+                <div class="field-group">
+                    <label id="moodLabel">😌 Humeur</label>
+                    <div class="mood-emoji-group" id="moodGroup">
+                        <button class="mood-btn" data-value="1">😞</button>
+                        <button class="mood-btn" data-value="2">😟</button>
+                        <button class="mood-btn active" data-value="3">😐</button>
+                        <button class="mood-btn" data-value="4">🙂</button>
+                        <button class="mood-btn" data-value="5">😊</button>
+                    </div>
+                </div>
+                <!-- Trigger -->
+                <div class="field-group">
+                    <label id="triggerLabel">⚡ Déclencheur</label>
+                    <select id="triggerSelect"></select>
+                </div>
+                <!-- Reaction -->
+                <div class="field-group">
+                    <label id="reactionLabel">💥 Réaction</label>
+                    <select id="reactionSelect"></select>
+                </div>
+                <!-- Duration -->
+                <div class="field-group">
+                    <label id="durationLabel">⏳ Durée</label>
+                    <select id="durationSelect"></select>
+                </div>
+                <!-- Description -->
+                <div class="field-group note-field">
+                    <label id="descriptionLabel">📝 Description / Observation</label>
+                    <textarea id="descriptionText" placeholder="Décrivez la situation, le comportement observé..." rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ACTIONS BUTTONS ===== -->
+        <div class="actions">
+            <button class="btn btn-add" id="addDayBtn">➕ <span id="btnAddDay">Ajouter jour</span></button>
+            <button class="btn btn-primary" id="analyzeBtn">📊 <span id="btnAnalyze">Analyser et générer le rapport</span></button>
+            <button class="btn btn-save" id="saveBtn">💾 <span id="btnSave">Sauvegarder</span> <span class="save-indicator saved" id="saveIndicator"></span></button>
+            <button class="btn btn-copy" id="copyBtn">📋 <span id="btnCopy">Copier le rapport</span></button>
+            <button class="btn btn-print" id="printBtn">🖨️ <span id="btnPrint">Imprimer / PDF</span></button>
+            <button class="btn btn-secondary" id="resetBtn">↺ <span id="btnReset">Réinitialiser</span></button>
+        </div>
+
+        <!-- ===== RESULT PANEL ===== -->
+        <div class="result-panel" id="resultPanel">
+            <div class="medical-report" id="medicalReport">
+                <h2 id="reportTitle">📋 Rapport d'analyse comportementale</h2>
+                <div class="report-person-name" id="reportPersonName">
+                    <span class="name-label" id="reportNameLabel">👤 Nom:</span>
+                    <span class="name-value" id="reportNameValue">---</span>
+                </div>
+                <div id="reportContent"></div>
+            </div>
+        </div>
+
+        <!-- ===== DISCLAIMER ===== -->
+        <div class="disclaimer" id="disclaimerText">
+            ⚠️ Ce rapport est à des fins d'aide et de sensibilisation uniquement, et ne remplace pas un diagnostic médical spécialisé.
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-msg" id="toastMsg"></div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <span class="modal-icon" id="modalIcon">💾</span>
+            <h2 id="modalTitle">Sauvegarde réussie !</h2>
+            <p id="modalMessage">Toutes vos données ont été sauvegardées avec succès.</p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="modalBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL CHANGER MOT DE PASSE ===== -->
+    <div class="modal-overlay" id="changePwModal">
+        <div class="modal-box">
+            <span class="modal-icon">🔑</span>
+            <h2>Changer le mot de passe</h2>
+            <p>Entrez l'ancien mot de passe puis le nouveau.</p>
+            <input type="password" id="oldPw" placeholder="Ancien mot de passe" style="width:100%;padding:12px;border-radius:30px;border:2px solid #ddd;margin-bottom:10px;font-family:inherit;">
+            <input type="password" id="newPw1" placeholder="Nouveau mot de passe" style="width:100%;padding:12px;border-radius:30px;border:2px solid #ddd;margin-bottom:10px;font-family:inherit;">
+            <input type="password" id="newPw2" placeholder="Confirmer le nouveau" style="width:100%;padding:12px;border-radius:30px;border:2px solid #ddd;margin-bottom:16px;font-family:inherit;">
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="changePwConfirm">Changer</button>
+                <button class="btn btn-secondary" id="changePwCancel">Annuler</button>
+            </div>
+            <div id="changePwError" style="color:#f5576c;font-size:13px;text-align:center;margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ===== GESTION DU MOT DE PASSE =====
+            const PASSWORD_KEY = 'app_password';
+            let currentPassword = localStorage.getItem(PASSWORD_KEY) || 'admin';
+            if (!localStorage.getItem(PASSWORD_KEY)) {
+                localStorage.setItem(PASSWORD_KEY, currentPassword);
+            }
+
+            const loginOverlay = document.getElementById('loginOverlay');
+            const loginPassword = document.getElementById('loginPassword');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginError = document.getElementById('loginError');
+
+            function tryLogin(input) {
+                const trimmed = input.trim();
+                if (trimmed === currentPassword) {
+                    loginOverlay.classList.add('hidden');
+                    loginError.textContent = '';
+                    loginPassword.value = '';
+                    return true;
+                } else {
+                    loginError.textContent = '❌ Mot de passe incorrect';
+                    loginPassword.value = '';
+                    loginPassword.focus();
+                    return false;
+                }
+            }
+
+            loginBtn.addEventListener('click', function() {
+                tryLogin(loginPassword.value);
+            });
+            loginPassword.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    tryLogin(loginPassword.value);
+                }
+            });
+
+            // Bouton "Changer le mot de passe" sur l'écran de connexion
+            document.getElementById('changePwLink').addEventListener('click', function() {
+                document.getElementById('changePwModal').classList.add('show');
+                document.getElementById('oldPw').value = '';
+                document.getElementById('newPw1').value = '';
+                document.getElementById('newPw2').value = '';
+                document.getElementById('changePwError').textContent = '';
+            });
+
+            // Gestion du changement de mot de passe
+            document.getElementById('changePwConfirm').addEventListener('click', function() {
+                const old = document.getElementById('oldPw').value.trim();
+                const new1 = document.getElementById('newPw1').value.trim();
+                const new2 = document.getElementById('newPw2').value.trim();
+                const err = document.getElementById('changePwError');
+                err.textContent = '';
+
+                if (old !== currentPassword) {
+                    err.textContent = '❌ Ancien mot de passe incorrect';
+                    return;
+                }
+                if (new1.length < 4) {
+                    err.textContent = '❌ Le nouveau mot de passe doit avoir au moins 4 caractères';
+                    return;
+                }
+                if (new1 !== new2) {
+                    err.textContent = '❌ Les nouveaux mots de passe ne correspondent pas';
+                    return;
+                }
+                currentPassword = new1;
+                localStorage.setItem(PASSWORD_KEY, currentPassword);
+                document.getElementById('changePwModal').classList.remove('show');
+                document.getElementById('oldPw').value = '';
+                document.getElementById('newPw1').value = '';
+                document.getElementById('newPw2').value = '';
+                showToast('🔑 Mot de passe modifié avec succès');
+            });
+
+            document.getElementById('changePwCancel').addEventListener('click', function() {
+                document.getElementById('changePwModal').classList.remove('show');
+                document.getElementById('changePwError').textContent = '';
+                document.getElementById('oldPw').value = '';
+                document.getElementById('newPw1').value = '';
+                document.getElementById('newPw2').value = '';
+            });
+
+            // ===== TRANSLATIONS =====
+            const LANGUAGES = {
+                fr: {
+                    name: 'Français',
+                    dir: 'ltr',
+                    mainTitle: 'Suivi',
+                    mainTitle2: 'Comportemental',
+                    mainSub: 'Enregistrez votre journal avec la date et les notes, obtenez un rapport détaillé',
+                    headerBadge: '👥 Pour adolescents • Parents • Spécialistes',
+                    btnAddDay: 'Ajouter jour',
+                    btnAnalyze: 'Analyser et générer le rapport',
+                    btnSave: 'Sauvegarder',
+                    btnCopy: 'Copier le rapport',
+                    btnPrint: 'Imprimer / PDF',
+                    btnReset: 'Réinitialiser',
+                    nameLabel: 'Nom de la personne:',
+                    namePlaceholder: 'Entrez votre nom ici...',
+                    nameHint: '📌 Apparaîtra dans le rapport',
+                    reportNameLabel: '👤 Nom:',
+                    days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                    moodLabel: 'Humeur',
+                    triggerLabel: 'Déclencheur',
+                    reactionLabel: 'Réaction',
+                    durationLabel: 'Durée',
+                    descriptionLabel: '📝 Description / Observation',
+                    descriptionPlaceholder: 'Décrivez la situation, le comportement observé...',
+                    dateLabel: '📅 Date et heure',
+                    mood: { 1: 'Très bas', 2: 'Bas', 3: 'Moyen', 4: 'Bon', 5: 'Excellent' },
+                    triggers: { none: 'Rien', study: 'Pression scolaire', family: 'Conflit familial', bullying: 'Harcèlement',
+                        rejection: 'Rejet', boredom: 'Ennui', social: 'Situation sociale', other: 'Autre' },
+                    reactions: { calm: 'Calme', withdraw: 'Retrait', yell: 'Cri', verbal: 'Violence verbale',
+                        physical: 'Violence physique', ignore: 'Ignorance' },
+                    durations: { short: 'Court', medium: 'Moyen', long: 'Long' },
+                    reportTitle: '📋 Rapport d\'analyse comportementale',
+                    sectionLog: '📅 Journal des jours',
+                    sectionNotes: '📝 Notes enregistrées',
+                    sectionEval: '🧠 Évaluation comportementale',
+                    doctorRec: '🩺 Recommandation du spécialiste',
+                    green: 'Comportement équilibré',
+                    greenDesc: 'Le profil montre un schéma stable avec des réactions calmes.',
+                    greenRec: 'Pas de consultation nécessaire pour le moment.',
+                    yellow: 'Comportement légèrement intense',
+                    yellowDesc: 'Quelques réactions intenses dans des situations spécifiques.',
+                    yellowRec: 'Surveillance recommandée, consulter si persiste.',
+                    orange: 'Comportement intense notable',
+                    orangeDesc: 'Réactions intenses fréquentes, surtout sous pression.',
+                    orangeRec: 'Consulter un psychologue pour une évaluation approfondie.',
+                    red: 'Comportement nécessitant une intervention',
+                    redDesc: 'Schéma clair de comportement intense affectant le quotidien.',
+                    redRec: 'Consulter un psychiatre ou thérapeute dès que possible.',
+                    generated: 'Généré le',
+                    copySuccess: '📋 Rapport copié dans le presse-papiers !',
+                    resetConfirm: 'Êtes-vous sûr ? Toutes les données seront effacées.',
+                    resetDone: '↺ Toutes les données ont été réinitialisées.',
+                    noReport: '⚠️ Générez d\'abord le rapport.',
+                    analyzeFirst: 'Générez d\'abord le rapport',
+                    disclaimer: '⚠️ Ce rapport est à des fins d\'aide et de sensibilisation uniquement, et ne remplace pas un diagnostic médical spécialisé.',
+                    langChanged: 'Langue changée vers Français',
+                    saveSuccess: '💾 Toutes les données ont été sauvegardées avec succès !',
+                    saveManual: '💾 Sauvegarde des données en cours...',
+                    saveError: '❌ Erreur lors de la sauvegarde.',
+                    modalTitle: 'Sauvegarde réussie !',
+                    modalMessage: 'Toutes vos données ont été sauvegardées avec succès.',
+                    modalBtn: 'OK',
+                    printTitle: 'Rapport comportemental - Impression',
+                    printBtn: '🖨️ Imprimer',
+                    closeBtn: 'Fermer',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Date/Heure',
+                        day: 'Jour',
+                        mood: 'Humeur',
+                        trigger: 'Déclencheur',
+                        reaction: 'Réaction',
+                        duration: 'Durée',
+                        description: 'Description'
+                    }
+                },
+                en: {
+                    name: 'English',
+                    dir: 'ltr',
+                    mainTitle: 'Behavior',
+                    mainTitle2: 'Tracking & Analysis',
+                    mainSub: 'Log your entries with date and notes, get a detailed report',
+                    headerBadge: '👥 For Teens • Parents • Specialists',
+                    btnAddDay: 'Add Day',
+                    btnAnalyze: 'Analyze & Generate Report',
+                    btnSave: 'Save',
+                    btnCopy: 'Copy Report',
+                    btnPrint: 'Print',
+                    btnReset: 'Reset',
+                    nameLabel: 'Person Name:',
+                    namePlaceholder: 'Enter your name here...',
+                    nameHint: '📌 Will appear in the report',
+                    reportNameLabel: '👤 Name:',
+                    days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                    moodLabel: 'Mood',
+                    triggerLabel: 'Trigger',
+                    reactionLabel: 'Reaction',
+                    durationLabel: 'Duration',
+                    descriptionLabel: '📝 Description / Observation',
+                    descriptionPlaceholder: 'Describe the situation, observed behavior...',
+                    dateLabel: '📅 Date & Time',
+                    mood: { 1: 'Very low', 2: 'Low', 3: 'Average', 4: 'Good', 5: 'Excellent' },
+                    triggers: { none: 'None', study: 'Academic pressure', family: 'Family conflict', bullying: 'Bullying',
+                        rejection: 'Rejection', boredom: 'Boredom', social: 'Social situation', other: 'Other' },
+                    reactions: { calm: 'Calm', withdraw: 'Withdrawal', yell: 'Yelling', verbal: 'Verbal aggression',
+                        physical: 'Physical aggression', ignore: 'Ignoring' },
+                    durations: { short: 'Short', medium: 'Medium', long: 'Long' },
+                    reportTitle: '📋 Behavioral Analysis Report',
+                    sectionLog: '📅 Daily Log',
+                    sectionNotes: '📝 Recorded Notes',
+                    sectionEval: '🧠 Behavioral Assessment',
+                    doctorRec: '🩺 Specialist Recommendation',
+                    green: 'Balanced Behavior',
+                    greenDesc: 'Profile shows stable pattern with calm reactions.',
+                    greenRec: 'No consultation needed at this time.',
+                    yellow: 'Mild Intense Behavior',
+                    yellowDesc: 'Some intense reactions in specific situations.',
+                    yellowRec: 'Monitor and consult if pattern persists.',
+                    orange: 'Notable Intense Behavior',
+                    orangeDesc: 'Frequent intense reactions, especially under pressure.',
+                    orangeRec: 'Consult a psychologist for deeper assessment.',
+                    red: 'Behavior Requiring Intervention',
+                    redDesc: 'Clear pattern of intense behavior affecting daily life.',
+                    redRec: 'Strongly recommend seeing a psychiatrist or therapist.',
+                    generated: 'Generated on',
+                    copySuccess: '📋 Report copied to clipboard!',
+                    resetConfirm: 'Are you sure? All data will be erased.',
+                    resetDone: '↺ All data has been reset.',
+                    noReport: '⚠️ Generate the report first.',
+                    analyzeFirst: 'Generate the report first',
+                    disclaimer: '⚠️ This report is for assistive and awareness purposes only, and does not replace specialist medical diagnosis.',
+                    langChanged: 'Language changed to English',
+                    saveSuccess: '💾 All data saved successfully!',
+                    saveManual: '💾 Saving data...',
+                    saveError: '❌ Error saving data.',
+                    modalTitle: 'Save Successful!',
+                    modalMessage: 'All your data has been saved successfully.',
+                    modalBtn: 'OK',
+                    printTitle: 'Behavioral Report - Print',
+                    printBtn: '🖨️ Print',
+                    closeBtn: 'Close',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Date/Time',
+                        day: 'Day',
+                        mood: 'Mood',
+                        trigger: 'Trigger',
+                        reaction: 'Reaction',
+                        duration: 'Duration',
+                        description: 'Description'
+                    }
+                },
+                ar: {
+                    name: 'العربية',
+                    dir: 'rtl',
+                    mainTitle: 'متتبع',
+                    mainTitle2: 'تحليل السلوك',
+                    mainSub: 'سجّل يومياتك مع التاريخ والملاحظات، واحصل على تقرير مفصل',
+                    headerBadge: '👥 للمراهقين • أولياء الأمور • المختصين',
+                    btnAddDay: 'إضافة يوم',
+                    btnAnalyze: 'حلّل وأنشئ التقرير',
+                    btnSave: 'حفظ',
+                    btnCopy: 'نسخ التقرير',
+                    btnPrint: 'طباعة',
+                    btnReset: 'إعادة ضبط',
+                    nameLabel: 'اسم الشخص:',
+                    namePlaceholder: 'أدخل اسمك هنا...',
+                    nameHint: '📌 سيظهر في التقرير',
+                    reportNameLabel: '👤 اسم الشخص:',
+                    days: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+                    moodLabel: 'المزاج',
+                    triggerLabel: 'المحفز',
+                    reactionLabel: 'رد الفعل',
+                    durationLabel: 'المدة',
+                    descriptionLabel: '📝 وصف / ملاحظة',
+                    descriptionPlaceholder: 'صف الموقف والسلوك الملاحظ...',
+                    dateLabel: '📅 التاريخ والوقت',
+                    mood: { 1: 'منخفض جداً', 2: 'منخفض', 3: 'متوسط', 4: 'جيد', 5: 'ممتاز' },
+                    triggers: { none: 'لا شيء', study: 'ضغط دراسي', family: 'خلاف عائلي', bullying: 'تنمر',
+                        rejection: 'رفض', boredom: 'ملل', social: 'موقف اجتماعي', other: 'أخرى' },
+                    reactions: { calm: 'هدوء', withdraw: 'انسحاب', yell: 'صراخ', verbal: 'عنف لفظي',
+                        physical: 'عنف جسدي', ignore: 'تجاهل' },
+                    durations: { short: 'قصير', medium: 'متوسط', long: 'طويل' },
+                    reportTitle: '📋 تقرير تحليل السلوك للفترة',
+                    sectionLog: '📅 سجل الأيام',
+                    sectionNotes: '📝 ملاحظات المسجل',
+                    sectionEval: '🧠 التقييم السلوكي',
+                    doctorRec: '🩺 توصية المختص',
+                    green: 'سلوك متوازن',
+                    greenDesc: 'يظهر الملف نمطاً مستقراً مع ردود فعل هادئة في معظم المواقف.',
+                    greenRec: 'لا حاجة لزيارة مختص حالياً، مع استمرار الرعاية الذاتية.',
+                    yellow: 'سلوك حاد خفيف',
+                    yellowDesc: 'توجد بعض ردود الفعل الحادة في مواقف محددة، لكنها غير منتشرة.',
+                    yellowRec: 'يوصى بالمراقبة المستمرة، وإن استمر النمط يُنصح باستشارة مختص.',
+                    orange: 'سلوك حاد ملحوظ',
+                    orangeDesc: 'تكرار ملحوظ للردود الحادة، خاصة تحت ضغوط معينة.',
+                    orangeRec: 'يُنصح بزيارة معالج نفسي لتقييم أعمق ووضع خطة تدخل.',
+                    red: 'سلوك حاد يستدعي التدخل',
+                    redDesc: 'نمط واضح من السلوك الحاد مع تأثير على الأداء اليومي.',
+                    redRec: 'يوصى بشدة بزيارة طبيب نفسي أو معالج مختص في أقرب وقت.',
+                    generated: 'تم إنشاء هذا التقرير في',
+                    copySuccess: '📋 تم نسخ التقرير إلى الحافظة!',
+                    resetConfirm: 'هل أنت متأكد؟ سيتم مسح جميع التسجيلات.',
+                    resetDone: '↺ تم إعادة ضبط جميع البيانات.',
+                    noReport: '⚠️ أنشئ التقرير أولاً بالضغط على "حلّل"',
+                    analyzeFirst: 'أنشئ التقرير أولاً',
+                    disclaimer: '⚠️ هذا التقرير لأغراض مساعدة وتوعوية، ولا يغني عن التشخيص الطبي المختص.',
+                    langChanged: 'تم تغيير اللغة إلى العربية',
+                    saveSuccess: '💾 تم حفظ جميع البيانات بنجاح!',
+                    saveManual: '💾 جاري حفظ البيانات...',
+                    saveError: '❌ حدث خطأ أثناء حفظ البيانات.',
+                    modalTitle: 'تم الحفظ بنجاح!',
+                    modalMessage: 'تم حفظ جميع بياناتك بنجاح.',
+                    modalBtn: 'حسناً',
+                    printTitle: 'تقرير السلوك - طباعة',
+                    printBtn: '🖨️ طباعة',
+                    closeBtn: 'إغلاق',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'التاريخ/الوقت',
+                        day: 'اليوم',
+                        mood: 'المزاج',
+                        trigger: 'المحفز',
+                        reaction: 'رد الفعل',
+                        duration: 'المدة',
+                        description: 'الوصف'
+                    }
+                },
+                es: {
+                    name: 'Español',
+                    dir: 'ltr',
+                    mainTitle: 'Seguimiento',
+                    mainTitle2: 'de análisis conductual',
+                    mainSub: 'Registra tus entradas con fecha y notas, obtén un informe detallado',
+                    headerBadge: '👥 Para adolescentes • Padres • Especialistas',
+                    btnAddDay: 'Añadir día',
+                    btnAnalyze: 'Analizar y generar informe',
+                    btnSave: 'Guardar',
+                    btnCopy: 'Copiar informe',
+                    btnPrint: 'Imprimir',
+                    btnReset: 'Reiniciar',
+                    nameLabel: 'Nombre de la persona:',
+                    namePlaceholder: 'Introduzca su nombre aquí...',
+                    nameHint: '📌 Aparecerá en el informe',
+                    reportNameLabel: '👤 Nombre:',
+                    days: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                    moodLabel: 'Estado de ánimo',
+                    triggerLabel: 'Desencadenante',
+                    reactionLabel: 'Reacción',
+                    durationLabel: 'Duración',
+                    descriptionLabel: '📝 Descripción / Observación',
+                    descriptionPlaceholder: 'Describe la situación, el comportamiento observado...',
+                    dateLabel: '📅 Fecha y hora',
+                    mood: { 1: 'Muy bajo', 2: 'Bajo', 3: 'Medio', 4: 'Bueno', 5: 'Excelente' },
+                    triggers: { none: 'Nada', study: 'Presión académica', family: 'Conflicto familiar', bullying: 'Acoso',
+                        rejection: 'Rechazo', boredom: 'Aburrimiento', social: 'Situación social', other: 'Otro' },
+                    reactions: { calm: 'Calma', withdraw: 'Retiro', yell: 'Grito', verbal: 'Agresión verbal',
+                        physical: 'Agresión física', ignore: 'Ignorar' },
+                    durations: { short: 'Corto', medium: 'Medio', long: 'Largo' },
+                    reportTitle: '📋 Informe de Análisis de Conducta',
+                    sectionLog: '📅 Registro Diario',
+                    sectionNotes: '📝 Notas Registradas',
+                    sectionEval: '🧠 Evaluación Conductual',
+                    doctorRec: '🩺 Recomendación del especialista',
+                    green: 'Conducta equilibrada',
+                    greenDesc: 'Perfil estable con reacciones tranquilas.',
+                    greenRec: 'No se necesita consulta por ahora.',
+                    yellow: 'Conducta ligeramente intensa',
+                    yellowDesc: 'Algunas reacciones intensas en situaciones específicas.',
+                    yellowRec: 'Monitorear y consultar si persiste.',
+                    orange: 'Conducta intensa notable',
+                    orangeDesc: 'Reacciones intensas frecuentes, especialmente bajo presión.',
+                    orangeRec: 'Consultar a un psicólogo para evaluación.',
+                    red: 'Conducta que requiere intervención',
+                    redDesc: 'Patrón claro de conducta intensa que afecta la vida diaria.',
+                    redRec: 'Recomendación de visitar a un psiquiatra o terapeuta.',
+                    generated: 'Generado el',
+                    copySuccess: '📋 Informe copiado al portapapeles!',
+                    resetConfirm: '¿Estás seguro? Todos los datos serán borrados.',
+                    resetDone: '↺ Todos los datos han sido restablecidos.',
+                    noReport: '⚠️ Genera el informe primero.',
+                    analyzeFirst: 'Genera el informe primero',
+                    disclaimer: '⚠️ Este informe es solo para fines de asistencia y concienciación, y no reemplaza el diagnóstico médico especializado.',
+                    langChanged: 'Idioma cambiado a Español',
+                    saveSuccess: '💾 Todos los datos guardados con éxito!',
+                    saveManual: '💾 Guardando datos...',
+                    saveError: '❌ Error al guardar datos.',
+                    modalTitle: '¡Guardado exitoso!',
+                    modalMessage: 'Todos tus datos han sido guardados con éxito.',
+                    modalBtn: 'OK',
+                    printTitle: 'Informe de Conducta - Impresión',
+                    printBtn: '🖨️ Imprimir',
+                    closeBtn: 'Cerrar',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Fecha/Hora',
+                        day: 'Día',
+                        mood: 'Estado de ánimo',
+                        trigger: 'Desencadenante',
+                        reaction: 'Reacción',
+                        duration: 'Duración',
+                        description: 'Descripción'
+                    }
+                },
+                de: {
+                    name: 'Deutsch',
+                    dir: 'ltr',
+                    mainTitle: 'Verhaltens-',
+                    mainTitle2: 'analyse & Tracking',
+                    mainSub: 'Tagebuch mit Datum und Notizen, erhalten Sie einen detaillierten Bericht',
+                    headerBadge: '👥 Für Jugendliche • Eltern • Spezialisten',
+                    btnAddDay: 'Tag hinzufügen',
+                    btnAnalyze: 'Analysieren & Bericht erstellen',
+                    btnSave: 'Speichern',
+                    btnCopy: 'Bericht kopieren',
+                    btnPrint: 'Drucken',
+                    btnReset: 'Zurücksetzen',
+                    nameLabel: 'Name der Person:',
+                    namePlaceholder: 'Geben Sie hier Ihren Namen ein...',
+                    nameHint: '📌 Erscheint im Bericht',
+                    reportNameLabel: '👤 Name:',
+                    days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                    moodLabel: 'Stimmung',
+                    triggerLabel: 'Auslöser',
+                    reactionLabel: 'Reaktion',
+                    durationLabel: 'Dauer',
+                    descriptionLabel: '📝 Beschreibung / Beobachtung',
+                    descriptionPlaceholder: 'Beschreiben Sie die Situation, das beobachtete Verhalten...',
+                    dateLabel: '📅 Datum & Uhrzeit',
+                    mood: { 1: 'Sehr niedrig', 2: 'Niedrig', 3: 'Mittel', 4: 'Gut', 5: 'Exzellent' },
+                    triggers: { none: 'Nichts', study: 'Schulischer Druck', family: 'Familienkonflikt',
+                        bullying: 'Mobbing', rejection: 'Ablehnung', boredom: 'Langeweile', social: 'Soziale Situation',
+                        other: 'Andere' },
+                    reactions: { calm: 'Ruhe', withdraw: 'Rückzug', yell: 'Schreien', verbal: 'Verbale Gewalt',
+                        physical: 'Körperliche Gewalt', ignore: 'Ignorieren' },
+                    durations: { short: 'Kurz', medium: 'Mittel', long: 'Lang' },
+                    reportTitle: '📋 Verhaltensanalyse-Bericht',
+                    sectionLog: '📅 Tagebuch',
+                    sectionNotes: '📝 Aufgezeichnete Notizen',
+                    sectionEval: '🧠 Verhaltensbewertung',
+                    doctorRec: '🩺 Empfehlung des Spezialisten',
+                    green: 'Ausgeglichenes Verhalten',
+                    greenDesc: 'Stabiles Muster mit ruhigen Reaktionen.',
+                    greenRec: 'Keine Konsultation erforderlich.',
+                    yellow: 'Leicht intensives Verhalten',
+                    yellowDesc: 'Einige intensive Reaktionen in bestimmten Situationen.',
+                    yellowRec: 'Beobachten und bei Persistenz konsultieren.',
+                    orange: 'Deutlich intensives Verhalten',
+                    orangeDesc: 'Häufige intensive Reaktionen, besonders unter Druck.',
+                    orangeRec: 'Psychologen zur vertieften Bewertung aufsuchen.',
+                    red: 'Verhalten erfordert Intervention',
+                    redDesc: 'Klares Muster intensiven Verhaltens.',
+                    redRec: 'Dringend Psychiater oder Therapeut aufsuchen.',
+                    generated: 'Erstellt am',
+                    copySuccess: '📋 Bericht in die Zwischenablage kopiert!',
+                    resetConfirm: 'Sind Sie sicher? Alle Daten werden gelöscht.',
+                    resetDone: '↺ Alle Daten wurden zurückgesetzt.',
+                    noReport: '⚠️ Erstellen Sie zuerst den Bericht.',
+                    analyzeFirst: 'Erstellen Sie zuerst den Bericht',
+                    disclaimer: '⚠️ Dieser Bericht dient nur zu Hilfs- und Sensibilisierungszwecken und ersetzt keine spezialisierte medizinische Diagnose.',
+                    langChanged: 'Sprache geändert auf Deutsch',
+                    saveSuccess: '💾 Alle Daten erfolgreich gespeichert!',
+                    saveManual: '💾 Daten werden gespeichert...',
+                    saveError: '❌ Fehler beim Speichern.',
+                    modalTitle: 'Speichern erfolgreich!',
+                    modalMessage: 'Alle Ihre Daten wurden erfolgreich gespeichert.',
+                    modalBtn: 'OK',
+                    printTitle: 'Verhaltensbericht - Druck',
+                    printBtn: '🖨️ Drucken',
+                    closeBtn: 'Schließen',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Datum/Uhrzeit',
+                        day: 'Tag',
+                        mood: 'Stimmung',
+                        trigger: 'Auslöser',
+                        reaction: 'Reaktion',
+                        duration: 'Dauer',
+                        description: 'Beschreibung'
+                    }
+                },
+                it: {
+                    name: 'Italiano',
+                    dir: 'ltr',
+                    mainTitle: 'Monitoraggio',
+                    mainTitle2: "dell'analisi comportamentale",
+                    mainSub: 'Registra le tue voci con data e note, ottieni un rapporto dettagliato',
+                    headerBadge: '👥 Per adolescenti • Genitori • Specialisti',
+                    btnAddDay: 'Aggiungi giorno',
+                    btnAnalyze: 'Analizza e genera rapporto',
+                    btnSave: 'Salva',
+                    btnCopy: 'Copia rapporto',
+                    btnPrint: 'Stampa',
+                    btnReset: 'Reimposta',
+                    nameLabel: 'Nome della persona:',
+                    namePlaceholder: 'Inserisci il tuo nome qui...',
+                    nameHint: '📌 Apparirà nel rapporto',
+                    reportNameLabel: '👤 Nome:',
+                    days: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+                    moodLabel: 'Umore',
+                    triggerLabel: 'Innesco',
+                    reactionLabel: 'Reazione',
+                    durationLabel: 'Durata',
+                    descriptionLabel: '📝 Descrizione / Osservazione',
+                    descriptionPlaceholder: 'Descrivi la situazione, il comportamento osservato...',
+                    dateLabel: '📅 Data e ora',
+                    mood: { 1: 'Molto basso', 2: 'Basso', 3: 'Medio', 4: 'Buono', 5: 'Eccellente' },
+                    triggers: { none: 'Niente', study: 'Pressione scolastica', family: 'Conflitto familiare',
+                        bullying: 'Bullismo', rejection: 'Rifiuto', boredom: 'Noia', social: 'Situazione sociale',
+                        other: 'Altro' },
+                    reactions: { calm: 'Calma', withdraw: 'Ritiro', yell: 'Urlo', verbal: 'Aggressività verbale',
+                        physical: 'Aggressività fisica', ignore: 'Ignorare' },
+                    durations: { short: 'Breve', medium: 'Medio', long: 'Lungo' },
+                    reportTitle: '📋 Rapporto di Analisi Comportamentale',
+                    sectionLog: '📅 Registro Giornaliero',
+                    sectionNotes: '📝 Note Registrate',
+                    sectionEval: '🧠 Valutazione Comportamentale',
+                    doctorRec: '🩺 Raccomandazione dello specialista',
+                    green: 'Comportamento equilibrato',
+                    greenDesc: 'Profilo stabile con reazioni calme.',
+                    greenRec: 'Nessuna consultazione necessaria.',
+                    yellow: 'Comportamento leggermente intenso',
+                    yellowDesc: 'Alcune reazioni intense in situazioni specifiche.',
+                    yellowRec: 'Monitorare e consultare se persiste.',
+                    orange: 'Comportamento intenso notevole',
+                    orangeDesc: 'Reazioni intense frequenti, soprattutto sotto pressione.',
+                    orangeRec: 'Consultare uno psicologo per valutazione.',
+                    red: 'Comportamento che richiede intervento',
+                    redDesc: 'Modello chiaro di comportamento intenso.',
+                    redRec: 'Consigliata visita a uno psichiatra o terapeuta.',
+                    generated: 'Generato il',
+                    copySuccess: '📋 Rapporto copiato negli appunti!',
+                    resetConfirm: 'Sei sicuro? Tutti i dati verranno cancellati.',
+                    resetDone: '↺ Tutti i dati sono stati resettati.',
+                    noReport: '⚠️ Genera prima il rapporto.',
+                    analyzeFirst: 'Genera prima il rapporto',
+                    disclaimer: '⚠️ Questo rapporto è solo a scopo di assistenza e sensibilizzazione e non sostituisce la diagnosi medica specialistica.',
+                    langChanged: 'Lingua cambiata in Italiano',
+                    saveSuccess: '💾 Tutti i dati salvati con successo!',
+                    saveManual: '💾 Salvataggio dati...',
+                    saveError: '❌ Errore durante il salvataggio.',
+                    modalTitle: 'Salvataggio riuscito!',
+                    modalMessage: 'Tutti i tuoi dati sono stati salvati con successo.',
+                    modalBtn: 'OK',
+                    printTitle: 'Rapporto Comportamentale - Stampa',
+                    printBtn: '🖨️ Stampa',
+                    closeBtn: 'Chiudi',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Data/Ora',
+                        day: 'Giorno',
+                        mood: 'Umore',
+                        trigger: 'Innesco',
+                        reaction: 'Reazione',
+                        duration: 'Durata',
+                        description: 'Descrizione'
+                    }
+                },
+                pt: {
+                    name: 'Português',
+                    dir: 'ltr',
+                    mainTitle: 'Monitoramento',
+                    mainTitle2: 'da análise comportamental',
+                    mainSub: 'Registre suas entradas com data e notas, obtenha um relatório detalhado',
+                    headerBadge: '👥 Para adolescentes • Pais • Especialistas',
+                    btnAddDay: 'Adicionar dia',
+                    btnAnalyze: 'Analisar e gerar relatório',
+                    btnSave: 'Salvar',
+                    btnCopy: 'Copiar relatório',
+                    btnPrint: 'Imprimir',
+                    btnReset: 'Reiniciar',
+                    nameLabel: 'Nome da pessoa:',
+                    namePlaceholder: 'Digite seu nome aqui...',
+                    nameHint: '📌 Aparecerá no relatório',
+                    reportNameLabel: '👤 Nome:',
+                    days: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    moodLabel: 'Humor',
+                    triggerLabel: 'Gatilho',
+                    reactionLabel: 'Reação',
+                    durationLabel: 'Duração',
+                    descriptionLabel: '📝 Descrição / Observação',
+                    descriptionPlaceholder: 'Descreva a situação, o comportamento observado...',
+                    dateLabel: '📅 Data e hora',
+                    mood: { 1: 'Muito baixo', 2: 'Baixo', 3: 'Médio', 4: 'Bom', 5: 'Excelente' },
+                    triggers: { none: 'Nada', study: 'Pressão acadêmica', family: 'Conflito familiar', bullying: 'Bullying',
+                        rejection: 'Rejeição', boredom: 'Tédio', social: 'Situação social', other: 'Outro' },
+                    reactions: { calm: 'Calma', withdraw: 'Retraimento', yell: 'Grito', verbal: 'Agressão verbal',
+                        physical: 'Agressão física', ignore: 'Ignorar' },
+                    durations: { short: 'Curto', medium: 'Médio', long: 'Longo' },
+                    reportTitle: '📋 Relatório de Análise Comportamental',
+                    sectionLog: '📅 Registro Diário',
+                    sectionNotes: '📝 Notas Registradas',
+                    sectionEval: '🧠 Avaliação Comportamental',
+                    doctorRec: '🩺 Recomendação do especialista',
+                    green: 'Comportamento equilibrado',
+                    greenDesc: 'Perfil estável com reações calmas.',
+                    greenRec: 'Nenhuma consulta necessária no momento.',
+                    yellow: 'Comportamento levemente intenso',
+                    yellowDesc: 'Algumas reações intensas em situações específicas.',
+                    yellowRec: 'Monitorar e consultar se persistir.',
+                    orange: 'Comportamento intenso notável',
+                    orangeDesc: 'Reações intensas frequentes, especialmente sob pressão.',
+                    orangeRec: 'Consultar um psicólogo para avaliação.',
+                    red: 'Comportamento que requer intervenção',
+                    redDesc: 'Padrão claro de comportamento intenso.',
+                    redRec: 'Recomenda-se consultar um psiquiatra ou terapeuta.',
+                    generated: 'Gerado em',
+                    copySuccess: '📋 Relatório copiado para a área de transferência!',
+                    resetConfirm: 'Tem certeza? Todos os dados serão apagados.',
+                    resetDone: '↺ Todos os dados foram reiniciados.',
+                    noReport: '⚠️ Gere o relatório primeiro.',
+                    analyzeFirst: 'Gere o relatório primeiro',
+                    disclaimer: '⚠️ Este relatório é apenas para fins de assistência e conscientização, e não substitui o diagnóstico médico especializado.',
+                    langChanged: 'Idioma alterado para Português',
+                    saveSuccess: '💾 Todos os dados salvos com sucesso!',
+                    saveManual: '💾 Salvando dados...',
+                    saveError: '❌ Erro ao salvar dados.',
+                    modalTitle: 'Salvo com sucesso!',
+                    modalMessage: 'Todos os seus dados foram salvos com sucesso.',
+                    modalBtn: 'OK',
+                    printTitle: 'Relatório Comportamental - Impressão',
+                    printBtn: '🖨️ Imprimir',
+                    closeBtn: 'Fechar',
+                    tableHeaders: {
+                        num: '#',
+                        date: 'Data/Hora',
+                        day: 'Dia',
+                        mood: 'Humor',
+                        trigger: 'Gatilho',
+                        reaction: 'Reação',
+                        duration: 'Duração',
+                        description: 'Descrição'
+                    }
+                }
+            };
+
+            // ===== VARIABLES =====
+            const STORAGE_KEY = 'appixi_behavior_data_v2';
+            const NAME_STORAGE_KEY = 'appixi_person_name_v2';
+            let currentLang = 'fr';
+            let entries = [];
+            let entryCounter = 0;
+            let isSaving = false;
+            let personName = '';
+            let currentMood = 3;
+            let currentTrigger = 'none';
+            let currentReaction = 'calm';
+            let currentDuration = 'short';
+            let currentDescription = '';
+
+            // ===== DOM REFERENCES =====
+            const dayDateTime = document.getElementById('dayDateTime');
+            const moodButtons = document.querySelectorAll('.mood-btn');
+            const triggerSelect = document.getElementById('triggerSelect');
+            const reactionSelect = document.getElementById('reactionSelect');
+            const durationSelect = document.getElementById('durationSelect');
+            const descriptionText = document.getElementById('descriptionText');
+            const daySelect = document.getElementById('daySelect');
+
+            function getLang() { return LANGUAGES[currentLang] || LANGUAGES.fr; }
+
+            // ===== STORAGE =====
+            function loadData() {
+                const storedName = localStorage.getItem(NAME_STORAGE_KEY);
+                if (storedName) {
+                    personName = storedName;
+                    document.getElementById('personName').value = personName;
+                }
+
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    try {
+                        const parsed = JSON.parse(savedData);
+                        if (parsed && parsed.entries) {
+                            entries = parsed.entries;
+                            entryCounter = parsed.counter || entries.length;
+                            if (parsed.lang) currentLang = parsed.lang;
+                            if (parsed.personName) {
+                                personName = parsed.personName;
+                                document.getElementById('personName').value = personName;
+                            }
+                            return;
+                        }
+                    } catch (e) {}
+                }
+
+                entries = [];
+                entryCounter = 0;
+                saveData(false);
+            }
+
+            function saveData(showToastMsg = true, showModal = false) {
+                try {
+                    const nameInput = document.getElementById('personName');
+                    const name = nameInput ? nameInput.value.trim() : '';
+
+                    const fullData = {
+                        entries: entries,
+                        counter: entryCounter,
+                        personName: name,
+                        lang: currentLang,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(fullData));
+                    localStorage.setItem(NAME_STORAGE_KEY, name);
+
+                    const indicator = document.getElementById('saveIndicator');
+                    if (indicator) indicator.className = 'save-indicator saved';
+
+                    if (showToastMsg) {
+                        showToast('💾 ' + getLang().saveSuccess);
+                    }
+
+                    if (showModal) {
+                        showModalBox('💾', getLang().modalTitle, getLang().modalMessage);
+                    }
+
+                    return true;
+                } catch (e) {
+                    console.warn('Erreur de sauvegarde:', e);
+                    if (showToastMsg) showToast('❌ ' + getLang().saveError);
+                    return false;
+                }
+            }
+
+            function manualSave() {
+                if (isSaving) return;
+                isSaving = true;
+                const indicator = document.getElementById('saveIndicator');
+                if (indicator) indicator.className = 'save-indicator saving';
+                showToast('⏳ ' + getLang().saveManual);
+                setTimeout(() => {
+                    const success = saveData(true, true);
+                    isSaving = false;
+                    if (success) {
+                        const btn = document.getElementById('saveBtn');
+                        if (btn) {
+                            btn.style.transform = 'scale(0.95)';
+                            setTimeout(() => { btn.style.transform = ''; }, 200);
+                        }
+                    }
+                }, 400);
+            }
+
+            function autoSave() {
+                try {
+                    const nameInput = document.getElementById('personName');
+                    const name = nameInput ? nameInput.value.trim() : '';
+                    const fullData = {
+                        entries: entries,
+                        counter: entryCounter,
+                        personName: name,
+                        lang: currentLang,
+                        timestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(fullData));
+                    localStorage.setItem(NAME_STORAGE_KEY, name);
+                    const indicator = document.getElementById('saveIndicator');
+                    if (indicator) indicator.className = 'save-indicator saved';
+                } catch (e) { console.warn('Auto-save error:', e); }
+            }
+
+            // ===== MODAL =====
+            function showModalBox(icon, title, message) {
+                const overlay = document.getElementById('modalOverlay');
+                document.getElementById('modalIcon').textContent = icon || '💾';
+                document.getElementById('modalTitle').textContent = title || 'Succès';
+                document.getElementById('modalMessage').textContent = message || 'Opération réussie.';
+                overlay.classList.add('show');
+            }
+
+            document.getElementById('modalBtn').addEventListener('click', function() {
+                document.getElementById('modalOverlay').classList.remove('show');
+            });
+
+            document.getElementById('modalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+
+            // ===== UPDATE UI TEXT =====
+            function updateUIText() {
+                const lang = getLang();
+                document.getElementById('mainTitle').textContent = lang.mainTitle;
+                document.getElementById('mainTitle2').textContent = lang.mainTitle2;
+                document.getElementById('mainSub').textContent = lang.mainSub;
+                document.getElementById('headerBadge').textContent = lang.headerBadge;
+                document.getElementById('btnAddDay').textContent = lang.btnAddDay;
+                document.getElementById('btnAnalyze').textContent = lang.btnAnalyze;
+                document.getElementById('btnSave').textContent = lang.btnSave;
+                document.getElementById('btnCopy').textContent = lang.btnCopy;
+                document.getElementById('btnPrint').textContent = lang.btnPrint;
+                document.getElementById('btnReset').textContent = lang.btnReset;
+                document.getElementById('disclaimerText').textContent = lang.disclaimer;
+                document.getElementById('nameLabel').textContent = lang.nameLabel;
+                document.getElementById('personName').placeholder = lang.namePlaceholder;
+                document.getElementById('nameHint').textContent = lang.nameHint;
+                document.getElementById('reportNameLabel').textContent = lang.reportNameLabel;
+                document.getElementById('moodLabel').textContent = '😌 ' + lang.moodLabel;
+                document.getElementById('triggerLabel').textContent = '⚡ ' + lang.triggerLabel;
+                document.getElementById('reactionLabel').textContent = '💥 ' + lang.reactionLabel;
+                document.getElementById('durationLabel').textContent = '⏳ ' + lang.durationLabel;
+                document.getElementById('descriptionLabel').textContent = lang.descriptionLabel;
+                document.getElementById('dateLabel').textContent = lang.dateLabel;
+                descriptionText.placeholder = lang.descriptionPlaceholder;
+
+                const container = document.querySelector('.container');
+                const medicalReport = document.querySelector('.medical-report');
+                if (lang.dir === 'rtl') {
+                    container.style.direction = 'rtl';
+                    if (medicalReport) medicalReport.style.direction = 'rtl';
+                } else {
+                    container.style.direction = 'ltr';
+                    if (medicalReport) medicalReport.style.direction = 'ltr';
+                }
+
+                const reportTitle = document.getElementById('reportTitle');
+                if (reportTitle) reportTitle.textContent = lang.reportTitle;
+                updateReportName();
+                populateSelects();
+                populateDaySelect();
+            }
+
+            function updateReportName() {
+                const nameInput = document.getElementById('personName');
+                const nameDisplay = document.getElementById('reportNameValue');
+                const nameContainer = document.getElementById('reportPersonName');
+                if (nameInput && nameDisplay && nameContainer) {
+                    const name = nameInput.value.trim();
+                    if (name) {
+                        nameDisplay.textContent = name;
+                        nameContainer.classList.add('show');
+                    } else {
+                        nameContainer.classList.remove('show');
+                    }
+                }
+            }
+
+            function populateDaySelect() {
+                const lang = getLang();
+                daySelect.innerHTML = '';
+                lang.days.forEach((day, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = index;
+                    opt.textContent = day;
+                    daySelect.appendChild(opt);
+                });
+                const today = new Date().getDay();
+                daySelect.value = today;
+            }
+
+            function populateSelects() {
+                const lang = getLang();
+
+                triggerSelect.innerHTML = '';
+                const triggerOpts = [
+                    { val: 'none', label: lang.triggers.none },
+                    { val: 'study', label: lang.triggers.study },
+                    { val: 'family', label: lang.triggers.family },
+                    { val: 'bullying', label: lang.triggers.bullying },
+                    { val: 'rejection', label: lang.triggers.rejection },
+                    { val: 'boredom', label: lang.triggers.boredom },
+                    { val: 'social', label: lang.triggers.social },
+                    { val: 'other', label: lang.triggers.other }
+                ];
+                triggerOpts.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.val;
+                    opt.textContent = t.label;
+                    if (currentTrigger === t.val) opt.selected = true;
+                    triggerSelect.appendChild(opt);
+                });
+
+                reactionSelect.innerHTML = '';
+                const reacOpts = [
+                    { val: 'calm', label: lang.reactions.calm },
+                    { val: 'withdraw', label: lang.reactions.withdraw },
+                    { val: 'yell', label: lang.reactions.yell },
+                    { val: 'verbal', label: lang.reactions.verbal },
+                    { val: 'physical', label: lang.reactions.physical },
+                    { val: 'ignore', label: lang.reactions.ignore }
+                ];
+                reacOpts.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.val;
+                    opt.textContent = r.label;
+                    if (currentReaction === r.val) opt.selected = true;
+                    reactionSelect.appendChild(opt);
+                });
+
+                durationSelect.innerHTML = '';
+                const durOpts = [
+                    { val: 'short', label: lang.durations.short },
+                    { val: 'medium', label: lang.durations.medium },
+                    { val: 'long', label: lang.durations.long }
+                ];
+                durOpts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.val;
+                    opt.textContent = d.label;
+                    if (currentDuration === d.val) opt.selected = true;
+                    durationSelect.appendChild(opt);
+                });
+            }
+
+            // ===== MOOD SELECTION =====
+            function updateMood(value) {
+                currentMood = value;
+                moodButtons.forEach(btn => {
+                    btn.classList.toggle('active', parseInt(btn.dataset.value) === value);
+                });
+            }
+
+            moodButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateMood(parseInt(this.dataset.value));
+                });
+            });
+
+            // ===== ADD ENTRY =====
+            function addEntry() {
+                const lang = getLang();
+
+                const datetime = dayDateTime.value || new Date().toISOString().slice(0, 16);
+                const mood = currentMood;
+                const trigger = triggerSelect.value;
+                const reaction = reactionSelect.value;
+                const duration = durationSelect.value;
+                const description = descriptionText.value.trim();
+                const selectedDayIndex = parseInt(daySelect.value);
+                const selectedDayName = lang.days[selectedDayIndex] || '--';
+
+                entryCounter++;
+
+                entries.push({
+                    id: entryCounter,
+                    datetime: datetime,
+                    mood: mood,
+                    trigger: trigger,
+                    reaction: reaction,
+                    duration: duration,
+                    description: description,
+                    dayName: selectedDayName,
+                    dayIndex: selectedDayIndex
+                });
+
+                descriptionText.value = '';
+                currentDescription = '';
+                updateMood(3);
+                triggerSelect.value = 'none';
+                reactionSelect.value = 'calm';
+                durationSelect.value = 'short';
+
+                autoSave();
+                showToast('✅ Jour ajouté avec succès !');
+                document.getElementById('resultPanel').classList.remove('show');
+            }
+
+            // ===== GENERATE REPORT =====
+            function generateReport() {
+                const lang = getLang();
+
+                if (entries.length === 0) {
+                    showToast('⚠️ ' + lang.noReport);
+                    return null;
+                }
+
+                updateReportName();
+
+                const reportDiv = document.getElementById('reportContent');
+                document.getElementById('reportTitle').textContent = lang.reportTitle;
+
+                const headers = lang.tableHeaders;
+
+                let html = '';
+
+                html += `<div class="report-section"><h3>${lang.sectionLog}</h3>
+                <div class="report-table-wrapper">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>${headers.num}</th>
+                            <th>${headers.date}</th>
+                            <th>${headers.day}</th>
+                            <th>${headers.mood}</th>
+                            <th>${headers.trigger}</th>
+                            <th>${headers.reaction}</th>
+                            <th>${headers.duration}</th>
+                            <th>${headers.description}</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                for (let i = 0; i < entries.length; i++) {
+                    const e = entries[i];
+                    const dt = e.datetime ? e.datetime.replace('T', ' ') : '--';
+                    let moodColor = '';
+                    if (e.mood <= 2) moodColor = 'style="color:#c44a4a;font-weight:700;"';
+                    else if (e.mood >= 4) moodColor = 'style="color:#2d8a6b;font-weight:700;"';
+                    html += `<tr>
+                        <td><strong>${i+1}</strong></td>
+                        <td>${dt}</td>
+                        <td>${e.dayName || '--'}</td>
+                        <td ${moodColor}>${lang.mood[e.mood] || e.mood}</td>
+                        <td>${lang.triggers[e.trigger] || e.trigger}</td>
+                        <td>${lang.reactions[e.reaction] || e.reaction}</td>
+                        <td>${lang.durations[e.duration] || e.duration}</td>
+                        <td style="text-align:left;font-size:11px;">${e.description || '-'}</td>
+                    </tr>`;
+                }
+                html += `</tbody></table></div></div>`;
+
+                const hasDescriptions = entries.some(e => e.description && e.description.trim().length > 0);
+                if (hasDescriptions) {
+                    html += `<div class="report-section"><h3>${lang.sectionNotes}</h3><ul>`;
+                    for (let i = 0; i < entries.length; i++) {
+                        const e = entries[i];
+                        if (e.description && e.description.trim()) {
+                            const dt = e.datetime ? e.datetime.replace('T', ' ') : '--';
+                            html += `<li><strong>${dt} (${e.dayName || '--'}):</strong> ${e.description.trim()}</li>`;
+                        }
+                    }
+                    html += `</ul></div>`;
+                }
+
+                const moods = entries.map(e => e.mood);
+                const reactions = entries.map(e => e.reaction);
+                const triggers = entries.map(e => e.trigger);
+                const durations = entries.map(e => e.duration);
+                const avgMood = moods.reduce((a, b) => a + b, 0) / entries.length;
+                const intenseReactions = ['verbal', 'physical', 'yell'];
+                const intenseCount = reactions.filter(r => intenseReactions.includes(r)).length;
+                let weightedScore = intenseCount;
+                for (let i = 0; i < entries.length; i++) {
+                    if (intenseReactions.includes(reactions[i]) && durations[i] === 'long') weightedScore += 1.5;
+                    if (intenseReactions.includes(reactions[i]) && durations[i] === 'medium') weightedScore += 0.5;
+                    if (triggers[i] === 'bullying' || triggers[i] === 'rejection') {
+                        if (intenseReactions.includes(reactions[i])) weightedScore += 0.5;
+                    }
+                }
+                weightedScore = weightedScore / (entries.length || 1);
+
+                let level, emoji, title, desc, doctorRec;
+                if (weightedScore <= 0.5 && avgMood >= 3.5) {
+                    level = 'green';
+                    emoji = '🧘';
+                    title = lang.green;
+                    desc = lang.greenDesc;
+                    doctorRec = lang.greenRec;
+                } else if (weightedScore <= 1.5 && avgMood >= 2.5) {
+                    level = 'yellow';
+                    emoji = '🟡';
+                    title = lang.yellow;
+                    desc = lang.yellowDesc;
+                    doctorRec = lang.yellowRec;
+                } else if (weightedScore <= 3 && avgMood >= 1.8) {
+                    level = 'orange';
+                    emoji = '🟠';
+                    title = lang.orange;
+                    desc = lang.orangeDesc;
+                    doctorRec = lang.orangeRec;
+                } else {
+                    level = 'red';
+                    emoji = '🔴';
+                    title = lang.red;
+                    desc = lang.redDesc;
+                    doctorRec = lang.redRec;
+                }
+
+                html += `<div class="report-section"><h3>${lang.sectionEval}</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px;">
+                    <div style="background:rgba(43,122,120,0.06);border-radius:14px;padding:10px 12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:800;color:#2b7a78;">${avgMood.toFixed(1)}</div>
+                        <div style="font-size:10px;color:#4a7575;">${lang.moodLabel}</div>
+                    </div>
+                    <div style="background:rgba(245,87,108,0.06);border-radius:14px;padding:10px 12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:800;color:#f5576c;">${intenseCount}</div>
+                        <div style="font-size:10px;color:#4a7575;">${lang.reactionLabel}</div>
+                    </div>
+                    <div style="background:rgba(17,153,142,0.06);border-radius:14px;padding:10px 12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:800;color:#11998e;">${weightedScore.toFixed(1)}</div>
+                        <div style="font-size:10px;color:#4a7575;">Score</div>
+                    </div>
+                </div>
+                <div class="rec-box-report ${level}">
+                    <p><strong>${emoji} ${title}</strong></p>
+                    <p>${desc}</p>
+                </div>
+                <div class="doctor-recommend">
+                    ${lang.doctorRec}: <span class="highlight-rec">${doctorRec}</span>
+                </div>
+                </div>`;
+
+                const now = new Date().toLocaleString(currentLang === 'ar' ? 'ar-EG' :
+                    currentLang === 'fr' ? 'fr-FR' :
+                    currentLang === 'en' ? 'en-US' :
+                    currentLang === 'es' ? 'es-ES' :
+                    currentLang === 'de' ? 'de-DE' :
+                    currentLang === 'it' ? 'it-IT' : 'pt-PT');
+                html += `<div style="font-size:10px; color:#7a9b9b; text-align:center; margin-top:14px; border-top:1px solid #e8f3f0; padding-top:10px;">
+                    ${lang.generated}: ${now} - ${entries.length} entrées
+                </div>`;
+
+                reportDiv.innerHTML = html;
+                return { level, title, doctorRec, entries: entries.length };
+            }
+
+            // ===== OUVRIR LA FENÊTRE D'IMPRESSION (SANS BOUTON PDF) =====
+            function openPrintWindow() {
+                const lang = getLang();
+                if (entries.length === 0) {
+                    showToast('⚠️ ' + lang.noReport);
+                    return;
+                }
+                if (!document.getElementById('resultPanel').classList.contains('show')) {
+                    generateReport();
+                }
+                const reportContentHTML = document.getElementById('reportContent').innerHTML;
+                const reportTitle = document.getElementById('reportTitle').textContent;
+                const personNameDisplay = document.getElementById('reportNameValue').textContent;
+                const nameHTML = personNameDisplay && personNameDisplay !== '---' ?
+                    `<div class="report-person-name"><span class="name-label">${lang.reportNameLabel}</span> <span class="name-value">${personNameDisplay}</span></div>` :
+                    '';
+
+                const printWindow = window.open('', '_blank', 'width=1000,height=800');
+                if (!printWindow) {
+                    showToast('⚠️ Impossible d\'ouvrir la fenêtre. Vérifiez votre bloqueur de pop-ups.');
+                    return;
+                }
+
+                const styles = document.querySelector('style').innerHTML;
+                const printHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${lang.printTitle}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+                    <style>
+                        ${styles}
+                        body { background: white; padding: 20px; font-family: 'Poppins', sans-serif; }
+                        .container { max-width: 1000px; margin: 0 auto; }
+                        .report-actions { text-align: center; margin-bottom: 20px; }
+                        .report-actions .btn { margin: 0 6px; }
+                        .medical-report { background: white; border: 1px solid #ddd; border-radius: 28px; padding: 24px; }
+                        .no-print { display: block; }
+                        @media print {
+                            .no-print { display: none !important; }
+                            body { padding: 0; }
+                            .medical-report { border: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="report-actions no-print">
+                            <button class="btn btn-primary" onclick="window.print()">${lang.printBtn}</button>
+                            <button class="btn btn-secondary" onclick="window.close()">${lang.closeBtn}</button>
+                        </div>
+                        <div class="medical-report" id="reportContainer">
+                            <h2>${reportTitle}</h2>
+                            ${nameHTML}
+                            <div id="reportContent">${reportContentHTML}</div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                `;
+
+                printWindow.document.write(printHTML);
+                printWindow.document.close();
+                printWindow.focus();
+            }
+
+            // ===== COPY REPORT =====
+            function copyReport() {
+                const lang = getLang();
+                const content = document.getElementById('reportContent');
+
+                if (!content || !content.innerHTML.trim()) {
+                    showToast('⚠️ ' + lang.analyzeFirst);
+                    return;
+                }
+
+                const nameInput = document.getElementById('personName');
+                const name = nameInput ? nameInput.value.trim() : '';
+                const reportTitle = document.getElementById('reportTitle').textContent;
+
+                const nameHTML = name ? `<div class="report-person-name">
+                    <span class="name-label">${lang.reportNameLabel || '👤 Nom:'}</span>
+                    <span class="name-value">${name}</span>
+                </div>` : '';
+
+                const fullHTML = `
+                <div style="font-family:'Poppins',sans-serif;background:white;padding:20px;max-width:1000px;margin:0 auto;border-radius:28px;border:1px solid #ddd;">
+                    <div class="medical-report">
+                        <h2 style="font-size:20px;color:#1a3a3a;border-bottom:3px solid #3a9b8b;padding-bottom:14px;margin-bottom:18px;text-align:center;font-weight:800;">${reportTitle}</h2>
+                        ${nameHTML}
+                        <div id="copyReportContent">${content.innerHTML}</div>
+                    </div>
+                </div>`;
+
+                const tempDiv = document.createElement('div');
+                tempDiv.className = 'copy-container';
+                tempDiv.innerHTML = fullHTML;
+
+                const style = document.createElement('style');
+                style.textContent = `
+                    .copy-container .report-table { font-size: 12px; width: 100%; border-collapse: collapse; }
+                    .copy-container .report-table th { background: #2d6b6b !important; color: white !important; padding: 10px 8px; text-align: center; border: 1px solid #1a5a5a; }
+                    .copy-container .report-table td { padding: 8px 6px; text-align: center; border: 1px solid #d4eae6; background: white !important; }
+                    .copy-container .report-table tr:nth-child(even) td { background: #f8fcfb !important; }
+                    .copy-container .rec-box-report { padding: 16px 20px; border-radius: 20px; margin-top: 6px; border: 1px solid #3a9b8b; }
+                    .copy-container .rec-box-report.red { border-color: #f5576c; background: #fce8ea; }
+                    .copy-container .rec-box-report.orange { border-color: #f093fb; background: #f8ecf8; }
+                    .copy-container .rec-box-report.yellow { border-color: #f6d365; background: #f8f4e0; }
+                    .copy-container .rec-box-report.green { border-color: #38ef7d; background: #eaf5f1; }
+                    .copy-container .doctor-recommend { background: #f0f7f5; padding: 14px 18px; border-radius: 30px; text-align: center; font-weight: 600; font-size: 15px; color: #1a3a3a; margin-top: 12px; border: 2px solid #3a9b8b; }
+                    .copy-container .report-section { margin-bottom: 18px; padding: 14px 16px; border: 1px solid #e8f3f0; border-radius: 20px; }
+                    .copy-container .report-section h3 { font-size: 15px; color: #1a5a5a; font-weight: 700; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px dashed #3a9b8b; }
+                    .copy-container .report-person-name { text-align: center; font-size: 18px; font-weight: 700; color: #2b7a78; background: #e8f5f2; padding: 10px 16px; border-radius: 40px; margin-bottom: 16px; border: 2px solid #3a9b8b; }
+                    .copy-container .medical-report { padding: 20px; background: white; border: 1px solid #ddd; border-radius: 28px; }
+                    .copy-container .medical-report h2 { font-size: 20px; color: #1a3a3a; border-bottom: 3px solid #3a9b8b; padding-bottom: 14px; margin-bottom: 18px; text-align: center; font-weight: 800; }
+                    .copy-container .report-section ul { list-style: none; padding: 0; }
+                    .copy-container .report-section ul li { padding: 6px 0; border-bottom: 1px solid #e8f3f0; }
+                    .copy-container .report-section ul li::before { content: "✦ "; color: #3a9b8b; font-weight: 700; }
+                    .copy-container .report-section ul li:last-child { border-bottom: none; }
+                    .copy-container .report-table-wrapper { overflow-x: auto; margin: 8px 0; }
+                    .copy-container .highlight-rec { color: #f5576c; font-weight: 800; }
+                    .copy-container .disclaimer { display: none; }
+                `;
+                tempDiv.appendChild(style);
+                document.body.appendChild(tempDiv);
+
+                const copyContent = tempDiv.querySelector('.medical-report');
+                const htmlToCopy = copyContent.outerHTML;
+
+                const blob = new Blob([`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            ${style.textContent}
+                            body { font-family: 'Poppins', sans-serif; background: white; padding: 20px; }
+                            .copy-container { position: static; width: 100%; background: white; padding: 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="copy-container">${htmlToCopy}</div>
+                    </body>
+                    </html>
+                `], { type: 'text/html' });
+
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        'text/html': blob,
+                        'text/plain': new Blob([content.innerText], { type: 'text/plain' })
+                    })
+                ]).then(() => {
+                    showToast('📋 ' + lang.copySuccess);
+                    document.body.removeChild(tempDiv);
+                }).catch(() => {
+                    const textToCopy = `${reportTitle}\n${'='.repeat(40)}\n${name ? 'Nom: ' + name + '\n' : ''}${content.innerText}`;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        showToast('📋 ' + lang.copySuccess);
+                    }).catch(() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = textToCopy;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        showToast('📋 ' + lang.copySuccess);
+                    });
+                    document.body.removeChild(tempDiv);
+                });
+            }
+
+            // ===== SHOW RESULT =====
+            function showResult() {
+                if (entries.length === 0) {
+                    showToast('⚠️ ' + getLang().noReport);
+                    return;
+                }
+                generateReport();
+                document.getElementById('resultPanel').classList.add('show');
+                document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // ===== RESET =====
+            function resetData() {
+                const lang = getLang();
+                if (confirm(lang.resetConfirm)) {
+                    entries = [];
+                    entryCounter = 0;
+                    descriptionText.value = '';
+                    updateMood(3);
+                    triggerSelect.value = 'none';
+                    reactionSelect.value = 'calm';
+                    durationSelect.value = 'short';
+                    saveData(true);
+                    document.getElementById('resultPanel').classList.remove('show');
+                    showToast('↺ ' + lang.resetDone);
+                }
+            }
+
+            // ===== TOAST =====
+            function showToast(msg) {
+                const el = document.getElementById('toastMsg');
+                el.textContent = msg;
+                el.classList.add('show');
+                clearTimeout(el._timeout);
+                el._timeout = setTimeout(() => el.classList.remove('show'), 3500);
+            }
+
+            // ===== SET LANGUAGE =====
+            function setLanguage(lang) {
+                currentLang = lang;
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                updateUIText();
+                document.getElementById('resultPanel').classList.remove('show');
+                const langObj = LANGUAGES[lang];
+                showToast('🌐 ' + langObj.langChanged);
+                autoSave();
+            }
+
+            // ===== INIT =====
+            function init() {
+                loadData();
+                updateUIText();
+
+                const now = new Date();
+                const iso = now.toISOString().slice(0, 16);
+                dayDateTime.value = iso;
+                daySelect.value = now.getDay();
+
+                document.getElementById('personName').addEventListener('input', function() {
+                    autoSave();
+                    if (document.getElementById('resultPanel').classList.contains('show')) {
+                        updateReportName();
+                        generateReport();
+                    }
+                });
+
+                document.getElementById('addDayBtn').addEventListener('click', addEntry);
+                document.getElementById('analyzeBtn').addEventListener('click', showResult);
+                document.getElementById('saveBtn').addEventListener('click', manualSave);
+                document.getElementById('copyBtn').addEventListener('click', copyReport);
+                document.getElementById('printBtn').addEventListener('click', openPrintWindow);
+                document.getElementById('resetBtn').addEventListener('click', resetData);
+
+                window.addEventListener('beforeunload', function() { autoSave(); });
+                document.addEventListener('visibilitychange', function() {
+                    if (document.hidden) autoSave();
+                });
+
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.addEventListener('click', function() { setLanguage(this.dataset.lang); });
+                });
+
+                window.addEventListener('popstate', function() {
+                    window.history.pushState(null, null, window.location.href);
+                });
+                window.history.pushState(null, null, window.location.href);
+
+                const indicator = document.getElementById('saveIndicator');
+                if (indicator) indicator.className = 'save-indicator saved';
+
+                console.log('✅ Application chargée avec succès !');
+                console.log('📝 Entrées: ' + entries.length);
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
